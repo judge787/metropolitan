@@ -7,22 +7,15 @@ plugins {
 }
 
 group = 'com.metropolitan'
-version = '1.0'
+version = '0.0.1-SNAPSHOT'
 archivesBaseName="metropolitan-app"
-
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
-}
 
 repositories {
 	mavenCentral()
-    jcenter()
 }
 
 checkstyle {
-    toolVersion = '10.12.4' // Specify the Checkstyle version
+    toolVersion = '10.12.1' // Specify the Checkstyle version
     configFile = file('config/checkstyle/checkstyle.xml') // Ensure this file exists in your project
 }
 
@@ -43,15 +36,9 @@ tasks.named('check') {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    runtimeOnly 'mysql:mysql-connector-java:8.0.11'
-    runtimeOnly 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
-
-   testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.mockito:mockito-core:3.11.2' // Adding Mockito dependency for testing
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1' // Adding JUnit 5 dependency for testing
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1' // Adding JUnit 5 engine for testing
+	implementation 'org.springframework.boot:spring-boot-starter'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 test {
