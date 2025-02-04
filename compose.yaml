@@ -1,0 +1,20 @@
+#Docker Compose is a tool for defining and running multi-container Docker applications. 
+#With Docker Compose, you use a YAML file to configure your application's services, networks, volumes, and other resources.
+
+
+#This section defines the containers that make up your application. Each service represents a container with its configuration
+services:  # Defines the services that make up the application
+  backend:  # The Spring application service
+    #Build Context: build: ./spring tells Docker to build an image using the Dockerfile located in the ./spring directory.
+    build: ./backend  # Builds the Docker image from the Dockerfile located in the './spring' directory
+    #Ports: ports: - "8080:8080" maps port 8080 of the container to port 8080 on the host, allowing external access to the Spring application running inside the container.
+    ports:
+      - "8080:8080"  # Exposes port 8080 on the host and maps it to port 8080 in the container
+    #Environment Variables: These are passed to the container at runtime. For example, DB_ADDRESS is set to jdbc:mysql://mysql:3306, indicating the application should connect to a MySQL database at the given JDBC URL.
+    environment:  # Environment variables for the Spring application
+      - DB_ADDRESS=jdbc:mysql://database:3306  # JDBC URL for the MySQL database, 'mysql' is the service name in docker-compose
+      - DB_DATABASE=template_db  # The name of the database to use
+      - DB_USER=root  # The username for the database
+      - DB_PASSWORD=pwd  # The password for the database
+    #Networks: The service is attached to spring-mysql and spring-react networks, enabling network communication with the MySQL and React services.
+    #command: /bin/sh -c "while true; do sleep 3600; done"
