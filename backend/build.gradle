@@ -2,10 +2,13 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.2'
 	id 'io.spring.dependency-management' version '1.1.7'
+    id 'jacoco'
+    id 'checkstyle'
 }
 
 group = 'com.metropolitan'
-version = '0.0.1-SNAPSHOT'
+version = '1.0'
+archivesBaseName="metropolitan-app"
 
 java {
 	toolchain {
@@ -15,14 +18,50 @@ java {
 
 repositories {
 	mavenCentral()
+    jcenter()
+}
+
+checkstyle {
+    toolVersion = '10.12.4' // Specify the Checkstyle version
+    configFile = file('config/checkstyle/checkstyle.xml') // Ensure this file exists in your project
+}
+
+jacoco {
+	toolVersion = "0.8.12"
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        html.required = true // Generate HTML report
+        xml.required = false // Optional: Generate XML report
+    }
+}
+
+tasks.named('check') {
+    dependsOn 'checkstyleMain'
+    dependsOn 'checkstyleTest'
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    runtimeOnly 'mysql:mysql-connector-java:8.0.11'
+    runtimeOnly 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+
+   testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.mockito:mockito-core:3.11.2' // Adding Mockito dependency for testing
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1' // Adding JUnit 5 dependency for testing
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1' // Adding JUnit 5 engine for testing
 }
 
-tasks.named('test') {
+test {
 	useJUnitPlatform()
+    finalizedBy jacocoTestReport // report is always generated after tests run
+}
+
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
+	reports {
+		csv.required = true
+	}
 }
