@@ -1,7 +1,6 @@
 #Docker Compose is a tool for defining and running multi-container Docker applications. 
 #With Docker Compose, you use a YAML file to configure your application's services, networks, volumes, and other resources.
 
-
 #This section defines the containers that make up your application. Each service represents a container with its configuration
 services:  # Defines the services that make up the application
   database:  # The MySQL database service
