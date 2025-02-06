@@ -1,6 +1,7 @@
 stages:
   - build
   - lint
+  - test
 
 # BUILD STAGE
 build-backend:
@@ -34,6 +35,30 @@ lint-frontend:
     - cd frontend
     - npm install
     - npx eslint src
+  rules:
+    - when: always
+  allow_failure: false
+
+# TEST STAGE
+test-backend:
+  stage: test
+  image: gradle:7.5-jdk17
+  script:
+    - echo "Running backend tests..."
+    - cd backend
+    - ./gradlew test
+  rules:
+    - when: always
+  allow_failure: false
+
+test-frontend:
+  stage: test
+  image: node:22
+  script:
+    - echo "Running frontend tests..."
+    - cd frontend
+    - npm install
+    - npm test
   rules:
     - when: always
   allow_failure: false
