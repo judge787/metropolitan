@@ -25,4 +25,4 @@ COPY . .
 ENV PYTHONPATH=/usr/app
 
 # command to run the script once and keep the container running
-CMD ["sh", "-c", "python src/hello_world.py && tail -f /dev/null"]
+CMD ["sh", "-c", "python src/DataIngester.py && tail -f /dev/null"]
