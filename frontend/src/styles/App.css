@@ -1,35 +1,85 @@
+/* Global Styles */
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+  text-align: center;
+  min-height: 100vh;
+}
+
+/* App Container */
 .App {
   text-align: center;
 }
 
+/* Logo Styles */
 .App-logo {
-  height: 40vmin;
-  pointer-events: none;
+  height: 40px; 
+  margin-right: 10px; 
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
+/* Header Styles */
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: 25vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-body {
-  min-Height: 100vh;
+  border-bottom: 4px solid black;
   padding: 20px;
-  text-align: center;
+}
+
+/* Logo and Title Container */
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+h1 {
+  font-size: 2.3rem;
+  font-weight: bold;
+  color: #1e3a8a;
+  font-family: 'Roboto', sans-serif;
+  margin-bottom: 20px;
+}
+
+/* Contact Us Button */
+button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  color: #3b82f6;
+}
+
+button:hover {
+  background-color: #4f46e5;
+  color: white;
+}
+
+button:active {
+  background-color: #6d28d9;
+  color: white;
+}
+
+/* Contact Info Section */
+.contact-info {
+  padding: 1rem;
+  background-color: #e5e7eb;
+  margin-top: 1rem;
+  border-radius: 0.5rem;
+}
+
+.contact-info p {
+  font-size: 1rem;
+  margin: 0.5rem 0;
 }
