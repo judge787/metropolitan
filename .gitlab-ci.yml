@@ -34,8 +34,7 @@ lint-frontend:
     - echo "Checking frontend linter..."
     - cd frontend
     - npm ci
-    - npx eslint . --ext .js,.jsx,.ts,.tsx
-  rules:
+    - npx eslint .
     - when: always
   allow_failure: false
 
