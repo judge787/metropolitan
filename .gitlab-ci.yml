@@ -35,6 +35,7 @@ lint-frontend:
     - cd frontend
     - npm ci
     - npx eslint .
+  rules:
     - when: always
   allow_failure: false
 
