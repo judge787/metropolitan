@@ -5,7 +5,7 @@ const ProductPitch: React.FC = () => {
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
       <div className="mb-8 text-center">
         <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent pb-2">
-          Here's our product pitch
+          Here{'&apos;'}s our product pitch
         </h2>
         <div className="w-24 h-1 bg-blue-600 mx-auto rounded-full mt-2"></div>
       </div>
