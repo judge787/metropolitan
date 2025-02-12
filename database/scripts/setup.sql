@@ -12,7 +12,3 @@ CREATE TABLE IF NOT EXISTS housing_data (
     total_starts INT DEFAULT 0 COMMENT 'Total Starts',
     total_complete INT DEFAULT 0 COMMENT 'Total Complete'
 );
-
-
-
-
