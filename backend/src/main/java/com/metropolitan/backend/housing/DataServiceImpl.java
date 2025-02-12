@@ -4,8 +4,6 @@ import com.metropolitan.backend.exceptions.NotFoundException;
 import com.metropolitan.backend.housing.dao.DataDao;
 import com.metropolitan.backend.housing.models.Data;
 
-import java.time.LocalDate;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
