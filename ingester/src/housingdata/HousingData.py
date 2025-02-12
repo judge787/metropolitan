@@ -1,9 +1,10 @@
 class HousingData:
 
-    def __init__(self, census_metropolitan_area, total_starts, total_complete ):
+    def __init__(self, census_metropolitan_area, total_starts, total_complete, last_updated ):
         self.__census_metropolitan_area = census_metropolitan_area
         self.__total_starts = total_starts
         self.__total_completes = total_complete
+        self.__last_updated = last_updated
 
     @property
     def census_metropolitan_area(self):
@@ -20,6 +21,10 @@ class HousingData:
         """int: Gets the total number of completes."""
         return self.__total_completes
     
+    @property
+    def last_updated(self):
+        return self.__last_updated
+    
     @census_metropolitan_area.setter
     def census_metropolitan_area(self, value):
         """Set the census metropolitan area."""
@@ -35,12 +40,17 @@ class HousingData:
         """Set the total number of completes."""
         self.__total_complete = value
     
+    @last_updated.setter
+    def last_updated(self, value):
+        self.__last_updated = value
+    
     def __repr__(self):
         """Return an unambiguous string representation of the HousingData."""
         return (
             f"HousingData(census_metropolitan_area={self.__census_metropolitan_area!r}, "
             f"total_starts={self.__total_starts!r}, "
             f"total_completes={self.__total_complete!r})"
+            f"last_updated={self.__last_updated!r})"
         )
     
 # update wiki to reflect PascalCase for python

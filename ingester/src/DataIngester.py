@@ -9,8 +9,6 @@ class DataIngester:
         self.db = DatabaseHandler(connect)
         self.api_url = os.getenv('API_URL')
         self.api_key = os.getenv('API_KEY')
-        # print(f"API_URL: {self.api_url}")
-        # print(f"API_KEY: {self.api_key}")
 
     def fetch_tasks(self):
         try:
@@ -36,8 +34,10 @@ class DataIngester:
                 housing_data = HousingData(
                     census_metropolitan_area=task["CMA"],
                     total_starts=task["Total_starts"],
-                    total_complete=task["Total_complete"]
+                    total_complete=task["Total_complete"],
+                    last_updated=task["last_updated"]
                 )
+                print(f"census_metro_politan_area:{task['CMA']},  last_updated:{task['last_updated']}")
                 self.db.insert_housing_data(housing_data)
                 print(f"Processed: {housing_data.census_metropolitan_area}")
             except KeyError as e:
@@ -58,5 +58,3 @@ if __name__ == "__main__":
                 time.sleep(5)
                 continue
             raise
-        
-    

@@ -40,7 +40,8 @@ class DatabaseHandler:
                         id INT AUTO_INCREMENT PRIMARY KEY COMMENT 'Primary Key',
                         census_metropolitan_area VARCHAR(255) COMMENT 'Census Metropolitan Area',
                         total_starts INT DEFAULT 0 COMMENT 'Total Starts',
-                        total_complete INT DEFAULT 0 COMMENT 'Total Complete'
+                        total_complete INT DEFAULT 0 COMMENT 'Total Complete',
+                        last_updated VARCHAR(255) COMMENT 'Last Updated',
                     )
             """)
             self.conn.commit()
@@ -55,13 +56,13 @@ class DatabaseHandler:
         try:
             # Check if housing data exists
             cursor.execute(
-                "SELECT id FROM housing_data WHERE census_metropolitan_area = ? AND total_starts = ? AND total_complete = ?",
-                (housing_data.census_metropolitan_area, housing_data.total_starts, housing_data.total_complete)
+                "SELECT id FROM housing_data WHERE census_metropolitan_area = ? AND total_starts = ? AND total_complete = ? AND last_updated = ?",
+                (housing_data.census_metropolitan_area, housing_data.total_starts, housing_data.total_complete, housing_data.last_updated)
             )
             if cursor.fetchone() is None:
                 cursor.execute(
-                    "INSERT INTO housing_data (census_metropolitan_area, total_starts, total_complete) VALUES (?, ?, ?)",
-                    (housing_data.census_metropolitan_area, housing_data.total_starts, housing_data.total_complete)
+                    "INSERT INTO housing_data (census_metropolitan_area, total_starts, total_complete, last_updated) VALUES (?, ?, ?, ?)",
+                    (housing_data.census_metropolitan_area, housing_data.total_starts, housing_data.total_complete, housing_data.last_updated)
                 )
                 self.conn.commit()
         except mariadb.Error as e:
