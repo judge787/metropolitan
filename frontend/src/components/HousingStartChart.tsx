@@ -14,6 +14,9 @@ const HousingStartChart: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [chartKey, setChartKey] = useState(Date.now()); // Key to force remount
+    const [description, setDescription] = useState(
+        "The chart above compares housing starts in Toronto and Hamilton, highlighting regional growth trends. Housing starts show new residential construction, providing data on urban expansion, economic activity, and housing supply. By visualizing this data, analysts can evaluate development patterns, compare market dynamics, and support strategic planning for housing and infrastructure developments."
+    );
 
     useEffect(() => {
         const fetchData = async () => {
@@ -144,8 +147,24 @@ const HousingStartChart: React.FC = () => {
                     id="chart-container"
                 />
             </div>
+
+            {/* Description Box */}
+            
+            <div className="mt-4">
+                <label htmlFor="chart-description" className="block text-gray-700 font-semibold mb-2">
+                    Data Summary:
+                </label>
+                <textarea
+                    id="chart-description"
+                    className="w-full p-2 border border-gray-300 rounded-lg resize-none"
+                    rows={4}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                />
+            </div>
         </div>
     );
 };
 
 export default HousingStartChart;
+        
