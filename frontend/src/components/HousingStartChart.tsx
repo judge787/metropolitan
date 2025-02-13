@@ -1,5 +1,4 @@
-import React from 'react';
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { HousingData } from "../types/HousingData";
 import { getData } from "../services/HousingDataService";
 import { Bar } from 'react-chartjs-2';
@@ -15,8 +14,9 @@ const HousingStartChart: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [chartKey, setChartKey] = useState(Date.now()); // Key to force remount
     const [description, setDescription] = useState(
-        "The chart above compares housing starts in Toronto and Hamilton, highlighting regional growth trends. Housing starts show new residential construction, providing data on urban expansion, economic activity, and housing supply. By visualizing this data, analysts can evaluate development patterns, compare market dynamics, and support strategic planning for housing and infrastructure developments."
+        "The chart above compares housing starts in Toronto and Hamilton, highlighting regional growth trends. Housing starts show new residential construction, providing data on urban expansion, economic activity, and housing supply. By visualizing this data, analysts can evaluate development patterns, compare market dynamics, and support strategic planning for housing and infrastructure developments."
     );
+    const [selectedMonth, setSelectedMonth] = useState("All");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -64,6 +64,15 @@ const HousingStartChart: React.FC = () => {
         };
     }, []);
 
+    const months = ["All", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+    const filterDataByMonth = (data: HousingData | null) => {
+        if (!data) return 0;
+        if (selectedMonth === "All") return data.totalStarts;
+        // Assuming the data contains monthly breakdowns
+        return data.monthlyData?.[selectedMonth] || 0;
+    };
+
     const getChartData = () => {
         return {
             labels: [
@@ -74,8 +83,8 @@ const HousingStartChart: React.FC = () => {
                 {
                     label: 'Housing Starts',
                     data: [
-                        torontoData?.totalStarts || 0,
-                        hamiltonData?.totalStarts || 0
+                        filterDataByMonth(torontoData),
+                        filterDataByMonth(hamiltonData)
                     ],
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.5)',
@@ -100,8 +109,8 @@ const HousingStartChart: React.FC = () => {
                 text: 'Housing Starts Comparison',
                 font: {
                     size: 20,
-                    family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif", // Add a font family
-                    weight: 'bold', // Use 'bold' instead of a string
+                    family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+                    weight: 'bold',
                 },
             },
         },
@@ -113,8 +122,8 @@ const HousingStartChart: React.FC = () => {
                     text: 'Number of Housing Starts',
                     font: {
                         size: 16,
-                        family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif", // Add a font family
-                        weight: 'normal', // Use 'normal' instead of a string
+                        family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+                        weight: 'normal',
                     },
                 },
             },
@@ -124,8 +133,8 @@ const HousingStartChart: React.FC = () => {
                     text: 'Census Metropolitan Area',
                     font: {
                         size: 16,
-                        family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif", // Add a font family
-                        weight: 'normal', // Use 'normal' instead of a string
+                        family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+                        weight: 'normal',
                     },
                 },
             },
@@ -139,6 +148,27 @@ const HousingStartChart: React.FC = () => {
     return (
         <div className="bg-white rounded-lg shadow-md p-4">
             {error && <div className="error-banner bg-red-100 text-red-700 p-2 rounded mb-4">{error}</div>}
+
+            {/* Dropdown for Month Selection */}
+            <div className="mb-4">
+                <label htmlFor="month-select" className="block text-gray-700 font-semibold mb-2">
+                    Select Month:
+                </label>
+                <select
+                    id="month-select"
+                    className="w-full p-2 border border-gray-300 rounded-lg"
+                    value={selectedMonth}
+                    onChange={(e) => setSelectedMonth(e.target.value)}
+                >
+                    {months.map((month) => (
+                        <option key={month} value={month}>
+                            {month}
+                        </option>
+                    ))}
+                </select>
+            </div>
+
+            {/* Chart */}
             <div style={{ height: '400px', width: '100%' }}>
                 <Bar 
                     key={chartKey}
@@ -149,7 +179,6 @@ const HousingStartChart: React.FC = () => {
             </div>
 
             {/* Description Box */}
-            
             <div className="mt-4">
                 <label htmlFor="chart-description" className="block text-gray-700 font-semibold mb-2">
                     Data Summary:
@@ -167,4 +196,3 @@ const HousingStartChart: React.FC = () => {
 };
 
 export default HousingStartChart;
-        
