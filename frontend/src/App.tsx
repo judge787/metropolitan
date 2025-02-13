@@ -5,11 +5,9 @@ import HousingStartChart from './components/HousingStartChart';
 
 const App: React.FC = () => {
   const [showContactInfo, setShowContactInfo] = useState(false);
-  const [contactButtonClicked, setContactButtonClicked] = useState(false);
 
   const handleContactClick = () => {
     setShowContactInfo(!showContactInfo);
-    setContactButtonClicked(true);
   };
 
   return (

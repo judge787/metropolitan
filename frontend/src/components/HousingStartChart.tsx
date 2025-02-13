@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useState } from "react";
 import { HousingData } from "../types/HousingData";
 import { getData } from "../services/HousingDataService";
