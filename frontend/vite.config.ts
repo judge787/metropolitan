@@ -10,6 +10,12 @@ export default defineConfig({
   server: {
     host: "0.0.0.0",
     port: 3000, // Change default port to 3000
+    proxy: {
+      '/api': {
+        target: 'http://backend:8080',
+        changeOrigin: true
+      }
+    }
   },
   test: {
     globals: true,  // This enables the use of global `expect` and `test`
