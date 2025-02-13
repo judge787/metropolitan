@@ -15,6 +15,7 @@ export default tseslint.config(
         ...globals.browser,
         ...globals.node,
         ...globals.jest,
+        vi: 'readonly',
       },
       parser: tseslint.parser,
       parserOptions: {
