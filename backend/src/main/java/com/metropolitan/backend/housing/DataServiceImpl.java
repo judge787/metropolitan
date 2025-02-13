@@ -63,8 +63,8 @@ public class DataServiceImpl implements DataService {
         return dataDao.getDataByTotalStarts(totalStarts);
     }
   
-    @Override
-    public Iterable<Data> getDataByTotalComplete(Integer totalComplete) {
-        return dataDao.getDataByTotalComplete(totalComplete);
-    }
+   @Override
+   public Iterable<Data> getDataByTotalComplete(Integer totalComplete) {
+       return dataDao.getDataByTotalComplete(totalComplete);
+   }
 }
