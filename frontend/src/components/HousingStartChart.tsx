@@ -156,7 +156,7 @@ const HousingStartChart: React.FC = () => {
                 </label>
                 <textarea
                     id="chart-description"
-                    className="w-full p-2 border border-gray-300 rounded-lg resize-none"
+                    className="w-full p-2 border border-gray-300 rounded-lg resize-none text-black"
                     rows={4}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
@@ -167,4 +167,7 @@ const HousingStartChart: React.FC = () => {
 };
 
 export default HousingStartChart;
+
+
+
         
