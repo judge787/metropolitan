@@ -79,6 +79,7 @@ test-ingester:
       junit: ingester/report.xml
     paths:
       - ingester/report.xml
+  coverage: '/Coverage.*?([0-9]{1,3})%/'
   rules:
       - when: always
   allow_failure: false
