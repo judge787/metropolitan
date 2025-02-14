@@ -78,6 +78,8 @@ test-ingester:
     reports:
       junit: ingester/report.xml
     paths:
+      - ingester/.pytest_cache/
+      - ingester/htmlcov/
       - ingester/report.xml
   coverage: '/Coverage.*?([0-9]{1,3})%/'
   rules:
