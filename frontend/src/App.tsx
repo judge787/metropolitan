@@ -33,8 +33,8 @@ const App: React.FC = () => {
           <div id="contact-info" className="mt-4">
             <div className="w-full bg-white rounded-lg p-6 shadow-md">
               <h2 className="text-2xl font-bold text-gray-800 mb-4">Contact Information</h2>
-              <p>Email: <a href="mailto:info@metropolitanindex.com" className="text-blue-600 hover:underline">info@metropolitanindex.com</a></p>
-              <p>Phone: <a href="tel:+11234567890" className="text-blue-600 hover:underline">(123) 456-7890</a></p>
+              <p style = {{ color: 'black' }}>Email: <a href="mailto:info@metropolitanindex.com" className="text-black hover:underline">info@metropolitanindex.com</a></p>
+              <p style = {{ color: 'black' }}>Phone: <a href="tel:+11234567890" className="text-blue-600 hover:underline">(123) 456-7890</a></p>
             </div>
           </div>
         )}

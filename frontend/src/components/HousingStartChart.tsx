@@ -160,6 +160,7 @@ const HousingStartChart: React.FC = () => {
                     rows={4}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
+                    style={{ color : 'black' }}
                 />
             </div>
         </div>
