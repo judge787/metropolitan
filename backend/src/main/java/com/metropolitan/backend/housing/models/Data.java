@@ -18,9 +18,10 @@ public class Data {
     @Column(name = "total_complete")
     private Integer totalComplete;
 
-    public Data(){
+    public Data() {
         
     }
+    
     public Data(Integer id, String censusArea, Integer totalStarts, Integer totalComplete) {
         this.id = id;
         this.censusArea = censusArea;
