@@ -67,3 +67,26 @@ test-frontend:
   rules:
     - when: always
   allow_failure: false
+
+test-ingester:
+  stage: test
+  image: python:3.11-slim
+  before_script:
+    - echo "Running ingester tests..."
+    - cd ingester
+    - pip install --upgrade pip
+    - apt-get update && apt-get install -y gcc python3-dev libmariadb-dev libmariadb-dev-compat && rm -rf /var/lib/apt/lists/*
+    - pip install -r requirements.txt
+  script:
+    - pytest --cov=. --cov-report=term-missing --cov-report=html --cov-report=xml --junitxml=report.xml
+  artifacts:
+    reports:
+      junit: ingester/report.xml
+    paths:
+      - ingester/.pytest_cache/
+      - ingester/htmlcov/
+      - ingester/report.xml
+  coverage: '/Coverage.*?([0-9]{1,3})%/'
+  rules:
+      - when: always
+  allow_failure: false

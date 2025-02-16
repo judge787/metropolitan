@@ -1,5 +1,6 @@
 certifi==2024.12.14
 charset-normalizer==3.4.1
+coverage==7.6.12
 exceptiongroup==1.2.2
 idna==3.10
 iniconfig==2.0.0
@@ -7,6 +8,7 @@ mariadb==1.1.6
 packaging==24.2
 pluggy==1.5.0
 pytest==8.3.4
+pytest-cov==6.0.0
 requests==2.32.3
 tomli==2.2.1
 urllib3==2.2.3
