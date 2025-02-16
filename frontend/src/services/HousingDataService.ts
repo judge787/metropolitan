@@ -22,7 +22,7 @@ export const getAllData = async (): Promise<HousingData[]> => {
 export const getData = async (id: number): Promise<HousingData> => {
   console.log(`Fetching data with id ${id} from:`, `${API_URL}/id/${id}`);  // Log the full endpoint
   try {
-    const response = await fetch(`${API_URL}/id/${id}`);
+    const response = await fetch(`${API_URL}/${id}`);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
