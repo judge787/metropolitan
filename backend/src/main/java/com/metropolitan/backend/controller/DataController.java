@@ -32,7 +32,7 @@ public class DataController {
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
-    @GetMapping("/get/id/{id}")
+    @GetMapping("/id/{id}")
     private ResponseEntity<Data> getData(@PathVariable Integer id) {
         try {
             Data data = dataService.getData(id);
@@ -74,13 +74,13 @@ public class DataController {
         return ResponseEntity.ok(count);
     }
 
-    @GetMapping("get/starts/{totalStarts}")
+    @GetMapping("/starts/{totalStarts}")
     private ResponseEntity<Iterable<Data>> getDataByTotalStarts(@PathVariable Integer totalStarts){
         Iterable<Data> data = dataService.getDataByTotalStarts(totalStarts);
         return ResponseEntity.ok(data);
     }
 
-    @GetMapping("/get/complete/{totalComplete}")
+    @GetMapping("/complete/{totalComplete}")
     private ResponseEntity<Iterable<Data>> getDataByTotalComplete(@PathVariable Integer totalComplete) {
         Iterable<Data> data = dataService.getDataByTotalComplete(totalComplete);
         return ResponseEntity.ok(data);
