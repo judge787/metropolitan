@@ -2,9 +2,9 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom'; // For additional matchers
 import HousingStartChart from '../../components/HousingStartChart';
-import { getData } from '../../services/HousingDataService';
+import { getStartsByCensusArea } from '../../services/HousingDataService'; // Updated import
 
-// Mock the getData function
+// Mock the getStartsByCensusArea function
 vi.mock('../../services/HousingDataService');
 
 describe('HousingStartChart Component', () => {
@@ -13,17 +13,20 @@ describe('HousingStartChart Component', () => {
     });
 
     it('displays loading message while data is being fetched', () => {
-        (getData as vi.Mock).mockImplementation(() => new Promise(() => {})); // Mock a pending promise
+        (getStartsByCensusArea as vi.Mock).mockImplementation(() => new Promise(() => {})); // Mock a pending promise
         render(<HousingStartChart />);
         expect(screen.getByText(/Loading.../i)).toBeInTheDocument();
     });
 
     it('displays error message when data fetch fails', async () => {
-        (getData as vi.Mock).mockImplementation(() => Promise.reject(new Error('Failed to fetch data')));
+        (getStartsByCensusArea as vi.Mock)
+            .mockImplementationOnce(() => Promise.reject(new Error('Failed to fetch data for Toronto')))
+            .mockImplementationOnce(() => Promise.reject(new Error('Failed to fetch data for Hamilton')));
+
         render(<HousingStartChart />);
         
         await waitFor(() => {
-            expect(screen.getByText(/Partial data: Toronto: Failed to fetch data/i)).toBeInTheDocument();
+            expect(screen.getByText(/Partial data: Toronto: Failed to fetch data for Toronto; Hamilton: Failed to fetch data for Hamilton/i)).toBeInTheDocument();
         });
     });
 });
