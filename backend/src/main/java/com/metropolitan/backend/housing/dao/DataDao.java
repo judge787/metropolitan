@@ -14,4 +14,7 @@ public interface DataDao extends CrudRepository<Data, Integer> {
 
   @Query("SELECT d FROM Data d WHERE d.totalComplete = :totalComplete")
   Iterable<Data> getDataByTotalComplete(@Param("totalComplete") int totalComplete);
+
+  @Query("SELECT SUM(d.totalStarts) FROM Data d WHERE d.censusArea = :censusArea")
+  Integer sumTotalStartsByCensusArea(@Param("censusArea") String censusArea);
 }

@@ -73,16 +73,20 @@ public class DataController {
         Integer count = dataService.count();
         return ResponseEntity.ok(count);
     }
-
-    @GetMapping("/starts/{totalStarts}")
-    private ResponseEntity<Iterable<Data>> getDataByTotalStarts(@PathVariable Integer totalStarts){
-        Iterable<Data> data = dataService.getDataByTotalStarts(totalStarts);
-        return ResponseEntity.ok(data);
+    @GetMapping("/starts/{censusArea}")
+    private ResponseEntity<Integer> getTotalHousingStartsByCensusArea(@PathVariable String censusArea){
+        Integer total = dataService.getTotalStartsByArea(censusArea);
+        return  ResponseEntity.ok(total);
     }
-
-    @GetMapping("/complete/{totalComplete}")
-    private ResponseEntity<Iterable<Data>> getDataByTotalComplete(@PathVariable Integer totalComplete) {
-        Iterable<Data> data = dataService.getDataByTotalComplete(totalComplete);
-        return ResponseEntity.ok(data);
-    }
+//    @GetMapping("/starts/{totalStarts}")
+//    private ResponseEntity<Iterable<Data>> getDataByTotalStarts(@PathVariable Integer totalStarts){
+//        Iterable<Data> data = dataService.getDataByTotalStarts(totalStarts);
+//        return ResponseEntity.ok(data);
+//    }
+//
+//    @GetMapping("/complete/{totalComplete}")
+//    private ResponseEntity<Iterable<Data>> getDataByTotalComplete(@PathVariable Integer totalComplete) {
+//        Iterable<Data> data = dataService.getDataByTotalComplete(totalComplete);
+//        return ResponseEntity.ok(data);
+//    }
 }

@@ -1,7 +1,5 @@
-import React from 'react';
-import { useEffect, useState } from "react";
-import { HousingData } from "../types/HousingData";
-import { getData } from "../services/HousingDataService";
+import React, { useEffect, useState } from 'react';
+import { getStartsByCensusArea } from "../services/HousingDataService"; // Updated import
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title } from 'chart.js';
 
@@ -9,37 +7,37 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title } from 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title);
 
 const HousingStartChart: React.FC = () => {
-    const [torontoData, setTorontoData] = useState<HousingData | null>(null);
-    const [hamiltonData, setHamiltonData] = useState<HousingData | null>(null);
+    const [torontoStarts, setTorontoStarts] = useState<number | null>(null);
+    const [hamiltonStarts, setHamiltonStarts] = useState<number | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [chartKey, setChartKey] = useState(Date.now()); // Key to force remount
     const [description, setDescription] = useState(
-        "The chart above compares housing starts in Toronto and Hamilton, highlighting regional growth trends. Housing starts show new residential construction, providing data on urban expansion, economic activity, and housing supply. By visualizing this data, analysts can evaluate development patterns, compare market dynamics, and support strategic planning for housing and infrastructure developments."
+        "The chart above compares housing starts in Toronto and Hamilton, highlighting regional growth trends. Housing starts show new residential construction, providing data on urban expansion, economic activity, and housing supply. By visualizing this data, analysts can evaluate development patterns, compare market dynamics, and support strategic planning for housing and infrastructure developments."
     );
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const results = await Promise.allSettled([
-                    getData(13),
-                    getData(82)
+                    getStartsByCensusArea("Toronto"), // Fetching total starts for Toronto
+                    getStartsByCensusArea("Hamilton") // Fetching total starts for Hamilton
                 ]);
 
                 const errors: string[] = [];
-                const newData: (HousingData | null)[] = [null, null];
+                const newData: (number | null)[] = [null, null];
                 
                 results.forEach((result, index) => {
                     if (result.status === "fulfilled") {
-                        newData[index] = result.value;
+                        newData[index] = result.value; // Store the total starts
                     } else {
                         const area = index === 0 ? "Toronto" : "Hamilton";
                         errors.push(`${area}: ${result.reason.message || "Unknown error"}`);
                     }
                 });
 
-                setTorontoData(newData[0]);
-                setHamiltonData(newData[1]);
+                setTorontoStarts(newData[0]);
+                setHamiltonStarts(newData[1]);
 
                 if (errors.length > 0) {
                     setError(`Partial data: ${errors.join("; ")}`);
@@ -66,16 +64,13 @@ const HousingStartChart: React.FC = () => {
 
     const getChartData = () => {
         return {
-            labels: [
-                torontoData?.censusArea || 'Toronto',
-                hamiltonData?.censusArea || 'Hamilton'
-            ],
+            labels: ['Toronto', 'Hamilton'],
             datasets: [
                 {
                     label: 'Housing Starts',
                     data: [
-                        torontoData?.totalStarts || 0,
-                        hamiltonData?.totalStarts || 0
+                        torontoStarts || 0, // Use the total starts for Toronto
+                        hamiltonStarts || 0, // Use the total starts for Hamilton
                     ],
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.5)',
@@ -100,8 +95,8 @@ const HousingStartChart: React.FC = () => {
                 text: 'Housing Starts Comparison',
                 font: {
                     size: 20,
-                    family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif", // Add a font family
-                    weight: 'bold', // Use 'bold' instead of a string
+                    family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+                    weight: 'bold',
                 },
             },
         },
@@ -113,8 +108,8 @@ const HousingStartChart: React.FC = () => {
                     text: 'Number of Housing Starts',
                     font: {
                         size: 16,
-                        family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif", // Add a font family
-                        weight: 'normal', // Use 'normal' instead of a string
+                        family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+                        weight: 'normal',
                     },
                 },
             },
@@ -124,8 +119,8 @@ const HousingStartChart: React.FC = () => {
                     text: 'Census Metropolitan Area',
                     font: {
                         size: 16,
-                        family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif", // Add a font family
-                        weight: 'normal', // Use 'normal' instead of a string
+                        family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+                        weight: 'normal',
                     },
                 },
             },
@@ -149,7 +144,6 @@ const HousingStartChart: React.FC = () => {
             </div>
 
             {/* Description Box */}
-            
             <div className="mt-4">
                 <label htmlFor="chart-description" className="block text-gray-700 font-semibold mb-2">
                     Data Summary:
@@ -167,7 +161,3 @@ const HousingStartChart: React.FC = () => {
 };
 
 export default HousingStartChart;
-
-
-
-        

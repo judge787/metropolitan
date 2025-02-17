@@ -18,4 +18,6 @@ public interface DataService {
   public Iterable<Data> getDataByTotalStarts(Integer totalStarts);
 
   public Iterable<Data> getDataByTotalComplete(Integer totalComplete);
+
+  public Integer getTotalStartsByArea(String area);
 }
