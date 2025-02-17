@@ -26,13 +26,13 @@ public class DataController {
         this.dataService = dataService;
     }
 
-    @PostMapping("/add")
+    @PostMapping()
     private ResponseEntity<String> addData(@RequestBody Data newData) {
         String result = dataService.addData(newData);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
-    @GetMapping("/get/id/{id}")
+    @GetMapping("/{id}")
     private ResponseEntity<Data> getData(@PathVariable Integer id) {
         try {
             Data data = dataService.getData(id);
@@ -42,7 +42,7 @@ public class DataController {
         }
     }
 
-    @PutMapping("/update")
+    @PutMapping()
     private ResponseEntity<String> updateData(@RequestBody Data updatedData) {
         String result = dataService.updateData(updatedData);
         if ("Updated".equals(result)) {
@@ -52,7 +52,7 @@ public class DataController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     private ResponseEntity<String> deleteData(@PathVariable Integer id) {
         String result = dataService.deleteData(id);
         if ("Deleted".equals(result)) {
@@ -62,7 +62,7 @@ public class DataController {
         }
     }
 
-    @GetMapping("/all")
+    @GetMapping()
     private ResponseEntity<Iterable<Data>> allData() {
         Iterable<Data> data = dataService.allData();
         return ResponseEntity.ok(data);
@@ -73,16 +73,20 @@ public class DataController {
         Integer count = dataService.count();
         return ResponseEntity.ok(count);
     }
-
-    @GetMapping("get/starts/{totalStarts}")
-    private ResponseEntity<Iterable<Data>> getDataByTotalStarts(@PathVariable Integer totalStarts){
-        Iterable<Data> data = dataService.getDataByTotalStarts(totalStarts);
-        return ResponseEntity.ok(data);
+    @GetMapping("/starts/{censusArea}")
+    private ResponseEntity<Integer> getTotalHousingStartsByCensusArea(@PathVariable String censusArea){
+        Integer total = dataService.getTotalStartsByArea(censusArea);
+        return  ResponseEntity.ok(total);
     }
-
-    @GetMapping("/get/complete/{totalComplete}")
-    private ResponseEntity<Iterable<Data>> getDataByTotalComplete(@PathVariable Integer totalComplete) {
-        Iterable<Data> data = dataService.getDataByTotalComplete(totalComplete);
-        return ResponseEntity.ok(data);
-    }
+//    @GetMapping("/starts/{totalStarts}")
+//    private ResponseEntity<Iterable<Data>> getDataByTotalStarts(@PathVariable Integer totalStarts){
+//        Iterable<Data> data = dataService.getDataByTotalStarts(totalStarts);
+//        return ResponseEntity.ok(data);
+//    }
+//
+//    @GetMapping("/complete/{totalComplete}")
+//    private ResponseEntity<Iterable<Data>> getDataByTotalComplete(@PathVariable Integer totalComplete) {
+//        Iterable<Data> data = dataService.getDataByTotalComplete(totalComplete);
+//        return ResponseEntity.ok(data);
+//    }
 }

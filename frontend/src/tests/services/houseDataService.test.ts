@@ -36,7 +36,7 @@ describe('housingService', () => {
     
           const data = await getAllData();
     
-          expect(global.fetch).toHaveBeenCalledWith('/api/data/all'); // Use global.fetch in expect
+          expect(global.fetch).toHaveBeenCalledWith('/api/data'); // Use global.fetch in expect
           expect(data).toEqual(mockHousingData);
         });
 
@@ -45,7 +45,7 @@ describe('housingService', () => {
     
             const data = await getAllData();
     
-            expect(global.fetch).toHaveBeenCalledWith('/api/data/all'); // Use global.fetch in expect
+            expect(global.fetch).toHaveBeenCalledWith('/api/data'); // Use global.fetch in expect
             expect(data).toEqual([]);
           });
       });
@@ -60,7 +60,7 @@ describe('housingService', () => {
     
           const data = await getData(1);
     
-          expect(global.fetch).toHaveBeenCalledWith('/api/data/get/id/1'); // Use global.fetch in expect
+          expect(global.fetch).toHaveBeenCalledWith('/api/data/1'); // Use global.fetch in expect
           expect(data).toEqual(mockData);
         });
     

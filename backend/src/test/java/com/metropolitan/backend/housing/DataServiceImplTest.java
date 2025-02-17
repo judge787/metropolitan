@@ -201,4 +201,14 @@ public class DataServiceImplTest {
         assertEquals("Fetch failed", exception.getMessage());
         verify(dataDao).getDataByTotalComplete(totalComplete);
     }
+    @Test
+    public void testGetTotalStartsByArea_NonExistentArea() {
+        String area = "Nonexistent Area";
+
+        when(dataDao.sumTotalStartsByCensusArea(area)).thenReturn(0);
+
+        Integer actualTotalStarts = dataService.getTotalStartsByArea(area);
+
+        assertEquals(0, actualTotalStarts);
+    }
 }
