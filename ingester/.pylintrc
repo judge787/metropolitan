@@ -1,0 +1,15 @@
+# This is the configuration file for Pylint.
+# It helps Pylint resolve import statements by specifying where to look for modules
+# within the container's file structure.
+# Needed to include this because import statements were generating pylint errors.
+[MASTER]
+init-hook='import sys; sys.path.insert(0, "/usr/app/")' # Specify directory of python modules
+
+[TYPECHECK]
+extension-pkg-allow-list=pyodbc
+
+[MESSAGES CONTROL]
+disable=invalid-name
+
+[SIMILARITIES]
+min-similarity-lines=10
