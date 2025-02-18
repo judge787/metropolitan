@@ -39,8 +39,8 @@ services:  # Defines the services that make up the application
     build: ./frontend  # Builds the Docker image from the Dockerfile in the './react' directory
     ports:
       - "3000:3000"  # Exposes port 3000 on the host and maps it to port 3000 in the container
-    environment:  # Environment variable for the React service
-      - BACKEND_PROXY=http://backend:8080  # The URL to the backend Spring service
+    # environment:  # Environment variable for the React service
+    #   - BACKEND_PROXY=http://backend:8080  # The URL to the backend Spring service
     volumes:
       - ./frontend:/usr/src/app  # Mounts the local frontend directory to /usr/src/app in the container
       - /usr/src/app/node_modules  # Ensures node_modules is not overwritten by the local directory
@@ -54,8 +54,8 @@ services:  # Defines the services that make up the application
       - DB_DATABASE=template_db  # The name of the database to use
       - DB_USER=root  # The username for the database
       - DB_PASSWORD=pwd  # The password for the database
-      - APIKEY=3565h3H9yBN6GfQcZf6ZjcJ0Yi3-t5f680JhiZJLLM4sOn2pB9EZWQ
-      - API_URL=https://cis-data-service.socs.uoguelph.ca/data/tasks
+      - API_KEY=3565h3H9yBN6GfQcZf6ZjcJ0Yi3-t5f680JhiZJLLM4sOn2pB9EZWQ
+      - API_URL=https://cis-data-service.socs.uoguelph.ca/data/housing_starts_completions
     depends_on:
       - database  # Ensures MySQL service is started before the Python service
     networks:

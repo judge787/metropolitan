@@ -63,11 +63,26 @@ services:  # Defines the services that make up the application
     build: ./frontend  # Builds the Docker image from the Dockerfile in the './react' directory
     ports:
       - "3000:3000"  # Exposes port 3000 on the host and maps it to port 3000 in the container
-    environment:  # Environment variable for the React service
-      - BACKEND_PROXY=http://backend:8080  # The URL to the backend Spring service
+    #environment:  # Environment variable for the React service
+    #  - BACKEND_PROXY=http://backend:8080  # The URL to the backend Spring service
     networks:  # Network the React service is connected to
       - backend-frontend  # Network for communicating with the backend service
       - swag-frontend # Network to allow reverse proxy to communicate with frontend
+
+  ingester:   # The Python ingester service
+    build: ./ingester  # Builds the Docker image from the Dockerfile in the './ingester' directory
+    environment:  # Environment variables for the Python service
+      - DB_HOST=database  # Hostname for the MySQL database, 'mysql' is the service name in docker-compose
+      - DB_DATABASE=template_db  # The name of the database to use
+      - DB_USER=root  # The username for the database
+      - DB_PASSWORD=pwd  # The password for the database
+      - API_KEY=3565h3H9yBN6GfQcZf6ZjcJ0Yi3-t5f680JhiZJLLM4sOn2pB9EZWQ
+      - API_URL=https://cis-data-service.socs.uoguelph.ca/data/housing_starts_completions
+    depends_on:
+      - database  # Ensures MySQL service is started before the Python service
+    networks:
+      - backend-database  # Connects to the same network as backend/database
+
 volumes:
   mariadb_data:  # Defines a named volume 'mariadb_data' for the MySQL service to use for data persistence
 

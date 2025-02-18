@@ -17,4 +17,5 @@ COPY . .
 EXPOSE 3000
 
 # Define the command to run the app using react-scripts
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev", "--", "--host"]
+
