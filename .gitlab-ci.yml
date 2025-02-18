@@ -48,7 +48,7 @@ lint-python:
     - pip install --upgrade pip
     - apt-get update && apt-get install -y gcc python3-dev libmariadb-dev libmariadb-dev-compat && rm -rf /var/lib/apt/lists/*
     - pip install -r requirements.txt
-    - pylint . --fail-under=9
+    - pylint src --fail-under=9
   rules:
     - when: always
   allow_failure: false
