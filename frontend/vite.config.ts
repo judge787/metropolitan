@@ -15,7 +15,8 @@ export default defineConfig({
         target: 'http://backend:8080',
         changeOrigin: true
       }
-    }
+    },
+    allowedHosts: ['joblen.socs.uoguelph.ca']
   },
   test: {
     globals: true,  // This enables the use of global `expect` and `test`
