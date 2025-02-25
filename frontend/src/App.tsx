@@ -5,9 +5,14 @@ import HousingStartChart from './components/HousingStartChart';
 
 const App: React.FC = () => {
   const [showContactInfo, setShowContactInfo] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState("January");
 
   const handleContactClick = () => {
     setShowContactInfo(!showContactInfo);
+  };
+
+  const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedMonth(event.target.value);
   };
 
   return (
@@ -33,8 +38,8 @@ const App: React.FC = () => {
           <div id="contact-info" className="mt-4">
             <div className="w-full bg-white rounded-lg p-6 shadow-md">
               <h2 className="text-2xl font-bold text-gray-800 mb-4">Contact Information</h2>
-              <p className = "text-black">Email: <a href="mailto:info@metropolitanindex.com" className="text-black hover:underline">info@metropolitanindex.com</a></p>
-              <p className = "text-black">Phone: <a href="tel:+11234567890" className="text-blue-600 hover:underline">(123) 456-7890</a></p>
+              <p className="text-black">Email: <a href="mailto:info@metropolitanindex.com" className="text-black hover:underline">info@metropolitanindex.com</a></p>
+              <p className="text-black">Phone: <a href="tel:+11234567890" className="text-blue-600 hover:underline">(123) 456-7890</a></p>
             </div>
           </div>
         )}
@@ -44,7 +49,21 @@ const App: React.FC = () => {
         </section>
 
         <section className="my-12">
-          <HousingStartChart />
+          <div className="mb-4">
+            <label className="mr-2 font-bold text-gray-800">Select Month:</label>
+            <select
+              value={selectedMonth}
+              onChange={handleMonthChange}
+              className="p-2 border border-gray-300 rounded-lg"
+            >
+              {["January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+              ].map(month => (
+                <option key={month} value={month}>{month}</option>
+              ))}
+            </select>
+          </div>
+          <HousingStartChart selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
         </section>
       </main>
     </div>
