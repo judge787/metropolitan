@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 class ProductPitch extends Component {
-  public render(): JSX.Element {
+  public render(): React.JSX.Element {
     return (
       <section className="bg-white p-8 rounded-lg shadow-md">
         <div className="max-w-3xl mx-auto">

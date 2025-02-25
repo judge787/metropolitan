@@ -96,7 +96,7 @@ class HousingStartChart extends Component<{}, HousingStartChartState> {
         };
     };
 
-    public render(): JSX.Element {
+    public render(): React.JSX.Element {
         const { loading, error, chartKey, description } = this.state;
 
         if (loading) {

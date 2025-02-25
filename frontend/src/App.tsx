@@ -18,7 +18,7 @@ class App extends Component<{}, AppState> {
     }));
   };
 
-  public render(): JSX.Element {
+  public render(): React.JSX.Element {
     const { showContactInfo } = this.state;
 
     return (
