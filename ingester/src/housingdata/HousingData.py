@@ -1,14 +1,20 @@
 class HousingData:
 
-    def __init__(self, census_metropolitan_area, total_starts, total_complete):
+    def __init__(self, census_metropolitan_area, month, total_starts, total_complete):
         self.__census_metropolitan_area = census_metropolitan_area
         self.__total_starts = total_starts
-        self.__total_completes = total_complete
+        self.__total_complete = total_complete
+        self.__month = month
 
     @property
     def census_metropolitan_area(self):
         """str: Gets the census metropolitan area."""
         return self.__census_metropolitan_area
+    
+    @property
+    def month(self):
+        """int: Gets the month."""
+        return self.__month
 
     @property
     def total_starts(self):
@@ -18,12 +24,17 @@ class HousingData:
     @property
     def total_complete(self):
         """int: Gets the total number of completes."""
-        return self.__total_completes
+        return self.__total_complete
 
     @census_metropolitan_area.setter
     def census_metropolitan_area(self, value):
         """Set the census metropolitan area."""
         self.__census_metropolitan_area = value
+
+    @month.setter
+    def month(self, value):
+        """Set the month."""
+        self.__month = value
 
     @total_starts.setter
     def total_starts(self, value):
