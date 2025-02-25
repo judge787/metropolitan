@@ -9,6 +9,7 @@ USE template_db;
 CREATE TABLE IF NOT EXISTS housing_data (
     id INT AUTO_INCREMENT PRIMARY KEY COMMENT 'Primary Key',
     census_metropolitan_area VARCHAR(255) COMMENT 'Census Metropolitan Area',
+    month INT DEFAULT NULL COMMENT 'Month',
     total_starts INT DEFAULT 0 COMMENT 'Total Starts',
     total_complete INT DEFAULT 0 COMMENT 'Total Complete'
 );
