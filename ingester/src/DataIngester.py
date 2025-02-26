@@ -22,8 +22,6 @@ class DataIngester:
         self.db = DatabaseHandler(connect)
         self.api_url = os.getenv("API_URL")
         self.api_key = os.getenv("API_KEY")
-        # print(f"API_URL: {self.api_url}")
-        # print(f"API_KEY: {self.api_key}")
 
     def fetch_tasks(self):
         """
