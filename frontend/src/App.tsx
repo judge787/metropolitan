@@ -5,7 +5,7 @@ import HousingStartChart from './components/HousingStartChart';
 
 const App: React.FC = () => {
   const [showContactInfo, setShowContactInfo] = useState(false);
-  const [selectedMonth, setSelectedMonth] = useState("January");
+  const [selectedMonth, setSelectedMonth] = useState("No Filter");
 
   const handleContactClick = () => {
     setShowContactInfo(!showContactInfo);
@@ -56,14 +56,16 @@ const App: React.FC = () => {
               onChange={handleMonthChange}
               className="p-2 border border-gray-300 rounded-lg"
             >
-              {["January", "February", "March", "April", "May", "June",
+              <option value="No Filter">No Filter</option>  
+              {[
+                "January", "February", "March", "April", "May", "June",
                 "July", "August", "September", "October", "November", "December"
               ].map(month => (
                 <option key={month} value={month}>{month}</option>
               ))}
             </select>
           </div>
-          <HousingStartChart selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
+          <HousingStartChart selectedMonth={selectedMonth} />
         </section>
       </main>
     </div>

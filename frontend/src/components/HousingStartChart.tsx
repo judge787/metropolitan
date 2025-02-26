@@ -39,28 +39,18 @@ class HousingStartChart extends Component<HousingStartChartProps, HousingStartCh
         }
     }
 
-    public componentWillUnmount(): void {
-        // Explicitly destroy chart instance
-        const chartInstance = ChartJS.getChart("chart-container");
-        if (chartInstance) {
-            chartInstance.destroy();
-        }
-    }
-
     private fetchData = async (): Promise<void> => {
         this.setState({ loading: true, error: null });
     
         try {
             const { selectedMonth } = this.props;
-            
-            // Fetch data
+            const filter = selectedMonth === "No Filter" ? null : selectedMonth; // Handle No Filter
+    
             const results = await Promise.allSettled([
-                getStartsByCensusArea("Toronto", selectedMonth),
-                getStartsByCensusArea("Hamilton", selectedMonth)
+                getStartsByCensusArea("Toronto", filter),
+                getStartsByCensusArea("Hamilton", filter)
             ]);
-    
-            console.log("Raw API Response:", results); // Debugging line
-    
+        
             const errors: string[] = [];
             const newData: (number | null)[] = [null, null];
     
@@ -139,7 +129,7 @@ class HousingStartChart extends Component<HousingStartChartProps, HousingStartCh
                             plugins: {
                                 title: {
                                     display: true,
-                                    text: `Housing Starts Comparison (${selectedMonth})`,
+                                    text: `Housing Starts Comparison (${selectedMonth === "No Filter" ? "All Months" : selectedMonth})`,
                                     font: {
                                         size: 20,
                                         family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
