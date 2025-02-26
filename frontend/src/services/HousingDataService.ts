@@ -34,17 +34,31 @@ export const getData = async (id: number): Promise<HousingData> => {
   }
 };
 
-export const getStartsByCensusArea = async (censusArea: string) :Promise<number> => {
-  console.log(`Fetching data for the city ${censusArea} from:`, `${API_URL}/starts/${censusArea}`);  // Log the full endpoint
+export const getStartsByCensusArea = async (censusArea: string): Promise<number> => {
+  const url = `${API_URL}/starts/${censusArea}`;
+  console.log(`Fetching data for the city ${censusArea} from: ${url}`); // Log the full endpoint
+
   try {
-    const response = await fetch(`${API_URL}/starts/${censusArea}`);
+    const response = await fetch(url);
+
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    const data = await response.json();
+
+    const text = await response.text(); 
+    if (!text) {
+      throw new Error(`Empty response from server for ${censusArea}`);
+    }
+
+    const data = JSON.parse(text); 
+    if (typeof data !== "number") {
+      throw new Error(`Unexpected data format for ${censusArea}: ${JSON.stringify(data)}`);
+    }
+
     return data;
   } catch (error) {
-    console.error('Error fetching data:', error);
+    console.error(`Error fetching data for ${censusArea}:`, error);
     throw error;
   }
 };
+
