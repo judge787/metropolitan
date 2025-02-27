@@ -31,7 +31,7 @@ class DataIngester:
         """
         try:
             response = requests.get(
-                self.api_url, headers={"Apikey": self.api_key}, timeout=10, verify=False
+                self.api_url, headers={"Apikey": self.api_key}, timeout=10,
             )
             response.raise_for_status()
             return response.json()
