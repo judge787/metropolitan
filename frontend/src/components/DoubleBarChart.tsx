@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
-import { getStartsByCensusArea, getCompletionsByCensusArea } from "../services/HousingDataService";
 import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title } from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
 // Register required Chart.js components
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+
+// Define interface for month data
+interface MonthlyData {
+    month: number;
+    toronto: number;
+    hamilton: number;
+}
 
 interface HousingChartState {
-    torontoStarts: number | null;
-    hamiltonStarts: number | null;
-    torontoCompletions: number | null;
-    hamiltonCompletions: number | null;
+    startsData: MonthlyData[];
+    completionsData: MonthlyData[];
     loading: boolean;
     error: string | null;
     chartKey: number;
@@ -25,15 +29,13 @@ interface HousingChartProps {
 
 class HousingChart extends Component<HousingChartProps, HousingChartState> {
     public state: HousingChartState = {
-        torontoStarts: null,
-        hamiltonStarts: null,
-        torontoCompletions: null,
-        hamiltonCompletions: null,
+        startsData: [],
+        completionsData: [],
         loading: true,
         error: null,
         chartKey: Date.now(),
         showCompletions: this.props.showCompletions,
-        description: "This interactive chart compares housing metrics between Toronto and Hamilton, providing valuable insights into regional development. The Housing Starts view displays the number of new construction projects initiated in each city, while the Housing Completions view shows the number of residential projects that reached completion. By toggling between these views, users can analyze the relationship between project initiation and completion rates, helping urban planners, real estate investors, and policymakers understand construction timelines, market efficiency, and housing supply trends."
+        description: "This interactive chart compares housing metrics between Toronto and Hamilton by month, providing valuable insights into regional development. The Housing Starts view displays the number of new construction projects initiated in each city, while the Housing Completions view shows the number of residential projects that reached completion. By toggling between these views, users can analyze the relationship between project initiation and completion rates, helping urban planners, real estate investors, and policymakers understand construction timelines, market efficiency, and housing supply trends."
     };
 
     public componentDidMount(): void {
@@ -59,36 +61,83 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
 
     private fetchData = async (): Promise<void> => {
         try {
-            const results = await Promise.allSettled([
-                getStartsByCensusArea("Toronto"),
-                getStartsByCensusArea("Hamilton"),
-                getCompletionsByCensusArea("Toronto"),
-                getCompletionsByCensusArea("Hamilton")
-            ]);
-
-            const errors: string[] = [];
-            const newData: (number | null)[] = [null, null, null, null];
-
-            results.forEach((result, index) => {
-                if (result.status === "fulfilled") {
-                    newData[index] = result.value;
-                } else {
-                    const area = index % 2 === 0 ? "Toronto" : "Hamilton";
-                    const type = index < 2 ? "Starts" : "Completions";
-                    errors.push(`${area} ${type}: ${result.reason.message || "Unknown error"}`);
+            // Fetch all housing data
+            const response = await fetch('/api/data');
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            
+            const allData = await response.json();
+            console.log('Raw data from API:', allData); // Debug log to see what data we're receiving
+            
+            // Process the data to group by month
+            const startsDataMap = new Map<number, MonthlyData>();
+            const completionsDataMap = new Map<number, MonthlyData>();
+            
+            allData.forEach((item: any) => {
+                // Handle potentially missing month data - default to 1 if not present
+                const month = item.month !== null && item.month !== undefined ? 
+                    parseInt(item.month, 10) : 1;
+                
+                // Debug log for problematic records
+                if (item.month === null || item.month === undefined) {
+                    console.warn('Record with missing month:', item);
+                }
+                
+                // Process starts data
+                if (!startsDataMap.has(month)) {
+                    startsDataMap.set(month, {
+                        month,
+                        toronto: 0,
+                        hamilton: 0
+                    });
+                }
+                
+                // Process completions data
+                if (!completionsDataMap.has(month)) {
+                    completionsDataMap.set(month, {
+                        month,
+                        toronto: 0,
+                        hamilton: 0
+                    });
+                }
+                
+                // Update data based on census area
+                if (item.censusArea === "Toronto") {
+                    const existingStartsData = startsDataMap.get(month)!;
+                    existingStartsData.toronto += item.totalStarts || 0;
+                    startsDataMap.set(month, existingStartsData);
+                    
+                    const existingCompletionsData = completionsDataMap.get(month)!;
+                    existingCompletionsData.toronto += item.totalComplete || 0;
+                    completionsDataMap.set(month, existingCompletionsData);
+                } else if (item.censusArea === "Hamilton") {
+                    const existingStartsData = startsDataMap.get(month)!;
+                    existingStartsData.hamilton += item.totalStarts || 0;
+                    startsDataMap.set(month, existingStartsData);
+                    
+                    const existingCompletionsData = completionsDataMap.get(month)!;
+                    existingCompletionsData.hamilton += item.totalComplete || 0;
+                    completionsDataMap.set(month, existingCompletionsData);
                 }
             });
-
+            
+            // Convert maps to arrays and sort by month
+            const startsData = Array.from(startsDataMap.values()).sort((a, b) => a.month - b.month);
+            const completionsData = Array.from(completionsDataMap.values()).sort((a, b) => a.month - b.month);
+            
+            console.log('Processed starts data:', startsData);
+            console.log('Processed completions data:', completionsData);
+            
             this.setState({
-                torontoStarts: newData[0],
-                hamiltonStarts: newData[1],
-                torontoCompletions: newData[2],
-                hamiltonCompletions: newData[3],
-                error: errors.length > 0 ? `Partial data: ${errors.join("; ")}` : null,
+                startsData,
+                completionsData,
                 loading: false,
+                error: null,
                 chartKey: Date.now()
             });
         } catch (err) {
+            console.error('Error in fetchData:', err);
             this.setState({
                 error: err instanceof Error ? err.message : "Unexpected error",
                 loading: false
@@ -97,25 +146,32 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
     };
 
     private getChartData = (): any => {
-        const { torontoStarts, hamiltonStarts, torontoCompletions, hamiltonCompletions, showCompletions } = this.state;
+        const { startsData, completionsData, showCompletions } = this.state;
+        const data = showCompletions ? completionsData : startsData;
         
-        const data = showCompletions 
-            ? [torontoCompletions || 0, hamiltonCompletions || 0]
-            : [torontoStarts || 0, hamiltonStarts || 0];
+        // Convert month numbers to names
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         
-        const label = showCompletions ? 'Housing Completions' : 'Housing Starts';
-        const color = showCompletions 
-            ? { bg: 'rgba(54, 162, 235, 0.5)', border: 'rgba(54, 162, 235, 1)' }
-            : { bg: 'rgba(255, 99, 132, 0.5)', border: 'rgba(255, 99, 132, 1)' };
-
         return {
-            labels: ['Toronto', 'Hamilton'],
+            labels: data.map(item => {
+                // Ensure month is treated as a number and is within valid range
+                const monthIndex = typeof item.month === 'number' ? 
+                    Math.min(Math.max(Math.floor(item.month) - 1, 0), 11) : 0;
+                return monthNames[monthIndex] || `Month ${item.month}`;
+            }),
             datasets: [
                 {
-                    label: label,
-                    data: data,
-                    backgroundColor: color.bg,
-                    borderColor: color.border,
+                    label: 'Toronto',
+                    data: data.map(item => item.toronto || 0),
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1,
+                },
+                {
+                    label: 'Hamilton',
+                    data: data.map(item => item.hamilton || 0),
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
                     borderWidth: 1,
                 }
             ],
@@ -129,7 +185,7 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
             return <div className="text-center text-gray-600">Loading...</div>;
         }
 
-        const chartTitle = showCompletions ? 'Housing Completions Comparison' : 'Housing Starts Comparison';
+        const chartTitle = showCompletions ? 'Monthly Housing Completions Comparison' : 'Monthly Housing Starts Comparison';
         const yAxisTitle = showCompletions ? 'Number of Housing Completions' : 'Number of Housing Starts';
 
         return (
@@ -160,6 +216,10 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
                                         weight: 'bold',
                                     },
                                 },
+                                legend: {
+                                    display: true,
+                                    position: 'top',
+                                }
                             },
                             scales: {
                                 y: {
@@ -177,7 +237,7 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
                                 x: {
                                     title: {
                                         display: true,
-                                        text: 'Census Metropolitan Area',
+                                        text: 'Month',
                                         font: {
                                             size: 16,
                                             family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
