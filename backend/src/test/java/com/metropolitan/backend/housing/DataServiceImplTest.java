@@ -79,8 +79,9 @@ public class DataServiceImplTest {
     public void testUpdateData_Success() {
         Integer id = 1;
         Integer totalStarts = 10;
-        Integer totalComplete = 20;        
-        Data newData = new Data(id, "", totalStarts, totalComplete);
+        Integer totalComplete = 20;
+        Integer month = 10;
+        Data newData = new Data(id, "", totalStarts, totalComplete, month);
         when(dataDao.save(newData)).thenReturn(newData);
 
         String result = dataService.updateData(newData);
@@ -94,7 +95,8 @@ public class DataServiceImplTest {
         Integer id = 1;
         Integer totalStarts = 10;
         Integer totalComplete = 20;
-        Data newData = new Data(id, "", totalStarts, totalComplete);
+        Integer month = 10;
+        Data newData = new Data(id, "", totalStarts, totalComplete, month);
         when(dataDao.save(newData)).thenThrow(new RuntimeException("Save failed"));
 
         String result = dataService.addData(newData);
