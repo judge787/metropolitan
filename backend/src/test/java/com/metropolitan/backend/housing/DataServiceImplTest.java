@@ -213,4 +213,14 @@ public class DataServiceImplTest {
 
         assertEquals(0, actualTotalStarts);
     }
+    @Test
+    public void testGetTotalCompleteByArea_NonExistentArea() {
+        String area = "Nonexistent Area";
+
+        when(dataDao.sumTotalCompleteByCensusArea(area)).thenReturn(0);
+
+        Integer actualTotalComplete = dataService.getTotalCompleteByArea(area);
+
+        assertEquals(0, actualTotalComplete);
+    }
 }

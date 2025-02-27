@@ -17,4 +17,7 @@ public interface DataDao extends CrudRepository<Data, Integer> {
 
   @Query("SELECT SUM(d.totalStarts) FROM Data d WHERE d.censusArea = :censusArea")
   Integer sumTotalStartsByCensusArea(@Param("censusArea") String censusArea);
+
+  @Query("SELECT SUM(d.totalComplete) FROM Data d WHERE d.censusArea = :censusArea")
+  Integer sumTotalCompleteByCensusArea(@Param("censusArea") String censusArea);
 }
