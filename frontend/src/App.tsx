@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import './App.css';
 import ProductPitch from './components/ProductPitch';
-import HousingStartChart from './components/HousingStartChart';
+import HousingChart from './components/DoubleBarChart';
 
 interface AppState {
   showContactInfo: boolean;
+  showCompletions: boolean; // Added state to track which data to display
 }
 
 class App extends Component<{}, AppState> {
   public state: AppState = {
     showContactInfo: false,
+    showCompletions: false, // Default to showing housing starts
   };
 
   private handleContactClick = (): void => {
@@ -18,8 +20,14 @@ class App extends Component<{}, AppState> {
     }));
   };
 
+  private handleToggleView = (): void => {
+    this.setState((prevState) => ({
+      showCompletions: !prevState.showCompletions,
+    }));
+  };
+
   public render(): React.JSX.Element {
-    const { showContactInfo } = this.state;
+    const { showContactInfo, showCompletions } = this.state;
 
     return (
       <div className="min-h-screen w-screen bg-gray-100 overflow-x-hidden">
@@ -55,7 +63,10 @@ class App extends Component<{}, AppState> {
           </section>
 
           <section className="my-12">
-            <HousingStartChart />
+            <HousingChart 
+              showCompletions={showCompletions}
+              onToggleView={this.handleToggleView}
+            />
           </section>
         </main>
       </div>

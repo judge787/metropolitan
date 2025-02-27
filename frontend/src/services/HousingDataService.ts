@@ -48,3 +48,18 @@ export const getStartsByCensusArea = async (censusArea: string) :Promise<number>
     throw error;
   }
 };
+
+export const getCompletionsByCensusArea = async (censusArea: string): Promise<number> => {
+  console.log(`Fetching completions data for the city ${censusArea} from:`, `${API_URL}/completions/${censusArea}`);
+  try {
+    const response = await fetch(`${API_URL}/completions/${censusArea}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching completions data:', error);
+    throw error;
+  }
+};

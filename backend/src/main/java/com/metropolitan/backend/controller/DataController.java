@@ -78,8 +78,8 @@ public class DataController {
         Integer total = dataService.getTotalStartsByArea(censusArea);
         return  ResponseEntity.ok(total);
     }
-    @GetMapping("/Complete/{censusArea}")
-    private ResponseEntity<Integer> getTotalHousingCompleteByCensusArea(@PathVariable String censusArea){
+    @GetMapping("/completions/{censusArea}")
+    private ResponseEntity<Integer> getTotalHousingCompletionsByCensusArea(@PathVariable String censusArea){
         Integer total = dataService.getTotalCompleteByArea(censusArea);
         return  ResponseEntity.ok(total);
     }
