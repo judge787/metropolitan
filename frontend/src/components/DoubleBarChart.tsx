@@ -20,6 +20,8 @@ interface HousingChartState {
     chartKey: number;
     showCompletions: boolean;
     description: string;
+    selectedMonth: number | null; // Add selected month state
+    availableMonths: number[]; // Track available months for the dropdown
 }
 
 interface HousingChartProps {
@@ -35,7 +37,9 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
         error: null,
         chartKey: Date.now(),
         showCompletions: this.props.showCompletions,
-        description: "This interactive chart compares housing metrics between Toronto and Hamilton by month, providing valuable insights into regional development. The Housing Starts view displays the number of new construction projects initiated in each city, while the Housing Completions view shows the number of residential projects that reached completion. By toggling between these views, users can analyze the relationship between project initiation and completion rates, helping urban planners, real estate investors, and policymakers understand construction timelines, market efficiency, and housing supply trends."
+        description: "This interactive chart compares housing metrics between Toronto and Hamilton by month, providing valuable insights into regional development. The Housing Starts view displays the number of new construction projects initiated in each city, while the Housing Completions view shows the number of residential projects that reached completion. By toggling between these views, users can analyze the relationship between project initiation and completion rates, helping urban planners, real estate investors, and policymakers understand construction timelines, market efficiency, and housing supply trends.",
+        selectedMonth: null, // Default to showing all months
+        availableMonths: []
     };
 
     public componentDidMount(): void {
@@ -59,6 +63,17 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
         }
     }
 
+    // Handle month selection change
+    private handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+        const value = event.target.value;
+        const selectedMonth = value === "all" ? null : parseInt(value, 10);
+        
+        this.setState({
+            selectedMonth,
+            chartKey: Date.now()
+        });
+    };
+
     private fetchData = async (): Promise<void> => {
         try {
             // Fetch all housing data
@@ -73,11 +88,15 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
             // Process the data to group by month
             const startsDataMap = new Map<number, MonthlyData>();
             const completionsDataMap = new Map<number, MonthlyData>();
+            const monthsSet = new Set<number>();
             
             allData.forEach((item: any) => {
                 // Handle potentially missing month data - default to 1 if not present
                 const month = item.month !== null && item.month !== undefined ? 
                     parseInt(item.month, 10) : 1;
+                
+                // Add to available months
+                monthsSet.add(month);
                 
                 // Debug log for problematic records
                 if (item.month === null || item.month === undefined) {
@@ -125,13 +144,16 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
             // Convert maps to arrays and sort by month
             const startsData = Array.from(startsDataMap.values()).sort((a, b) => a.month - b.month);
             const completionsData = Array.from(completionsDataMap.values()).sort((a, b) => a.month - b.month);
+            const availableMonths = Array.from(monthsSet).sort((a, b) => a - b);
             
             console.log('Processed starts data:', startsData);
             console.log('Processed completions data:', completionsData);
+            console.log('Available months:', availableMonths);
             
             this.setState({
                 startsData,
                 completionsData,
+                availableMonths,
                 loading: false,
                 error: null,
                 chartKey: Date.now()
@@ -146,8 +168,13 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
     };
 
     private getChartData = (): any => {
-        const { startsData, completionsData, showCompletions } = this.state;
-        const data = showCompletions ? completionsData : startsData;
+        const { startsData, completionsData, showCompletions, selectedMonth } = this.state;
+        let data = showCompletions ? completionsData : startsData;
+        
+        // Filter by selected month if one is selected
+        if (selectedMonth !== null) {
+            data = data.filter(item => item.month === selectedMonth);
+        }
         
         // Convert month numbers to names
         const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -163,15 +190,15 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
                 {
                     label: 'Toronto',
                     data: data.map(item => item.toronto || 0),
-                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(0, 255, 247, 0.5)',
+                    borderColor: 'rgba(0, 255, 247, 1)',
                     borderWidth: 1,
                 },
                 {
                     label: 'Hamilton',
                     data: data.map(item => item.hamilton || 0),
-                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(0, 65, 187, 0.5)',
+                    borderColor: 'rgba(0, 65, 187, 1)',
                     borderWidth: 1,
                 }
             ],
@@ -179,26 +206,51 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
     };
 
     public render(): React.JSX.Element {
-        const { loading, error, chartKey, description, showCompletions } = this.state;
+        const { loading, error, chartKey, description, showCompletions, availableMonths, selectedMonth } = this.state;
 
         if (loading) {
             return <div className="text-center text-gray-600">Loading...</div>;
         }
 
-        const chartTitle = showCompletions ? 'Monthly Housing Completions Comparison' : 'Monthly Housing Starts Comparison';
+        const chartTitle = showCompletions 
+            ? `${selectedMonth === null ? 'All Months' : 'Monthly'} Housing Completions Comparison` 
+            : `${selectedMonth === null ? 'All Months' : 'Monthly'} Housing Starts Comparison`;
+        
         const yAxisTitle = showCompletions ? 'Number of Housing Completions' : 'Number of Housing Starts';
+        
+        // Convert month numbers to names for the dropdown
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                           'July', 'August', 'September', 'October', 'November', 'December'];
 
         return (
             <div className="bg-white rounded-lg shadow-md p-4">
                 {error && <div className="error-banner bg-red-100 text-red-700 p-2 rounded mb-4">{error}</div>}
-                <div className="mb-4">
+                <div className="mb-4 flex flex-wrap gap-4 items-center justify-between">
                     <button 
                         onClick={this.props.onToggleView}
                         className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-200"
                     >
                         {showCompletions ? "Show Housing Starts" : "Show Housing Completions"}
                     </button>
+                    
+                    <div className="flex items-center">
+                        <label htmlFor="month-filter" className="mr-2 font-semibold">Filter by Month:</label>
+                        <select
+                            id="month-filter"
+                            value={selectedMonth === null ? "all" : selectedMonth.toString()}
+                            onChange={this.handleMonthChange}
+                            className="p-2 border border-gray-300 rounded-lg bg-white text-black"
+                        >
+                            <option value="all">All Months</option>
+                            {availableMonths.map(month => (
+                                <option key={month} value={month.toString()}>
+                                    {monthNames[month - 1] || `Month ${month}`}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
+                
                 <div style={{ height: '400px', width: '100%' }}>
                     <Bar 
                         key={chartKey}
@@ -237,7 +289,7 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
                                 x: {
                                     title: {
                                         display: true,
-                                        text: 'Month',
+                                        text: selectedMonth === null ? 'Month' : 'Month',
                                         font: {
                                             size: 16,
                                             family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
@@ -259,7 +311,7 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
                     <textarea
                         id="chart-description"
                         className="w-full p-2 border border-gray-300 rounded-lg resize-none text-black"
-                        rows={4}
+                        rows={6}
                         value={description}
                         readOnly
                     />
