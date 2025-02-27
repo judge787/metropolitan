@@ -71,4 +71,7 @@ public class DataServiceImpl implements DataService {
    public Integer getTotalStartsByArea(String area){
         return dataDao.sumTotalStartsByCensusArea(area);
    }
+    public Integer getTotalCompleteByArea(String area){
+        return dataDao.sumTotalCompleteByCensusArea(area);
+    }
 }

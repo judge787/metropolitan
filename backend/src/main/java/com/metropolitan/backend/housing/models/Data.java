@@ -18,15 +18,19 @@ public class Data {
     @Column(name = "total_complete")
     private Integer totalComplete;
 
+    @Column(name = "month")
+    private Integer month;
+
     public Data() {
         
     }
     
-    public Data(Integer id, String censusArea, Integer totalStarts, Integer totalComplete) {
+    public Data(Integer id, String censusArea, Integer totalStarts, Integer totalComplete, Integer month) {
         this.id = id;
         this.censusArea = censusArea;
         this.totalStarts = totalStarts;
         this.totalComplete = totalComplete;
+        this.month = month;
     }
 
     public Integer getId() {
@@ -59,5 +63,13 @@ public class Data {
 
     public void setTotalComplete(Integer totalComplete) {
         this.totalComplete = totalComplete;
+    }
+
+    public Integer getMonth() {
+        return month;
+    }
+
+    public void setMonth(Integer month) {
+        this.month = month;
     }
 }
