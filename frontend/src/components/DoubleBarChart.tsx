@@ -234,7 +234,7 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
                     </button>
                     
                     <div className="flex items-center">
-                        <label htmlFor="month-filter" className="mr-2 font-semibold">Filter by Month:</label>
+                        <label htmlFor="month-filter" className="mr-2 font-semibold text-black">Filter by Month:</label>
                         <select
                             id="month-filter"
                             value={selectedMonth === null ? "all" : selectedMonth.toString()}
