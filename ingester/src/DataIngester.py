@@ -31,7 +31,7 @@ class DataIngester:
         """
         try:
             response = requests.get(
-                self.api_url, headers={"Apikey": self.api_key}, timeout=10
+                self.api_url, headers={"Apikey": self.api_key}, timeout=10, verify=False
             )
             response.raise_for_status()
             return response.json()
@@ -53,6 +53,7 @@ class DataIngester:
             try:
                 housing_data = HousingData(
                     census_metropolitan_area=task["CMA"],
+                    month = task["Month"],
                     total_starts=task["Total_starts"],
                     total_complete=task["Total_complete"],
                 )

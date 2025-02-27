@@ -6,10 +6,6 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title } from 
 // Register required Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title);
 
-interface HousingStartChartProps {
-    selectedMonth: string;
-}
-
 interface HousingStartChartState {
     torontoStarts: number | null;
     hamiltonStarts: number | null;
@@ -19,7 +15,7 @@ interface HousingStartChartState {
     description: string;
 }
 
-class HousingStartChart extends Component<HousingStartChartProps, HousingStartChartState> {
+class HousingStartChart extends Component<{}, HousingStartChartState> {
     public state: HousingStartChartState = {
         torontoStarts: null,
         hamiltonStarts: null,
@@ -33,40 +29,33 @@ class HousingStartChart extends Component<HousingStartChartProps, HousingStartCh
         this.fetchData();
     }
 
-    public componentDidUpdate(prevProps: HousingStartChartProps): void {
-        if (prevProps.selectedMonth !== this.props.selectedMonth) {
-            this.fetchData();
+    public componentWillUnmount(): void {
+        // Explicitly destroy chart instance
+        const chartInstance = ChartJS.getChart("chart-container");
+        if (chartInstance) {
+            chartInstance.destroy();
         }
     }
 
     private fetchData = async (): Promise<void> => {
-        this.setState({ loading: true, error: null });
-    
         try {
-            const { selectedMonth } = this.props;
-            const filter = selectedMonth === "No Filter" ? null : selectedMonth; // Handle No Filter
-    
             const results = await Promise.allSettled([
-                getStartsByCensusArea("Toronto", filter),
-                getStartsByCensusArea("Hamilton", filter)
+                getStartsByCensusArea("Toronto"),
+                getStartsByCensusArea("Hamilton")
             ]);
-        
+
             const errors: string[] = [];
             const newData: (number | null)[] = [null, null];
-    
+
             results.forEach((result, index) => {
                 if (result.status === "fulfilled") {
-                    if (typeof result.value === "number") {  
-                        newData[index] = result.value;
-                    } else {
-                        errors.push(`Invalid response format from ${index === 0 ? "Toronto" : "Hamilton"}`);
-                    }
+                    newData[index] = result.value;
                 } else {
                     const area = index === 0 ? "Toronto" : "Hamilton";
                     errors.push(`${area}: ${result.reason.message || "Unknown error"}`);
                 }
             });
-    
+
             this.setState({
                 torontoStarts: newData[0],
                 hamiltonStarts: newData[1],
@@ -75,7 +64,6 @@ class HousingStartChart extends Component<HousingStartChartProps, HousingStartCh
                 chartKey: Date.now()
             });
         } catch (err) {
-            console.error("Fetching data failed:", err);
             this.setState({
                 error: err instanceof Error ? err.message : "Unexpected error",
                 loading: false
@@ -110,7 +98,6 @@ class HousingStartChart extends Component<HousingStartChartProps, HousingStartCh
 
     public render(): React.JSX.Element {
         const { loading, error, chartKey, description } = this.state;
-        const { selectedMonth } = this.props;
 
         if (loading) {
             return <div className="text-center text-gray-600">Loading...</div>;
@@ -129,7 +116,7 @@ class HousingStartChart extends Component<HousingStartChartProps, HousingStartCh
                             plugins: {
                                 title: {
                                     display: true,
-                                    text: `Housing Starts Comparison (${selectedMonth === "No Filter" ? "All Months" : selectedMonth})`,
+                                    text: 'Housing Starts Comparison',
                                     font: {
                                         size: 20,
                                         family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
