@@ -25,8 +25,6 @@ COPY . .
 
 ENV PYTHONPATH=/usr/app
 
-# command to run the script once and keep the container running
-# CMD ["sh", "-c", "python src/DataIngester.py && tail -f /dev/null"]
 
 # These next lines set up a cron job
 COPY ingester-cron /etc/cron.d/ingester-cron
