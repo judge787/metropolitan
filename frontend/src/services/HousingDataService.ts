@@ -61,4 +61,3 @@ export const getStartsByCensusArea = async (censusArea: string): Promise<number>
     throw error;
   }
 };
-
