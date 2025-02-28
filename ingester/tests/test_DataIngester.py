@@ -30,7 +30,7 @@ def test_fetch_tasks_success(data_ingester, mock_api_response):
         mock_get.assert_called_once_with(
             data_ingester.api_url,
             headers={"Apikey": data_ingester.api_key},
-            timeout=10
+            timeout=100
         )
         assert tasks == mock_api_response
 
@@ -40,7 +40,7 @@ def test_fetch_tasks_failure(data_ingester):
         mock_get.assert_called_once_with(
             data_ingester.api_url,
             headers={"Apikey": data_ingester.api_key},
-            timeout=10,
+            timeout=100,
         )
         assert tasks == []
 
@@ -53,7 +53,7 @@ def test_fetch_tasks_http_error(data_ingester):
         mock_get.assert_called_once_with(
             data_ingester.api_url,
             headers={"Apikey": data_ingester.api_key},
-            timeout=10
+            timeout=100
         )
         assert tasks == []
 

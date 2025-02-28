@@ -22,8 +22,6 @@ class DataIngester:
         self.db = DatabaseHandler(connect)
         self.api_url = os.getenv("API_URL")
         self.api_key = os.getenv("API_KEY")
-        # print(f"API_URL: {self.api_url}")
-        # print(f"API_KEY: {self.api_key}")
 
     def fetch_tasks(self):
         """
@@ -31,7 +29,7 @@ class DataIngester:
         """
         try:
             response = requests.get(
-                self.api_url, headers={"Apikey": self.api_key}, timeout=10,
+                self.api_url, headers={"Apikey": self.api_key}, timeout=100,
             )
             response.raise_for_status()
             return response.json()
@@ -63,7 +61,6 @@ class DataIngester:
                 print(f"Skipping invalid task: Missing field {e}")
             except Exception as e:
                 print(f"Error processing task: {e}")
-
 
 if __name__ == "__main__":
     max_retries = 5
