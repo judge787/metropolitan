@@ -41,7 +41,7 @@ def test_fetch_data_with_last_update(data_ingester, mock_api_response):
             data_ingester.api_housing,
             headers = {"Apikey": data_ingester.api_key},
             params = {'after': '2025-02-26'}, # one day before
-            timeout = 30
+            timeout = 100
         )
         assert data == mock_api_response
 
@@ -58,7 +58,7 @@ def test_fetch_data_no_last_update(data_ingester, mock_api_response):
             data_ingester.api_housing,
             headers = {"Apikey": data_ingester.api_key},
             params = {},
-            timeout = 30
+            timeout = 100
         )
         assert data == mock_api_response
 
