@@ -1,12 +1,12 @@
 import { HousingData } from "../types/HousingData";
 
-const API_URL = '/api/data';
+const API_URL = '/api/housingStats';
 console.log('API_URL:', API_URL);
 
 export const getAllData = async (): Promise<HousingData[]> => {
-  console.log('Fetching all data from:', `/api/data`);
+  console.log('Fetching all data from:', `${API_URL}`);
   try {
-    const response = await fetch(`/api/data`);
+    const response = await fetch(`${API_URL}`);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }

@@ -17,12 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/api/data")
-public class DataController {
+@RequestMapping(path = "/api/housingStats")
+public class HousingDataController {
     private DataService dataService;
 
     @Autowired
-    DataController(DataService dataService) {
+    HousingDataController(DataService dataService) {
         this.dataService = dataService;
     }
 
