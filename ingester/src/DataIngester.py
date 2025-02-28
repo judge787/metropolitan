@@ -23,10 +23,7 @@ class DataIngester:
         self.db = DatabaseHandler(connect)
         self.api_housing = os.getenv("API_URL_HOUSING")
         self.api_key = os.getenv("API_KEY")
-<<<<<<< HEAD
         self.last_update_file = "lastUpdated.txt"
-=======
->>>>>>> main
 
     def get_last_update(self):
         """
@@ -34,7 +31,6 @@ class DataIngester:
         Returns date in YYYY-MM-DD format, or None if file doesn't exist.
         """
         try:
-<<<<<<< HEAD
             with open(self.last_update_file, "r") as f:
                 date_str = f.read().strip()
                 return date_str if date_str else None
@@ -69,11 +65,6 @@ class DataIngester:
 
         try:
             response = requests.get(url, headers = headers, params = params, timeout = 100)
-=======
-            response = requests.get(
-                self.api_url, headers={"Apikey": self.api_key}, timeout=100,
-            )
->>>>>>> main
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
