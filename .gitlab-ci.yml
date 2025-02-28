@@ -1,7 +1,17 @@
+variables:
+  SONAR_HOST_URL: "https://sonarqube.socs.uoguelph.ca"
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+  GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  SONAR_FRONTEND_TOKEN: "sqp_f3cffd9bc646b40c3484fd65c0548e788d9f26b1"
+  SONAR_BACKEND_TOKEN: "sqp_b12c4db68a932571b159fca5dc7738565b0536cc"
+  SONAR_INGESTER_TOKEN: "sqp_79060b29b5ce5b16efa82a779dca4c94ad040835"
+
+
 stages:
   - build
   - lint
   - test
+  - sonar_analysis
 
 # BUILD STAGE
 build-backend:
@@ -103,3 +113,46 @@ test-ingester:
   rules:
       - when: always
   allow_failure: false
+
+# SONAR STAGE
+sonar-analysis-frontend:
+  stage: sonar_analysis
+  image: sonarsource/sonar-scanner-cli:latest
+  script:
+    - cd frontend
+    - npm install  # Install project dependencies
+    - npm run build  # Compile TypeScript to JavaScript
+    - sonar-scanner 
+        -Dsonar.projectKey=joblen-frontend
+        -Dsonar.sources=. 
+        -Dsonar.host.url=$SONAR_HOST_URL 
+        -Dsonar.login=$SONAR_FRONTEND_TOKEN
+        -Dsonar.qualitygate.wait=true
+  allow_failure: true
+  only:
+    - main
+
+sonar-analysis-backend:
+  stage: sonar_analysis
+  image: gradle:7.5-jdk17
+  script:
+    - cd backend
+    - ./gradlew build -x checkstyleMain -x checkstyleTest sonar -Dsonar.login=$SONAR_BACKEND_TOKEN  #must build because sonar needs binaries for parts of the analysis
+  allow_failure: true
+  only:
+    - main
+
+sonar-analysis-ingester:
+  stage: sonar_analysis
+  image: python:3.11-slim
+  script:
+    - cd ingester
+    - sonar-scanner 
+        -Dsonar.projectKey=joblen_ingester
+        -Dsonar.sources=. 
+        -Dsonar.host.url=$SONAR_HOST_URL 
+        -Dsonar.login=$SONAR_FRONTEND_TOKEN
+        -Dsonar.qualitygate.wait=true
+  allow_failure: true
+  only:
+    - main
