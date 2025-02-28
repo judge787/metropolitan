@@ -31,11 +31,6 @@ class DataIngester:
         Returns date in YYYY-MM-DD format, or None if file doesn't exist.
         """
         try:
-<<<<<<< HEAD
-            response = requests.get(
-                self.api_url, headers={"Apikey": self.api_key}, timeout=100,
-            )
-=======
             with open(self.last_update_file, "r") as f:
                 date_str = f.read().strip()
                 return date_str if date_str else None
@@ -70,7 +65,6 @@ class DataIngester:
 
         try:
             response = requests.get(url, headers = headers, params = params, timeout = 100)
->>>>>>> a450add9d4f7eb174b3e43fe7a3c94a47b53b2fc
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
