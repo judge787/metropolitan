@@ -6,7 +6,6 @@ variables:
   SONAR_BACKEND_TOKEN: "sqp_b12c4db68a932571b159fca5dc7738565b0536cc"
   SONAR_INGESTER_TOKEN: "sqp_79060b29b5ce5b16efa82a779dca4c94ad040835"
 
-
 stages:
   - build
   - lint
@@ -121,7 +120,7 @@ sonar-analysis-frontend:
   script:
     - cd frontend
     - npm install  # Install project dependencies
-    - npm run build  # Compile TypeScript to JavaScript
+    - tsc -b && vite build  # Compile TypeScript to JavaScript
     - sonar-scanner 
         -Dsonar.projectKey=joblen-frontend
         -Dsonar.sources=. 
@@ -129,8 +128,8 @@ sonar-analysis-frontend:
         -Dsonar.login=$SONAR_FRONTEND_TOKEN
         -Dsonar.qualitygate.wait=true
   allow_failure: true
-  only:
-    - main
+  #only:
+  #  - main
 
 sonar-analysis-backend:
   stage: sonar_analysis
@@ -139,12 +138,12 @@ sonar-analysis-backend:
     - cd backend
     - ./gradlew build -x checkstyleMain -x checkstyleTest sonar -Dsonar.login=$SONAR_BACKEND_TOKEN  #must build because sonar needs binaries for parts of the analysis
   allow_failure: true
-  only:
-    - main
+  #only:
+  #  - main
 
 sonar-analysis-ingester:
   stage: sonar_analysis
-  image: python:3.11-slim
+  image: sonarsource/sonar-scanner-cli:latest
   script:
     - cd ingester
     - sonar-scanner 
@@ -154,5 +153,5 @@ sonar-analysis-ingester:
         -Dsonar.login=$SONAR_FRONTEND_TOKEN
         -Dsonar.qualitygate.wait=true
   allow_failure: true
-  only:
-    - main
+  #only:
+  #  - main
