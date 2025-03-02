@@ -1,6 +1,11 @@
 class HousingData:
 
-    def __init__(self, census_metropolitan_area, month, total_starts, total_complete, singles_starts, semis_starts, row_starts, apartment_starts, singles_complete, semis_complete, row_complete, apartment_complete):
+    def __init__(
+        self, census_metropolitan_area, month, total_starts, total_complete,
+        singles_starts, semis_starts, row_starts, apartment_starts,
+        singles_complete, semis_complete, row_complete, apartment_complete
+    ):
+        """Initialize housing data with all required fields."""
         self.__census_metropolitan_area = census_metropolitan_area
         self.__total_starts = total_starts
         self.__total_complete = total_complete

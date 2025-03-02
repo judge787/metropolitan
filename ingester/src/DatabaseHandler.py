@@ -132,5 +132,5 @@ class DatabaseHandler:
         """
         try:
             self.close()
-        except:
+        except Exception:
             pass
