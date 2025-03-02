@@ -16,7 +16,15 @@ def mock_api_response():
             "CMA": "TestCMA",
             "Month": 10,
             "Total_starts": 10,
-            "Total_complete": 5
+            "Total_complete": 5,
+            "Singles_starts": 3,
+            "Semis_starts": 2,
+            "Row_starts": 1,
+            "Apt_Other_starts": 4,
+            "Singles_complete": 1,
+            "Semis_complete": 1,
+            "Row_complete": 1,
+            "Apt_other_complete": 2
         }
     ]
 
