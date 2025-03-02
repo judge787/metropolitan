@@ -102,3 +102,4 @@ def test_process_and_store_success(data_ingester, mock_api_response):
         
         data_ingester.process_and_store()
         mock_db.assert_called_once()
+
