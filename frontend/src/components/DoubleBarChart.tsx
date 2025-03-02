@@ -77,7 +77,7 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
     private fetchData = async (): Promise<void> => {
         try {
             // Fetch all housing data
-            const response = await fetch('/api/data');
+            const response = await fetch('/api/housingStats');
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
