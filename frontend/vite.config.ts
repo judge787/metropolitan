@@ -21,5 +21,10 @@ export default defineConfig({
   test: {
     globals: true,  // This enables the use of global `expect` and `test`
     environment: 'jsdom',
+    coverage: {
+      provider: "v8", // or "istanbul"
+      reporter: ["text", "lcov"],
+      reportsDirectory: "coverage"
+    }
   },
 })

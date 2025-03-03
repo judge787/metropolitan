@@ -87,6 +87,9 @@ test-frontend:
     - cd frontend
     - npm ci
     - npx vitest run --coverage
+  artifacts:
+    paths:
+      - frontend/coverage/lcov.info
   rules:
     - when: always
   allow_failure: false
@@ -117,6 +120,8 @@ test-ingester:
 sonar-analysis-frontend:
   stage: sonar_analysis
   image: node:22
+  dependencies:
+    - test-frontend
   before_script:
     - cd frontend
     - apt-get update && apt-get install -y wget unzip openjdk-17-jdk
@@ -124,9 +129,7 @@ sonar-analysis-frontend:
     - unzip sonar-scanner-cli-5.0.1.3006-linux.zip
     - export PATH="$PATH:$(pwd)/sonar-scanner-5.0.1.3006-linux/bin"
   script:
-    - npm install 
-    - tsc -b && vite build 
-    - npx vitest run --coverage
+    - ls -R coverage
     - >-
       sonar-scanner 
       -Dsonar.projectKey=joblen_frontend 
