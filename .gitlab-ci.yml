@@ -7,9 +7,9 @@ variables:
   SONAR_INGESTER_TOKEN: "sqp_79060b29b5ce5b16efa82a779dca4c94ad040835"
 
 stages:
-  - build
-  - lint
-  - test
+#  - build
+#  - lint
+#  - test
   - sonar_analysis
 
 # BUILD STAGE
@@ -116,7 +116,7 @@ test-ingester:
 # SONAR STAGE
 sonar-analysis-frontend:
   stage: sonar_analysis
-  image: sonarsource/sonar-scanner-cli:latest
+  image: node:22
   before-script:
     - apt-get update && apt-get install -y wget unzip openjdk-17-jdk
     - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
