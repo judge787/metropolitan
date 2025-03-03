@@ -117,7 +117,7 @@ test-ingester:
 sonar-analysis-frontend:
   stage: sonar_analysis
   image: node:22
-  before-script:
+  before_script:
     - apt-get update && apt-get install -y wget unzip openjdk-17-jdk
     - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
     - unzip sonar-scanner-cli-5.0.1.3006-linux.zip
