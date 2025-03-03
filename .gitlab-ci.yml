@@ -145,8 +145,10 @@ sonar-analysis-frontend:
 sonar-analysis-backend:
   stage: sonar_analysis
   image: gradle:7.5-jdk17
+  needs: ["test-backend"]
   script:
     - cd backend
+    - ./gradlew bootJar
     - ./gradlew build -x checkstyleMain -x checkstyleTest
     - ./gradlew sonar 
         -Dsonar.login=$SONAR_BACKEND_TOKEN
