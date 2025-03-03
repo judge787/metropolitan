@@ -126,6 +126,7 @@ sonar-analysis-frontend:
   script:
     - npm install 
     - tsc -b && vite build 
+    - npx vitest run --coverage
     - >-
       sonar-scanner 
       -Dsonar.projectKey=joblen_frontend 
