@@ -63,8 +63,8 @@ jacocoTestReport {
 
 sonar {
     properties {
-        property "sonar.projectName", "joblen-backend"
-        property "sonar.projectKey", "joblen-backend"
+        property "sonar.projectName", "joblen_backend"
+        property "sonar.projectKey", "joblen_backend"
         property "sonar.qualitygate.wait", true 
         property "sonar.sources", "src/main/java"
         property "sonar.java.binaries", "build/classes/java/main"
