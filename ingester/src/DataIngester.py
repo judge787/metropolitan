@@ -88,6 +88,15 @@ class DataIngester:
                     month = d["Month"],
                     total_starts = d["Total_starts"],
                     total_complete = d["Total_complete"],
+                    singles_starts = d["Singles_starts"],
+                    semis_starts = d["Semis_starts"],
+                    row_starts = d["Row_starts"],
+                    apartment_starts = d["Apt_Other_starts"],
+                    singles_complete = d["Singles_complete"],
+                    semis_complete = d["Semis_complete"],
+                    row_complete = d["Row_complete"],
+                    apartment_complete = d["Apt_other_complete"]
+
                 )
                 self.db.insert_housing_data(housing_data)
                 

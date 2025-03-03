@@ -16,7 +16,15 @@ def mock_api_response():
             "CMA": "TestCMA",
             "Month": 10,
             "Total_starts": 10,
-            "Total_complete": 5
+            "Total_complete": 5,
+            "Singles_starts": 3,
+            "Semis_starts": 2,
+            "Row_starts": 1,
+            "Apt_Other_starts": 4,
+            "Singles_complete": 1,
+            "Semis_complete": 1,
+            "Row_complete": 1,
+            "Apt_other_complete": 2
         }
     ]
 
@@ -94,3 +102,20 @@ def test_process_and_store_success(data_ingester, mock_api_response):
         
         data_ingester.process_and_store()
         mock_db.assert_called_once()
+
+         # Verify correct fields are passed
+        args, _ = mock_db.call_args
+        housing_data = args[0]
+        
+        assert housing_data.census_metropolitan_area == "TestCMA"
+        assert housing_data.month == 10
+        assert housing_data.total_starts == 10
+        assert housing_data.total_complete == 5
+        assert housing_data.singles_starts == 3
+        assert housing_data.semis_starts == 2
+        assert housing_data.row_starts == 1
+        assert housing_data.apartment_starts == 4
+        assert housing_data.singles_complete == 1
+        assert housing_data.semis_complete == 1
+        assert housing_data.row_complete == 1
+        assert housing_data.apartment_complete == 2
