@@ -7,9 +7,9 @@ variables:
   SONAR_INGESTER_TOKEN: "sqp_79060b29b5ce5b16efa82a779dca4c94ad040835"
 
 stages:
-#  - build
-#  - lint
-#  - test
+  - build
+  - lint
+  - test
   - sonar_analysis
 
 # BUILD STAGE
