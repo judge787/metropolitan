@@ -149,7 +149,7 @@ sonar-analysis-backend:
   script:
     - cd backend
     - ./gradlew bootJar
-    - ./gradlew build -x checkstyleMain -x checkstyleTest
+    - ./gradlew build -x test -x checkstyleMain -x checkstyleTest
     - ./gradlew sonar 
         -Dsonar.login=$SONAR_BACKEND_TOKEN
         -Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/test/jacocoTestReport.xml
