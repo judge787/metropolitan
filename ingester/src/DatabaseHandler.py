@@ -74,43 +74,125 @@ class DatabaseHandler:
         finally:
             cursor.close()
 
+    # def insert_housing_data(self, housing_data):
+    #     """
+    #     insert_housing_data: Insert a new housing data if it doesn't exist.
+    #     """
+    #     cursor = self.conn.cursor()
+    #     try:
+    #         # Check if housing data exists
+            
+    #         if cursor.fetchone() is None:
+    #             cursor.execute(
+    #                 """SELECT id FROM housing_data 
+    #                 WHERE census_metropolitan_area = ? 
+    #                 AND month = ? 
+    #                 AND total_starts = ? 
+    #                 AND total_complete = ? 
+    #                 AND singles_starts = ? 
+    #                 AND semis_starts = ? 
+    #                 AND row_starts = ? 
+    #                 AND apartment_starts = ? 
+    #                 AND singles_complete = ? 
+    #                 AND semis_complete = ? 
+    #                 AND row_complete = ? 
+    #                 AND apartment_complete = ?""",
+    #                 (
+    #                     housing_data.census_metropolitan_area,
+    #                     housing_data.month,
+    #                     housing_data.total_starts,
+    #                     housing_data.total_complete,
+    #                     housing_data.singles_starts,
+    #                     housing_data.semis_starts,
+    #                     housing_data.row_starts,
+    #                     housing_data.apartment_starts,
+    #                     housing_data.singles_complete,
+    #                     housing_data.semis_complete,
+    #                     housing_data.row_complete,
+    #                     housing_data.apartment_complete
+    #                 ),
+    #             )
+    #             self.conn.commit()
+    #     except mariadb.Error as e:
+    #         print(f"Error inserting housing data: {e}")
+    #     finally:
+    #         cursor.close()
+
     def insert_housing_data(self, housing_data):
         """
         insert_housing_data: Insert a new housing data if it doesn't exist.
         """
         cursor = self.conn.cursor()
         try:
-            # Check if housing data exists
+            # Convert empty strings to integers for numeric fields
+            month = 0 if housing_data.month == "" else housing_data.month
+            total_starts = 0 if housing_data.total_starts == "" else housing_data.total_starts
+            total_complete = 0 if housing_data.total_complete == "" else housing_data.total_complete
+            singles_starts = 0 if housing_data.singles_starts == "" else housing_data.singles_starts
+            semis_starts = 0 if housing_data.semis_starts == "" else housing_data.semis_starts
+            row_starts = 0 if housing_data.row_starts == "" else housing_data.row_starts
+            apartment_starts = 0 if housing_data.apartment_starts == "" else housing_data.apartment_starts
+            singles_complete = 0 if housing_data.singles_complete == "" else housing_data.singles_complete
+            semis_complete = 0 if housing_data.semis_complete == "" else housing_data.semis_complete
+            row_complete = 0 if housing_data.row_complete == "" else housing_data.row_complete
+            apartment_complete = 0 if housing_data.apartment_complete == "" else housing_data.apartment_complete
             
-            if cursor.fetchone() is None:
+            # First execute the query to check if housing data exists with all fields
+            cursor.execute(
+                """SELECT id FROM housing_data 
+                WHERE census_metropolitan_area = ? 
+                AND month = ? 
+                AND total_starts = ? 
+                AND total_complete = ? 
+                AND singles_starts = ? 
+                AND semis_starts = ? 
+                AND row_starts = ? 
+                AND apartment_starts = ? 
+                AND singles_complete = ? 
+                AND semis_complete = ? 
+                AND row_complete = ? 
+                AND apartment_complete = ?""",
+                (
+                    housing_data.census_metropolitan_area,
+                    total_starts,
+                    total_complete,
+                    month,
+                    singles_starts,
+                    semis_starts,
+                    row_starts,
+                    apartment_starts,
+                    singles_complete,
+                    semis_complete,
+                    row_complete,
+                    apartment_complete
+                )
+            )
+            
+            # Now we can safely call fetchone() after executing a query
+            result = cursor.fetchone()
+            
+            if result is None:
+                # Insert new record if no exact match exists
                 cursor.execute(
-                    """SELECT id FROM housing_data 
-                    WHERE census_metropolitan_area = ? 
-                    AND month = ? 
-                    AND total_starts = ? 
-                    AND total_complete = ? 
-                    AND singles_starts = ? 
-                    AND semis_starts = ? 
-                    AND row_starts = ? 
-                    AND apartment_starts = ? 
-                    AND singles_complete = ? 
-                    AND semis_complete = ? 
-                    AND row_complete = ? 
-                    AND apartment_complete = ?""",
+                    """INSERT INTO housing_data 
+                    (census_metropolitan_area, month, total_starts, total_complete, 
+                    singles_starts, semis_starts, row_starts, apartment_starts,
+                    singles_complete, semis_complete, row_complete, apartment_complete)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                     (
                         housing_data.census_metropolitan_area,
                         housing_data.month,
-                        housing_data.total_starts,
-                        housing_data.total_complete,
-                        housing_data.singles_starts,
-                        housing_data.semis_starts,
-                        housing_data.row_starts,
-                        housing_data.apartment_starts,
-                        housing_data.singles_complete,
-                        housing_data.semis_complete,
-                        housing_data.row_complete,
-                        housing_data.apartment_complete
-                    ),
+                        total_starts,
+                        total_complete,
+                        singles_starts,
+                        semis_starts,
+                        row_starts,
+                        apartment_starts,
+                        singles_complete,
+                        semis_complete,
+                        row_complete,
+                        apartment_complete
+                    )
                 )
                 self.conn.commit()
         except mariadb.Error as e:
