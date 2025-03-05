@@ -26,7 +26,7 @@ public class DataServiceImplTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -46,11 +46,11 @@ public class DataServiceImplTest {
         when(dataDao.save(newData)).thenThrow(new RuntimeException("Save failed"));
 
         String result = dataService.addData(newData);
-        
+
         assertEquals("Save failed", result);
         verify(dataDao).save(newData);
     }
-    
+
     @Test
     public void testGetData_Success() {
         Data expectedData = new Data();
@@ -77,11 +77,7 @@ public class DataServiceImplTest {
 
     @Test
     public void testUpdateData_Success() {
-        Integer id = 1;
-        Integer totalStarts = 10;
-        Integer totalComplete = 20;
-        Integer month = 10;
-        Data newData = new Data(id, "", totalStarts, totalComplete, month);
+        Data newData = new Data(1, "Test", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
         when(dataDao.save(newData)).thenReturn(newData);
 
         String result = dataService.updateData(newData);
@@ -92,14 +88,10 @@ public class DataServiceImplTest {
 
     @Test
     public void testUpdateData_Failure() {
-        Integer id = 1;
-        Integer totalStarts = 10;
-        Integer totalComplete = 20;
-        Integer month = 10;
-        Data newData = new Data(id, "", totalStarts, totalComplete, month);
+        Data newData = new Data(1, "Test", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
         when(dataDao.save(newData)).thenThrow(new RuntimeException("Save failed"));
 
-        String result = dataService.addData(newData);
+        String result = dataService.updateData(newData);
 
         assertEquals("Save failed", result);
         verify(dataDao).save(newData);
@@ -203,6 +195,25 @@ public class DataServiceImplTest {
         assertEquals("Fetch failed", exception.getMessage());
         verify(dataDao).getDataByTotalComplete(totalComplete);
     }
+
+    @Test
+    public void testGetTotalStartsByArea_Success() {
+        String area = "TestArea";
+        int expected = 10;
+        when(dataDao.sumTotalStartsByCensusArea(area)).thenReturn(expected);
+        int actual = dataService.getTotalStartsByArea(area);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetTotalCompleteByArea_Success() {
+        String area = "TestArea";
+        int expected = 10;
+        when(dataDao.sumTotalCompleteByCensusArea(area)).thenReturn(expected);
+        int actual = dataService.getTotalCompleteByArea(area);
+        assertEquals(expected, actual);
+    }
+
     @Test
     public void testGetTotalStartsByArea_NonExistentArea() {
         String area = "Nonexistent Area";
@@ -213,6 +224,7 @@ public class DataServiceImplTest {
 
         assertEquals(0, actualTotalStarts);
     }
+
     @Test
     public void testGetTotalCompleteByArea_NonExistentArea() {
         String area = "Nonexistent Area";
@@ -222,5 +234,39 @@ public class DataServiceImplTest {
         Integer actualTotalComplete = dataService.getTotalCompleteByArea(area);
 
         assertEquals(0, actualTotalComplete);
+    }
+
+    @Test
+    public void testGetTotalStartsByArea_Failure() {
+        String area = "TestArea";
+        when(dataDao.sumTotalStartsByCensusArea(area)).thenThrow(new RuntimeException("Fetch failed"));
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            dataService.getTotalStartsByArea(area);
+        });
+
+        assertEquals("Fetch failed", exception.getMessage());
+        verify(dataDao).sumTotalStartsByCensusArea(area);
+    }
+    @Test
+    public void testGetTotalCompleteByArea_Failure() {
+        String area = "TestArea";
+        when(dataDao.sumTotalCompleteByCensusArea(area)).thenThrow(new RuntimeException("Fetch failed"));
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            dataService.getTotalCompleteByArea(area);
+        });
+
+        assertEquals("Fetch failed", exception.getMessage());
+        verify(dataDao).sumTotalCompleteByCensusArea(area);
+    }
+
+    @Test
+    public void testAllData_EmptyList() {
+        when(dataDao.findAll()).thenReturn(new ArrayList<>());
+        Iterable<Data> result = dataService.allData();
+        assertNotNull(result);
+        assertFalse(result.iterator().hasNext());
+        verify(dataDao).findAll();
     }
 }
