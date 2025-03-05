@@ -52,7 +52,7 @@ class DoubleRadarChart extends Component<RadarChartProps, RadarChartState> {
     error: null,
     chartKey: Date.now(),
     showCompletions: this.props.showCompletions || false,
-    description: "This radar chart visualizes housing data across major Canadian metropolitan areas. Each axis represents a different housing type: singles, semis, rows (townhouses), and apartments. The radar shape illustrates the distribution pattern of housing across these categories, making it easy to identify which cities favor certain housing types. Toggle between housing starts and completions to compare how construction priorities match with finished housing projects."
+    description: "This radar chart visualizes housing data across major Canadian metropolitan areas. Each axis represents a different housing type: singles, semis, townhomes, and apartments. The radar shape illustrates the distribution pattern of housing across these categories, making it easy to identify which cities favor certain housing types. Toggle between housing starts and completions to compare how construction priorities match with finished housing projects."
   };
 
   public componentDidMount(): void {
@@ -192,7 +192,7 @@ class DoubleRadarChart extends Component<RadarChartProps, RadarChartState> {
     });
     
     return {
-      labels: ['Singles', 'Semis', 'Rows', 'Apartments'],
+      labels: ['Singles', 'Semis', 'Townhomes', 'Apartments'],
       datasets: datasets
     };
   };
@@ -290,7 +290,7 @@ class DoubleRadarChart extends Component<RadarChartProps, RadarChartState> {
           <textarea
             id="chart-description"
             className="w-full p-2 border border-gray-300 rounded-lg resize-none text-black"
-            rows={6}
+            rows={5}
             style={{ minHeight: '150px' }}
             value={description}
             readOnly
