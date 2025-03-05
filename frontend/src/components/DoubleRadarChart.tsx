@@ -111,70 +111,12 @@ class DoubleRadarChart extends Component<RadarChartProps, RadarChartState> {
         };
       });
       
-      // Mock data for cities - remove this when real data is available
-      // In real implementation, process the allData array to populate this
-      cityData["Vancouver"] = {
-        singlesStarts: 1200,
-        semisStarts: 850,
-        rowStarts: 1700,
-        apartmentStarts: 4500,
-        singlesComplete: 1100,
-        semisComplete: 820,
-        rowComplete: 1600,
-        apartmentComplete: 4200
-      };
-      
-      cityData["Toronto"] = {
-        singlesStarts: 2000,
-        semisStarts: 1800,
-        rowStarts: 3200,
-        apartmentStarts: 9800,
-        singlesComplete: 1950,
-        semisComplete: 1750,
-        rowComplete: 3100,
-        apartmentComplete: 9500
-      };
-      
-      cityData["Montreal"] = {
-        singlesStarts: 1100,
-        semisStarts: 950,
-        rowStarts: 1300,
-        apartmentStarts: 6200,
-        singlesComplete: 1050,
-        semisComplete: 900,
-        rowComplete: 1250,
-        apartmentComplete: 5900
-      };
-      
-      cityData["Edmonton"] = {
-        singlesStarts: 1500,
-        semisStarts: 650,
-        rowStarts: 1400,
-        apartmentStarts: 2800,
-        singlesComplete: 1450,
-        semisComplete: 600,
-        rowComplete: 1350,
-        apartmentComplete: 2600
-      };
-      
-      cityData["Ottawa-Gatineau"] = {
-        singlesStarts: 900,
-        semisStarts: 700,
-        rowStarts: 1100,
-        apartmentStarts: 3500,
-        singlesComplete: 850,
-        semisComplete: 680,
-        rowComplete: 1050,
-        apartmentComplete: 3300
-      };
-      
-      // When real data processing is implemented, uncomment this code:
-      /*
+      // Process real data - notice the property name adjustments to match backend model
       allData.forEach((item: any) => {
         const city = item.censusArea;
         if (cities.includes(city)) {
-          // Add starts data
-          cityData[city].singlesStarts += item.singlesStarts || 0;
+          // Add starts data - note: backend uses 'singleStarts' (singular) but we use 'singlesStarts' (plural)
+          cityData[city].singlesStarts += item.singleStarts || 0;
           cityData[city].semisStarts += item.semisStarts || 0;
           cityData[city].rowStarts += item.rowStarts || 0;
           cityData[city].apartmentStarts += item.apartmentStarts || 0;
@@ -186,7 +128,6 @@ class DoubleRadarChart extends Component<RadarChartProps, RadarChartState> {
           cityData[city].apartmentComplete += item.apartmentComplete || 0;
         }
       });
-      */
       
       console.log('Processed city data for radar chart:', cityData);
       
