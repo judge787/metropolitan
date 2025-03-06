@@ -290,7 +290,7 @@ class DoubleRadarChart extends Component<RadarChartProps, RadarChartState> {
           <textarea
             id="chart-description"
             className="w-full p-2 border border-gray-300 rounded-lg resize-none text-black"
-            rows={5}
+            rows={4}
             style={{ minHeight: '150px' }}
             value={description}
             readOnly
