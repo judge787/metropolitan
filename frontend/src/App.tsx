@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import ProductPitch from './components/ProductPitch';
 import HousingChart from './components/DoubleBarChart';
+import DoubleRadarChart from './components/DoubleRadarChart';
 
 interface AppState {
   showContactInfo: boolean;
@@ -63,10 +64,16 @@ class App extends Component<{}, AppState> {
           </section>
 
           <section className="my-12">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">Housing Starts and Completions by City</h2>
             <HousingChart 
               showCompletions={showCompletions}
               onToggleView={this.handleToggleView}
             />
+          </section>
+          
+          <section className="my-12">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">Housing Types Distribution by City</h2>
+            <DoubleRadarChart />
           </section>
         </main>
       </div>
