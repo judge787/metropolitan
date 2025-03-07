@@ -150,6 +150,7 @@ class DatabaseHandler:
                         apartment_complete
                     )
                 )
+                print(f"Inserted housing data: {housing_data.census_metropolitan_area}")
                 self.conn.commit()
         except mariadb.Error as e:
             print(f"Error inserting housing data: {e}")
@@ -162,7 +163,7 @@ class DatabaseHandler:
         """
         if self.conn:
             self.conn.close()
-            print("Closed database connection")
+            print("Closed database connection\n")
 
     def __del__(self):
         """
