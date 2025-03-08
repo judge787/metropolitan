@@ -83,15 +83,5 @@ public class HousingDataController {
         Integer total = dataService.getTotalCompleteByArea(censusArea);
         return  ResponseEntity.ok(total);
     }
-//    @GetMapping("/starts/{totalStarts}")
-//    private ResponseEntity<Iterable<Data>> getDataByTotalStarts(@PathVariable Integer totalStarts){
-//        Iterable<Data> data = dataService.getDataByTotalStarts(totalStarts);
-//        return ResponseEntity.ok(data);
-//    }
-//
-//    @GetMapping("/complete/{totalComplete}")
-//    private ResponseEntity<Iterable<Data>> getDataByTotalComplete(@PathVariable Integer totalComplete) {
-//        Iterable<Data> data = dataService.getDataByTotalComplete(totalComplete);
-//        return ResponseEntity.ok(data);
-//    }
+
 }
