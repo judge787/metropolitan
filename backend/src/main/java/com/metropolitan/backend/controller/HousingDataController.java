@@ -21,20 +21,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class HousingDataController {
     private DataService dataService;
 
-    // initializes the controller with required data service
     @Autowired
     public HousingDataController(DataService dataService) {
         this.dataService = dataService;
     }
 
-    // handles adding new housing data records
     @PostMapping()
-    public ResponseEntity<String> addData(@RequestBody Data newData) {
+    private ResponseEntity<String> addData(@RequestBody Data newData) {
         String result = dataService.addData(newData);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
-    // retrieves housing data by ID
     @GetMapping("/{id}")
     public ResponseEntity<Data> getData(@PathVariable Integer id) {
         try {
@@ -45,8 +42,7 @@ public class HousingDataController {
         }
     }
 
-    // handles HTTP PUT requests to update existing housing data records
-    @PutMapping()
+    @@PutMapping()
     public ResponseEntity<String> updateData(@RequestBody Data updatedData) {
         String result = dataService.updateData(updatedData);
         if ("Updated".equals(result)) {
@@ -56,9 +52,8 @@ public class HousingDataController {
         }
     }
 
-    // delete housing data record based on given ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteData(@PathVariable Integer id) {
+    private ResponseEntity<String> deleteData(@PathVariable Integer id) {
         String result = dataService.deleteData(id);
         if ("Deleted".equals(result)) {
             return ResponseEntity.ok(result);
@@ -68,28 +63,27 @@ public class HousingDataController {
     }
 
     @GetMapping()
-    public ResponseEntity<Iterable<Data>> allData() {
+    private ResponseEntity<Iterable<Data>> allData() {
         Iterable<Data> data = dataService.allData();
         return ResponseEntity.ok(data);
     }
 
-    // returns total number of housing data records
     @GetMapping("/count")
-    public ResponseEntity<Integer> count() {
+    private ResponseEntity<Integer> count() {
         Integer count = dataService.count();
         return ResponseEntity.ok(count);
     }
-
     @GetMapping("/starts/{censusArea}")
-    public ResponseEntity<Integer> getTotalHousingStartsByCensusArea(@PathVariable String censusArea){
+    private ResponseEntity<Integer> getTotalHousingStartsByCensusArea(@PathVariable String censusArea){
         Integer total = dataService.getTotalStartsByArea(censusArea);
         return  ResponseEntity.ok(total);
     }
 
-    //total housing completions for a given census area
+    // fetches total housing completions for a given census area.
     @GetMapping("/completions/{censusArea}")
     public ResponseEntity<Integer> getTotalHousingCompletionsByCensusArea(@PathVariable String censusArea){
         Integer total = dataService.getTotalCompleteByArea(censusArea);
         return  ResponseEntity.ok(total);
     }
+
 }
