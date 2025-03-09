@@ -32,6 +32,7 @@ public class HousingDataController {
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
+    // retrieves housing data by ID
     @GetMapping("/{id}")
     public ResponseEntity<Data> getData(@PathVariable Integer id) {
         try {
@@ -42,6 +43,7 @@ public class HousingDataController {
         }
     }
 
+    // handles HTTP PUT requests to update existing housing data records
     @@PutMapping()
     public ResponseEntity<String> updateData(@RequestBody Data updatedData) {
         String result = dataService.updateData(updatedData);
@@ -79,7 +81,7 @@ public class HousingDataController {
         return  ResponseEntity.ok(total);
     }
 
-    // fetches total housing completions for a given census area.
+    // fetches total housing completions for a given census area
     @GetMapping("/completions/{censusArea}")
     public ResponseEntity<Integer> getTotalHousingCompletionsByCensusArea(@PathVariable String censusArea){
         Integer total = dataService.getTotalCompleteByArea(censusArea);
