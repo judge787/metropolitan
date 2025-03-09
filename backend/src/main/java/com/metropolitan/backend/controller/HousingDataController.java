@@ -44,7 +44,7 @@ public class HousingDataController {
     }
 
     // handles HTTP PUT requests to update existing housing data records
-    @@PutMapping()
+    @PutMapping()
     public ResponseEntity<String> updateData(@RequestBody Data updatedData) {
         String result = dataService.updateData(updatedData);
         if ("Updated".equals(result)) {
