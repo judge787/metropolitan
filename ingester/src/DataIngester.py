@@ -21,6 +21,7 @@ class DataIngester:
         with the joblen API key & URL.
         """
         self.db = DatabaseHandler(connect)
+        self.api_labour_market = os.getenv("API_URL_LABOUR_MARKET")
         self.api_housing = os.getenv("API_URL_HOUSING")
         self.api_key = os.getenv("API_KEY")
         self.last_update_file = "lastUpdated.txt"
