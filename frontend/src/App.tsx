@@ -42,7 +42,6 @@ class App extends Component<{}, AppState> {
                 <li><a href="#">Completions</a></li>
                 <li><a href="#">Starts</a></li>
                 <li><a href="#">Contact Us</a></li>
-                <h2>About Us</h2>
 
             </ul>
           </nav>
