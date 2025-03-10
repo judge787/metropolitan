@@ -3,10 +3,10 @@ import React, { Component } from 'react';
 class ProductPitch extends Component {
   public render(): React.JSX.Element {
     return (
-      <section className="bg-white p-8 rounded-lg shadow-md">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-4xl font-bold mb-6 text-gray-800">About Us</h2>
-          <p className="text-lg text-gray-700 leading-relaxed">
+      <div className="flex items-start flex justify-center items-center min-h-screen">
+      <section className="bg-[#d3f3f8] p-8 w-200 h-80 rounded-lg shadow-md">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-lg text-black font-black leading-relaxed" style={{ fontFamily: 'Fab, sans-serif' , fontWeight: 'bold' }}>
             What if you could easily track how housing and employment growth are shaping the future of Hamilton and Toronto—all in one place?
             Regional planners, real estate investors, and policymakers often struggle with fragmented data, making informed decisions difficult.
             The Metropolitan Housing and Employment Growth Index simplifies this by integrating housing statistics and employment trends into an
@@ -27,6 +27,7 @@ class ProductPitch extends Component {
           </div> */}
         </div>
       </section>
+      </div>
     );
   }
 }
