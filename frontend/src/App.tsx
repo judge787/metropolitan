@@ -32,19 +32,19 @@ class App extends Component<{}, AppState> {
 
     return (
       <div className="min-h-screen w-screen bg-gray-100 overflow-x-hidden">
-        <header className="w-full px-6 py-8 bg-gradient-to-r from-teal-500 to-blue-600 shadow-lg">
+        <header className="w-full px-6 py-8 bg-[#d3f3f8] shadow-lg">
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-            <h1 className="text-4xl font-bold text-white text-center md:text-left leading-tight">
-              Metropolitan Housing and Employment Growth Index
-            </h1>
-            <button
-              onClick={this.handleContactClick}
-              aria-expanded={showContactInfo}
-              aria-controls="contact-info"
-              className="px-6 py-3 rounded-xl shadow-lg bg-white text-blue-700 hover:bg-blue-100 transition duration-300 ease-in-out"
-            >
-              Contact Us
-            </button>
+          <img src="./logoMetro.webp" alt="Logo" style={{ height: '75px' }} />
+          <nav>
+          <ul className="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Types</a></li>
+                <li><a href="#">Completions</a></li>
+                <li><a href="#">Starts</a></li>
+                <li><a href="#">Contact Us</a></li>
+
+            </ul>
+          </nav>
           </div>
         </header>
 
@@ -59,7 +59,11 @@ class App extends Component<{}, AppState> {
             </div>
           )}
 
-          <section className="my-12">
+          <section className="my-0">
+          <div className="flex justify-center items-center mb-1">
+            <img src="./title.webp" alt="Title" style={{ height: '350px' }} />
+          </div>
+
             <ProductPitch />
           </section>
 
