@@ -22,7 +22,7 @@ public class HousingDataController {
     private DataService dataService;
 
     @Autowired
-    HousingDataController(DataService dataService) {
+    public HousingDataController(DataService dataService) {
         this.dataService = dataService;
     }
 
@@ -32,8 +32,9 @@ public class HousingDataController {
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
+    // retrieves housing data by ID
     @GetMapping("/{id}")
-    private ResponseEntity<Data> getData(@PathVariable Integer id) {
+    public ResponseEntity<Data> getData(@PathVariable Integer id) {
         try {
             Data data = dataService.getData(id);
             return ResponseEntity.ok(data);
@@ -42,8 +43,9 @@ public class HousingDataController {
         }
     }
 
+    // handles HTTP PUT requests to update existing housing data records
     @PutMapping()
-    private ResponseEntity<String> updateData(@RequestBody Data updatedData) {
+    public ResponseEntity<String> updateData(@RequestBody Data updatedData) {
         String result = dataService.updateData(updatedData);
         if ("Updated".equals(result)) {
             return ResponseEntity.ok(result);
@@ -78,20 +80,12 @@ public class HousingDataController {
         Integer total = dataService.getTotalStartsByArea(censusArea);
         return  ResponseEntity.ok(total);
     }
+
+    // fetches total housing completions for a given census area
     @GetMapping("/completions/{censusArea}")
-    private ResponseEntity<Integer> getTotalHousingCompletionsByCensusArea(@PathVariable String censusArea){
+    public ResponseEntity<Integer> getTotalHousingCompletionsByCensusArea(@PathVariable String censusArea){
         Integer total = dataService.getTotalCompleteByArea(censusArea);
         return  ResponseEntity.ok(total);
     }
-//    @GetMapping("/starts/{totalStarts}")
-//    private ResponseEntity<Iterable<Data>> getDataByTotalStarts(@PathVariable Integer totalStarts){
-//        Iterable<Data> data = dataService.getDataByTotalStarts(totalStarts);
-//        return ResponseEntity.ok(data);
-//    }
-//
-//    @GetMapping("/complete/{totalComplete}")
-//    private ResponseEntity<Iterable<Data>> getDataByTotalComplete(@PathVariable Integer totalComplete) {
-//        Iterable<Data> data = dataService.getDataByTotalComplete(totalComplete);
-//        return ResponseEntity.ok(data);
-//    }
+
 }
