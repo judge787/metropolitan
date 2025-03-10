@@ -305,12 +305,12 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
 
                 {/* Description Box */}
                 <div className="mt-4">
-                    <label htmlFor="chart-description" className="block text-gray-700 font-semibold mb-2 text-3xl" style={{ fontFamily: 'Others' }}>
+                    <label htmlFor="chart-description" className="block text-[rgba(0,65,187,0.8)] font-semibold mb-2 text-3xl" style={{ fontFamily: 'Others' }}>
                         Data Summary
                     </label>
                     <textarea
                         id="chart-description"
-                        className="w-full p-2 border-2 border-[#1ed1d6] rounded-lg resize-none text-black" style={{ fontFamily: 'Sans-Serif' }}
+                        className="w-full p-2 border-2 border-[#1ed1d6] rounded-lg resize-none text-[rgba(0,65,187,0.8)]" style={{ fontFamily: 'Sans-Serif' }}
                         rows={6}
                         value={description}
                         readOnly
