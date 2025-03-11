@@ -148,11 +148,11 @@ sonar-analysis-frontend:
 sonar-analysis-backend:
   stage: sonar_analysis
   image: gradle:7.5-jdk17
+  needs: ["test-backend"]
   script:
     - cd backend
     - ./gradlew bootJar
-    - ./gradlew build -x test -x checkstyleMain -x checkstyleTest
-    - awk -F"," '{ instructions += $4 + $5; covered += $5 } END { print covered, "/", instructions, " instructions covered"; print "Total coverage:", 100*covered/instructions,  "%"}' build/reports/jacoco/test/jacocoTestReport.xml
+    - ./gradlew build -x checkstyleMain -x checkstyleTest
     - ./gradlew sonar
         -Dsonar.login=$SONAR_BACKEND_TOKEN
         -Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/test/jacocoTestReport.xml
