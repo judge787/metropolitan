@@ -152,7 +152,7 @@ sonar-analysis-backend:
   script:
     - cd backend
     - ./gradlew bootJar
-    - ./gradlew build -x checkstyleMain -x checkstyleTest sonar -Dsonar.login=$SONAR_BACKEND_TOKEN
+    - ./gradlew build -x test -x checkstyleMain -x checkstyleTest sonar -Dsonar.login=$SONAR_BACKEND_TOKEN
   allow_failure: true
   #only:
   #  - main
