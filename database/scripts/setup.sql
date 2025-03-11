@@ -22,3 +22,9 @@ CREATE TABLE IF NOT EXISTS housing_data (
     apartment_complete INT DEFAULT 0 COMMENT 'Apartment Complete'
 );
 
+CREATE TABLE IF NOT EXISTS labour_market_data (
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT 'Primary Key',
+    province INT DEFAULT 0 COMMENT 'Province',
+    education_level INT DEFAULT 0 COMMENT 'Education Level',
+    labour_force_status INT DEFAULT 0 COMMENT 'Labour Force Status'
+);

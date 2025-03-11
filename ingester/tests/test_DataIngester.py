@@ -28,6 +28,16 @@ def mock_api_response():
         }
     ]
 
+@pytest.fixture
+def mock_labour_api_response():
+    return [
+        {
+            "PROV": "48",
+            "EDUC": "2", 
+            "LFSSTAT": "4"
+        }
+    ]
+
 def test_get_last_update_file_exists(data_ingester):
     with patch("builtins.open", mock_open(read_data = '2025-02-27')):
         assert data_ingester.get_last_update() == "2025-02-27"
@@ -89,17 +99,44 @@ def test_fetch_data_http_error(data_ingester):
         mock_get.assert_called_once()
         assert data == []
 
-def test_process_and_store_no_data(data_ingester):
-    with patch.object(data_ingester, 'fetch_data', return_value = []), \
-         patch.object(data_ingester.db, 'insert_housing_data') as mock_db:
-        
-        data_ingester.process_and_store()
-        mock_db.assert_not_called()
 
-def test_process_and_store_success(data_ingester, mock_api_response):
-    with patch.object(data_ingester, 'fetch_data', return_value = mock_api_response), \
-         patch.object(data_ingester.db, 'insert_housing_data') as mock_db:
+def test_process_and_store_no_data(data_ingester):
+    with patch.object(data_ingester, 'process_housing_data', return_value=0), \
+         patch.object(data_ingester, 'process_labour_market_data', return_value=0), \
+         patch.object(data_ingester, 'save_last_update') as mock_save:
         
         data_ingester.process_and_store()
+        mock_save.assert_not_called()
+
+def test_process_and_store_success(data_ingester):
+    with patch.object(data_ingester, 'process_housing_data', return_value=1), \
+         patch.object(data_ingester, 'process_labour_market_data', return_value=1), \
+         patch.object(data_ingester, 'save_last_update') as mock_save:
+        
+        data_ingester.process_and_store()
+        mock_save.assert_called_once()
+
+def test_process_and_store_housing_only(data_ingester):
+    with patch.object(data_ingester, 'process_housing_data', return_value=1), \
+         patch.object(data_ingester, 'process_labour_market_data', return_value=0), \
+         patch.object(data_ingester, 'save_last_update') as mock_save:
+        
+        data_ingester.process_and_store()
+        mock_save.assert_called_once()
+
+def test_process_and_store_labour_only(data_ingester):
+    with patch.object(data_ingester, 'process_housing_data', return_value=0), \
+         patch.object(data_ingester, 'process_labour_market_data', return_value=1), \
+         patch.object(data_ingester, 'save_last_update') as mock_save:
+        
+        data_ingester.process_and_store()
+        mock_save.assert_called_once()
+
+def test_process_housing_data_success(data_ingester, mock_api_response):
+    with patch.object(data_ingester, 'fetch_data', return_value=mock_api_response), \
+         patch.object(data_ingester.db, 'insert_housing_data') as mock_db:
+        
+        records = data_ingester.process_housing_data()
         mock_db.assert_called_once()
+        assert records == 1
 

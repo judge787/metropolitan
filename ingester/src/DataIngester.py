@@ -8,6 +8,7 @@ from datetime import datetime, timedelta, timezone
 import requests
 from src.DatabaseHandler import DatabaseHandler
 from src.housingdata.HousingData import HousingData
+from src.labourMarketData.LabourMarketData import LabourMarketData
 
 
 class DataIngester:
@@ -21,6 +22,7 @@ class DataIngester:
         with the joblen API key & URL.
         """
         self.db = DatabaseHandler(connect)
+        self.api_labour_market = os.getenv("API_URL_LABOUR_MARKET")
         self.api_housing = os.getenv("API_URL_HOUSING")
         self.api_key = os.getenv("API_KEY")
         self.last_update_file = "lastUpdated.txt"
@@ -31,7 +33,7 @@ class DataIngester:
         Returns date in YYYY-MM-DD format, or None if file doesn't exist.
         """
         try:
-            with open(self.last_update_file, "r") as f:
+            with open(self.last_update_file, "r", encoding='utf-8') as f:
                 date_str = f.read().strip()
                 return date_str if date_str else None
         except FileNotFoundError:
@@ -42,7 +44,7 @@ class DataIngester:
         save_last_update: Saves current UTC date in last_update_file, formatted as YYYY-MM-DD.
         """
         current_date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-        with open(self.last_update_file, "w") as f:
+        with open(self.last_update_file, "w", encoding='utf-8') as f:
             f.write(current_date)
 
     def fetch_data(self, url):
@@ -71,16 +73,16 @@ class DataIngester:
             print(f"Error fetching data from {url}: {e}")
             return []
 
-    def process_and_store(self):
+    def process_housing_data(self):
         """
-        process_and_store: Attempts to store each task received from `fetch_tasks()` 
-        to the database.
+        process_housing_data: Process housing data from the API.
         """
         data = self.fetch_data(self.api_housing)
         if not data:
-            print("No data was retrived from API")
-            return
+            print("No housing data was retrieved from API")
+            return 0
 
+        records_processed = 0
         for d in data:
             try:
                 housing_data = HousingData(
@@ -96,16 +98,58 @@ class DataIngester:
                     semis_complete = d["Semis_complete"],
                     row_complete = d["Row_complete"],
                     apartment_complete = d["Apt_other_complete"]
-
                 )
                 self.db.insert_housing_data(housing_data)
-                
-                print(f"Processed: {housing_data.census_metropolitan_area}")
-                self.save_last_update()
+                records_processed += 1
+                print(f"Processed housing data: {housing_data.census_metropolitan_area}")
             except KeyError as e:
-                print(f"Skipping invalid task: Missing field {e}")
+                print(f"Skipping invalid housing data: Missing field {e}")
+            # pylint: disable=broad-exception-caught
             except Exception as e:
-                print(f"Error processing task: {e}")
+                print(f"Error processing housing data: {e}")
+        
+        return records_processed
+
+    def process_labour_market_data(self):
+        """
+        process_labour_market_data: Process labour market data from API.
+        """
+        data = self.fetch_data(self.api_labour_market)
+        if not data:
+            print("No labour market data was retrieved from API")
+            return 0
+
+        records_processed = 0
+        for d in data:
+            try:
+                # Using the exact field names from the API
+                labour_market_data = LabourMarketData(
+                    province=d["PROV"],
+                    education_level=d["EDUC"],
+                    labour_force_status=d["LFSSTAT"]
+                )
+                self.db.insert_labour_market_data(labour_market_data)
+                records_processed += 1
+                print(f"Processed labour market data for province: {labour_market_data.province}")
+            except KeyError as e:
+                print(f"Skipping invalid labour market data: Missing field {e}")
+            except Exception as e:
+                print(f"Error processing labour market data: {e}")
+        
+        return records_processed
+
+    def process_and_store(self):
+        """
+        process_and_store: Process and store both housing and labour market data.
+        """
+        housing_records = self.process_housing_data()
+        labour_records = self.process_labour_market_data()
+        
+        if housing_records > 0 or labour_records > 0:
+            self.save_last_update()
+        
+        print(f"Total records processed: Housing={housing_records}, Labour Market={labour_records}")
+
 
 if __name__ == "__main__":
     max_retries = 5
