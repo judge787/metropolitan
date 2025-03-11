@@ -61,7 +61,7 @@ def test_fetch_data_with_last_update(data_ingester, mock_housing_api_response):
             params = {'after': '2025-02-26'}, # one day before
             timeout = 100
         )
-        assert data == mock_api_response
+        assert data == mock_housing_api_response
 
 
 def test_fetch_data_no_last_update(data_ingester, mock_housing_api_response):
@@ -80,7 +80,7 @@ def test_fetch_data_no_last_update(data_ingester, mock_housing_api_response):
             params = {},
             timeout = 100
         )
-        assert data == mock_api_response
+        assert data == mock_housing_api_response
 
 def test_fetch_data_failure(data_ingester):
     with patch('requests.get', side_effect = requests.exceptions.RequestException("API request failed")) as mock_get, \
