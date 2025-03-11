@@ -6,13 +6,13 @@ class LabourMarketData:
     """
     Represents a single labour market data record.
     """
-    def __init__(self, province="", education_level="", lfsstat=""):
+    def __init__(self, province="", education_level="", labour_force_status=""):
         """
         __init__: Initializes a new labour market data object.
         """
         self.__province = province  # Province
         self.__education_level = education_level # Highest educational attainment
-        self.__lfsstat = lfsstat  # Labour force status
+        self.__labour_force_status = labour_force_status  # Labour force status
 
     @property
     def province(self):
@@ -29,11 +29,11 @@ class LabourMarketData:
         return self.__education_level
     
     @property
-    def lfsstat(self):
+    def labour_force_status(self):
         """
-        lfsstat: Gets the labour force status.
+        labour_force_status: Gets the labour force status.
         """
-        return self.__lfsstat
+        return self.__labour_force_status
     
     @province.setter
     def province(self, province):
@@ -49,12 +49,12 @@ class LabourMarketData:
         """
         self.__education_level = education_level
     
-    @lfsstat.setter
-    def lfsstat(self, lfsstat):
+    @labour_force_status.setter
+    def labour_force_status(self, labour_force_status):
         """
-        lfsstat: Sets the labour force status.
+        labour_force_status: Sets the labour force status.
         """
-        self.__lfsstat = lfsstat
+        self.__labour_force_status = labour_force_status
 
     def __repr__(self):
         """
@@ -63,6 +63,6 @@ class LabourMarketData:
         return (
             f"LabourMarketData(province={self.__province!r}, "
             f"education_level={self.__education_level!r}, "
-            f"lfsstat={self.__lfsstat!r})"
+            f"labour_force_status={self.__labour_force_status!r})"
         )
             

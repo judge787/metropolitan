@@ -43,36 +43,98 @@ class DatabaseHandler:
                     time.sleep(self.retry_delay)
         sys.exit("FATAL: Failed to connect to database after multiple attempts")
 
+
     def create_table(self):
         """
-        create_table: Creates the database table if it doesn't exist.
+        create_table: Creates the database tables if they don't exist.
+        """
+        self.create_housing_data_table()
+        self.create_labour_market_data_table()
+
+    def create_housing_data_table(self):
+        """
+        create_housing_data_table: Creates the housing_data table if it doesn't exist.
         """
         cursor = self.conn.cursor()
         try:
             cursor.execute(
                 """
-                        CREATE TABLE IF NOT EXISTS housing_data (
-                        id INT AUTO_INCREMENT PRIMARY KEY COMMENT 'Primary Key',
-                        census_metropolitan_area VARCHAR(255) COMMENT 'Census Metropolitan Area',
-                        month INT DEFAULT NULL COMMENT 'Month',
-                        total_starts INT DEFAULT 0 COMMENT 'Total Starts',
-                        total_complete INT DEFAULT 0 COMMENT 'Total Complete',
-                        singles_starts INT DEFAULT 0 COMMENT 'Singles Starts',
-                        semis_starts INT DEFAULT 0 COMMENT 'Semis Starts',
-                        row_starts INT DEFAULT 0 COMMENT 'Row Starts',
-                        apartment_starts INT DEFAULT 0 COMMENT 'Apartment Starts',
-                        singles_complete INT DEFAULT 0 COMMENT 'Singles Complete',
-                        semis_complete INT DEFAULT 0 COMMENT 'Semis Complete',
-                        row_complete INT DEFAULT 0 COMMENT 'Row Complete',
-                        apartment_complete INT DEFAULT 0 COMMENT 'Apartment Complete'
-                    )
-            """
+                CREATE TABLE IF NOT EXISTS housing_data (
+                    id INT AUTO_INCREMENT PRIMARY KEY COMMENT 'Primary Key',
+                    census_metropolitan_area VARCHAR(255) COMMENT 'Census Metropolitan Area',
+                    month INT DEFAULT NULL COMMENT 'Month',
+                    total_starts INT DEFAULT 0 COMMENT 'Total Starts',
+                    total_complete INT DEFAULT 0 COMMENT 'Total Complete',
+                    singles_starts INT DEFAULT 0 COMMENT 'Singles Starts',
+                    semis_starts INT DEFAULT 0 COMMENT 'Semis Starts',
+                    row_starts INT DEFAULT 0 COMMENT 'Row Starts',
+                    apartment_starts INT DEFAULT 0 COMMENT 'Apartment Starts',
+                    singles_complete INT DEFAULT 0 COMMENT 'Singles Complete',
+                    semis_complete INT DEFAULT 0 COMMENT 'Semis Complete',
+                    row_complete INT DEFAULT 0 COMMENT 'Row Complete',
+                    apartment_complete INT DEFAULT 0 COMMENT 'Apartment Complete'
+                )
+                """
             )
             self.conn.commit()
         except mariadb.Error as e:
-            print(f"Error creating table: {e}")
+            print(f"Error creating housing_data table: {e}")
         finally:
             cursor.close()
+
+    def create_labour_market_data_table(self):
+        """
+        create_labour_market_data_table: Creates the labour_market_data table if it doesn't exist.
+        """
+        cursor = self.conn.cursor()
+        try:
+            cursor.execute(
+                """
+                CREATE TABLE IF NOT EXISTS labour_market_data (
+                    id INT AUTO_INCREMENT PRIMARY KEY COMMENT 'Primary Key',
+                    province INT DEFAULT 0 COMMENT 'Province',
+                    education_level INT DEFAULT 0 COMMENT 'Education Level',
+                    labour_force_status INT DEFAULT 0 COMMENT 'Labour Force Status'
+                )
+                """
+            )
+            self.conn.commit()
+        except mariadb.Error as e:
+            print(f"Error creating labour_market_data table: {e}")
+        finally:
+            cursor.close()
+
+
+    # def create_table(self):
+    #     """
+    #     create_table: Creates the database table if it doesn't exist.
+    #     """
+    #     cursor = self.conn.cursor()
+    #     try:
+    #         cursor.execute(
+    #             """
+    #                     CREATE TABLE IF NOT EXISTS housing_data (
+    #                     id INT AUTO_INCREMENT PRIMARY KEY COMMENT 'Primary Key',
+    #                     census_metropolitan_area VARCHAR(255) COMMENT 'Census Metropolitan Area',
+    #                     month INT DEFAULT NULL COMMENT 'Month',
+    #                     total_starts INT DEFAULT 0 COMMENT 'Total Starts',
+    #                     total_complete INT DEFAULT 0 COMMENT 'Total Complete',
+    #                     singles_starts INT DEFAULT 0 COMMENT 'Singles Starts',
+    #                     semis_starts INT DEFAULT 0 COMMENT 'Semis Starts',
+    #                     row_starts INT DEFAULT 0 COMMENT 'Row Starts',
+    #                     apartment_starts INT DEFAULT 0 COMMENT 'Apartment Starts',
+    #                     singles_complete INT DEFAULT 0 COMMENT 'Singles Complete',
+    #                     semis_complete INT DEFAULT 0 COMMENT 'Semis Complete',
+    #                     row_complete INT DEFAULT 0 COMMENT 'Row Complete',
+    #                     apartment_complete INT DEFAULT 0 COMMENT 'Apartment Complete'
+    #                 )
+    #         """
+    #         )
+    #         self.conn.commit()
+    #     except mariadb.Error as e:
+    #         print(f"Error creating table: {e}")
+    #     finally:
+    #         cursor.close()
 
     def insert_housing_data(self, housing_data):
         """
@@ -154,6 +216,52 @@ class DatabaseHandler:
                 self.conn.commit()
         except mariadb.Error as e:
             print(f"Error inserting housing data: {e}")
+        finally:
+            cursor.close()
+
+
+    def insert_labour_market_data(self, labour_market_data):
+        """
+        insert_labour_market_data: Insert new labour market data if it doesn't exist.
+        """
+        cursor = self.conn.cursor()
+        try:
+            # Convert empty strings to integers for numeric fields
+            province = 0 if labour_market_data.province == "" else labour_market_data.province
+            education_level = 0 if labour_market_data.education_level == "" else labour_market_data.education_level
+            labour_force_status = 0 if labour_market_data.labour_force_status == "" else labour_market_data.labour_force_status
+            
+            # First check if this exact record already exists
+            cursor.execute(
+                """SELECT id FROM labour_market_data 
+                WHERE province = ? 
+                AND education_level = ? 
+                AND labour_force_status = ?""",
+                (
+                    province,
+                    education_level,
+                    labour_force_status
+                )
+            )
+            
+            result = cursor.fetchone()
+            
+            if result is None:
+                # Insert new record if no exact match exists
+                cursor.execute(
+                    """INSERT INTO labour_market_data 
+                    (province, education_level, labour_force_status)
+                    VALUES (?, ?, ?)""",
+                    (
+                        province,
+                        education_level,
+                        labour_force_status
+                    )
+                )
+                print(f"Inserted labour market data for province: {province}")
+                self.conn.commit()
+        except mariadb.Error as e:
+            print(f"Error inserting labour market data: {e}")
         finally:
             cursor.close()
 
