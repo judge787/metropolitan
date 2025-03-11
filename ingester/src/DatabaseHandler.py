@@ -5,8 +5,6 @@ import os
 import sys
 import time
 import mariadb
-
-
 class DatabaseHandler:
     """
     DatabaseHandler class: Handles connection & data transfer to the database.
@@ -103,38 +101,6 @@ class DatabaseHandler:
             print(f"Error creating labour_market_data table: {e}")
         finally:
             cursor.close()
-
-
-    # def create_table(self):
-    #     """
-    #     create_table: Creates the database table if it doesn't exist.
-    #     """
-    #     cursor = self.conn.cursor()
-    #     try:
-    #         cursor.execute(
-    #             """
-    #                     CREATE TABLE IF NOT EXISTS housing_data (
-    #                     id INT AUTO_INCREMENT PRIMARY KEY COMMENT 'Primary Key',
-    #                     census_metropolitan_area VARCHAR(255) COMMENT 'Census Metropolitan Area',
-    #                     month INT DEFAULT NULL COMMENT 'Month',
-    #                     total_starts INT DEFAULT 0 COMMENT 'Total Starts',
-    #                     total_complete INT DEFAULT 0 COMMENT 'Total Complete',
-    #                     singles_starts INT DEFAULT 0 COMMENT 'Singles Starts',
-    #                     semis_starts INT DEFAULT 0 COMMENT 'Semis Starts',
-    #                     row_starts INT DEFAULT 0 COMMENT 'Row Starts',
-    #                     apartment_starts INT DEFAULT 0 COMMENT 'Apartment Starts',
-    #                     singles_complete INT DEFAULT 0 COMMENT 'Singles Complete',
-    #                     semis_complete INT DEFAULT 0 COMMENT 'Semis Complete',
-    #                     row_complete INT DEFAULT 0 COMMENT 'Row Complete',
-    #                     apartment_complete INT DEFAULT 0 COMMENT 'Apartment Complete'
-    #                 )
-    #         """
-    #         )
-    #         self.conn.commit()
-    #     except mariadb.Error as e:
-    #         print(f"Error creating table: {e}")
-    #     finally:
-    #         cursor.close()
 
     def insert_housing_data(self, housing_data):
         """
