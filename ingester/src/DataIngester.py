@@ -33,7 +33,7 @@ class DataIngester:
         Returns date in YYYY-MM-DD format, or None if file doesn't exist.
         """
         try:
-            with open(self.last_update_file, "r") as f:
+            with open(self.last_update_file, "r", encoding='utf-8') as f:
                 date_str = f.read().strip()
                 return date_str if date_str else None
         except FileNotFoundError:
@@ -44,7 +44,7 @@ class DataIngester:
         save_last_update: Saves current UTC date in last_update_file, formatted as YYYY-MM-DD.
         """
         current_date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-        with open(self.last_update_file, "w") as f:
+        with open(self.last_update_file, "w", encoding='utf-8') as f:
             f.write(current_date)
 
     def fetch_data(self, url):
@@ -104,6 +104,7 @@ class DataIngester:
                 print(f"Processed housing data: {housing_data.census_metropolitan_area}")
             except KeyError as e:
                 print(f"Skipping invalid housing data: Missing field {e}")
+            # pylint: disable=broad-exception-caught
             except Exception as e:
                 print(f"Error processing housing data: {e}")
         
@@ -146,7 +147,7 @@ class DataIngester:
         
         if housing_records > 0 or labour_records > 0:
             self.save_last_update()
-            
+        
         print(f"Total records processed: Housing={housing_records}, Labour Market={labour_records}")
 
 
