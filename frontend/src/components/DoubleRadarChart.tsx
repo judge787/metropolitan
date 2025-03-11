@@ -263,7 +263,7 @@ class DoubleRadarChart extends Component<RadarChartProps, RadarChartState> {
     }
 
     return (
-      <div className="bg-white rounded-lg shadow-md p-4">
+      <div className="border-2 border-[#1ed1d6] rounded-lg shadow-md p-4">
         {error && <div className="error-banner bg-red-100 text-red-700 p-2 rounded mb-4">{error}</div>}
         <div className="mb-4">
           <button 
@@ -284,14 +284,14 @@ class DoubleRadarChart extends Component<RadarChartProps, RadarChartState> {
 
         {/* Description Box */}
         <div className="mt-4">
-          <label htmlFor="chart-description" className="block text-gray-700 font-semibold mb-2">
-            Data Summary:
+          <label htmlFor="chart-description" className="block text-[rgba(0,65,187,0.8)] font-semibold mb-2 text-3xl" style={{ fontFamily: 'Others' }}>
+            Data Summary
           </label>
           <textarea
             id="chart-description"
-            className="w-full p-2 border border-gray-300 rounded-lg resize-none text-black"
+            className="w-full p-2 border-2 border-[#1ed1d6] rounded-lg resize-none text-[rgba(0,65,187,0.8)] sans-serif-text"
             rows={5}
-            style={{ minHeight: '150px' }}
+            style={{ minHeight: '150px'}}
             value={description}
             readOnly
           />

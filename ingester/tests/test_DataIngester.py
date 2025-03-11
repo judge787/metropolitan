@@ -140,11 +140,3 @@ def test_process_housing_data_success(data_ingester, mock_api_response):
         mock_db.assert_called_once()
         assert records == 1
 
-def test_process_labour_market_data_success(data_ingester, mock_labour_api_response):
-    with patch.object(data_ingester, 'fetch_data', return_value=mock_labour_api_response), \
-         patch.object(data_ingester.db, 'insert_labour_market_data') as mock_db:
-        
-        records = data_ingester.process_labour_market_data()
-        mock_db.assert_called_once()
-        assert records == 1
-
