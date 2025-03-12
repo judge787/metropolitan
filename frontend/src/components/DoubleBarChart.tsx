@@ -64,7 +64,7 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
     }
 
     // Handle month selection change
-    private handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    private readonly handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
         const value = event.target.value;
         const selectedMonth = value === "all" ? null : parseInt(value, 10);
         
@@ -74,7 +74,7 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
         });
     };
 
-    private fetchData = async (): Promise<void> => {
+    private readonly fetchData = async (): Promise<void> => {
         try {
             // Fetch all housing data
             const response = await fetch('/api/housingStats');
@@ -167,7 +167,7 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
         }
     };
 
-    private getChartData = (): any => {
+    private readonly getChartData = (): any => {
         const { startsData, completionsData, showCompletions, selectedMonth } = this.state;
         let data = showCompletions ? completionsData : startsData;
         
@@ -211,12 +211,20 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
         if (loading) {
             return <div className="text-center text-gray-600">Loading...</div>;
         }
+        let chartTitle;
+        let yAxisTitle;
 
-        const chartTitle = showCompletions 
-            ? `${selectedMonth === null ? 'All Months' : 'Monthly'} Housing Completions Comparison` 
-            : `${selectedMonth === null ? 'All Months' : 'Monthly'} Housing Starts Comparison`;
-        
-        const yAxisTitle = showCompletions ? 'Number of Housing Completions' : 'Number of Housing Starts';
+        if (showCompletions) {
+            chartTitle = selectedMonth === null 
+                ? 'All Months Housing Completions Comparison' 
+                : 'Monthly Housing Completions Comparison';
+            yAxisTitle = 'Number of Housing Completions';
+        } else {
+            chartTitle = selectedMonth === null 
+                ? 'All Months Housing Starts Comparison' 
+                : 'Monthly Housing Starts Comparison';
+            yAxisTitle = 'Number of Housing Starts';
+        }
         
         // Convert month numbers to names for the dropdown
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
@@ -289,7 +297,7 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
                                 x: {
                                     title: {
                                         display: true,
-                                        text: selectedMonth === null ? 'Month' : 'Month',
+                                        text: 'Month',
                                         font: {
                                             size: 16,
                                             family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
