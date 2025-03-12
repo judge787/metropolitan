@@ -65,7 +65,9 @@ class App extends Component<{}, AppState> {
                 path = "/types"
                 element={
                   <section className="my-11">
-                    <h2 className= "text-2xl font-bold text-gray-800 mb-6">Housing Types by City</h2>
+                    <div className="flex justify-center items-center mb-1">
+                    <img src="./HT.png" alt="TitleHousing" style={{ height: '250px' }} />
+                    </div>
                     <DoubleRadarChart />
                   </section>
                 }></Route>
@@ -73,14 +75,39 @@ class App extends Component<{}, AppState> {
                 path="/completions-starts" 
                 element={
                   <section className="my-12">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-6">Housing Starts and Completions by City</h2>
+                    <div className="flex justify-center items-center mb-1">
+                    <img 
+                    src={this.state.showCompletions ? "./HC.png" : "./HS.png"} alt="Housing" 
+                    style={this.state.showCompletions ? { height: '300px' } : { height: '250px'}} />
+                    </div>
                     <HousingChart 
                       showCompletions={this.state.showCompletions} // Pass the state for showCompletions
-                      onToggleView={this.handleToggleView}         // Pass the function to toggle view
-                  />
+                      onToggleView={this.handleToggleView} />
                   </section>
                 } 
               />
+              <Route 
+              path = "/contact"
+              element={
+                <section className="my-14">
+                    <div className="flex justify-center items-center mb-1">
+                    <img src="./CU.png" alt="ContactUS" style={{ height: '250px' }} />
+                    </div>
+                    <div className="w-full bg-[#d3f3f8] rounded-lg p-6 shadow-md">
+                    <h2 
+                      className="text-[rgba(0,65,187,0.8)] font-semibold mb-2 text-3xl" 
+                      style={{ fontFamily: 'Others' }}
+                    >
+                      Contact Information
+                    </h2>
+
+                    <p className="text-black">Email: <a href="mailto:info@metropolitanindex.com" className="text-black hover:underline">info@metropolitanindex.com</a></p>
+                    <p className="text-black">Phone: <a href="tel:+11234567890" className="text-blue-600 hover:underline">(123) 456-7890</a></p>
+                  </div>
+                  </section>
+              }
+              >
+              </Route>
             </Routes>
           </main>
         </div>
