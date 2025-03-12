@@ -5,7 +5,7 @@ from src.DataIngester import DataIngester
 
 @pytest.fixture
 def data_ingester():
-    with patch('src.DataIngester.DatabaseHandler') as MockDatabaseHandler:
+    with patch('src.DataIngester.DatabaseHandler'):
         ingester = DataIngester(False)
         yield ingester
 
