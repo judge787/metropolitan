@@ -211,12 +211,20 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
         if (loading) {
             return <div className="text-center text-gray-600">Loading...</div>;
         }
+        let chartTitle;
+        let yAxisTitle;
 
-        const chartTitle = showCompletions 
-            ? `${selectedMonth === null ? 'All Months' : 'Monthly'} Housing Completions Comparison` 
-            : `${selectedMonth === null ? 'All Months' : 'Monthly'} Housing Starts Comparison`;
-        
-        const yAxisTitle = showCompletions ? 'Number of Housing Completions' : 'Number of Housing Starts';
+        if (showCompletions) {
+            chartTitle = selectedMonth === null 
+                ? 'All Months Housing Completions Comparison' 
+                : 'Monthly Housing Completions Comparison';
+            yAxisTitle = 'Number of Housing Completions';
+        } else {
+            chartTitle = selectedMonth === null 
+                ? 'All Months Housing Starts Comparison' 
+                : 'Monthly Housing Starts Comparison';
+            yAxisTitle = 'Number of Housing Starts';
+        }
         
         // Convert month numbers to names for the dropdown
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
