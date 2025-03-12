@@ -76,14 +76,14 @@ class DoubleRadarChart extends Component<RadarChartProps, RadarChartState> {
     }
   }
 
-  private toggleView = (): void => {
+  private readonly toggleView = (): void => {
     this.setState(prevState => ({
       showCompletions: !prevState.showCompletions,
       chartKey: Date.now()
     }));
   };
 
-  private fetchData = async (): Promise<void> => {
+  private readonly fetchData = async (): Promise<void> => {
     try {
       // Fetch all housing data
       const response = await fetch('/api/housingStats'); 
@@ -146,7 +146,7 @@ class DoubleRadarChart extends Component<RadarChartProps, RadarChartState> {
     }
   };
 
-  private getRadarChartData = (): any => {
+  private readonly getRadarChartData = (): any => {
     const { cityData, showCompletions } = this.state;
     const cities = Object.keys(cityData);
     
@@ -197,7 +197,7 @@ class DoubleRadarChart extends Component<RadarChartProps, RadarChartState> {
     };
   };
 
-  private getRadarOptions = (): any => {
+  private readonly getRadarOptions = (): any => {
     const { showCompletions } = this.state;
     const chartTitle = showCompletions ? 'Housing Completions by Type' : 'Housing Starts by Type';
     
