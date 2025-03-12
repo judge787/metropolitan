@@ -64,7 +64,7 @@ class App extends Component<{}, AppState> {
               <Route 
                 path = "/types"
                 element={
-                  <section className="my-12">
+                  <section className="my-11">
                     <h2 className= "text-2xl font-bold text-gray-800 mb-6">Housing Types by City</h2>
                     <DoubleRadarChart />
                   </section>
@@ -74,7 +74,10 @@ class App extends Component<{}, AppState> {
                 element={
                   <section className="my-12">
                     <h2 className="text-2xl font-bold text-gray-800 mb-6">Housing Starts and Completions by City</h2>
-                    <HousingChart />
+                    <HousingChart 
+                      showCompletions={this.state.showCompletions} // Pass the state for showCompletions
+                      onToggleView={this.handleToggleView}         // Pass the function to toggle view
+                  />
                   </section>
                 } 
               />
