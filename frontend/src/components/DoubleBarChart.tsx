@@ -297,7 +297,7 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
                                 x: {
                                     title: {
                                         display: true,
-                                        text: selectedMonth === null ? 'Month' : 'Month',
+                                        text: 'Month',
                                         font: {
                                             size: 16,
                                             family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
