@@ -17,7 +17,7 @@ import org.mockito.MockitoAnnotations;
 import com.metropolitan.backend.housing.dao.DataDao;
 import com.metropolitan.backend.housing.models.Data;
 
-public class DataServiceImplTest {
+class DataServiceImplTest {
     @Mock
     private DataDao dataDao;
 
@@ -30,7 +30,7 @@ public class DataServiceImplTest {
     }
 
     @Test
-    public void testAddData_Success() {
+    void testAddData_Success() {
         Data newData = new Data();
         when(dataDao.save(newData)).thenReturn(newData);
 
@@ -41,7 +41,7 @@ public class DataServiceImplTest {
     }
 
     @Test
-    public void testAddData_Failure() {
+    void testAddData_Failure() {
         Data newData = new Data();
         when(dataDao.save(newData)).thenThrow(new RuntimeException("Save failed"));
 
@@ -52,7 +52,7 @@ public class DataServiceImplTest {
     }
 
     @Test
-    public void testGetData_Success() {
+    void testGetData_Success() {
         Data expectedData = new Data();
         when(dataDao.findById(1)).thenReturn(Optional.of(expectedData));
 
@@ -64,7 +64,7 @@ public class DataServiceImplTest {
     }
 
     @Test
-    public void testGetData_NotFound() {
+    void testGetData_NotFound() {
         when(dataDao.findById(1)).thenReturn(Optional.empty());
 
         NotFoundException exception = assertThrows(NotFoundException.class, () -> {
@@ -76,7 +76,7 @@ public class DataServiceImplTest {
     }
 
     @Test
-    public void testUpdateData_Success() {
+    void testUpdateData_Success() {
         Data newData = new Data(1, "Test", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
         when(dataDao.save(newData)).thenReturn(newData);
 
@@ -87,7 +87,7 @@ public class DataServiceImplTest {
     }
 
     @Test
-    public void testUpdateData_Failure() {
+    void testUpdateData_Failure() {
         Data newData = new Data(1, "Test", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
         when(dataDao.save(newData)).thenThrow(new RuntimeException("Save failed"));
 
@@ -98,7 +98,7 @@ public class DataServiceImplTest {
     }
 
     @Test
-    public void testDeleteData_Success() {
+    void testDeleteData_Success() {
         Integer id = 1;
         when(dataDao.existsById(id)).thenReturn(true);
 
@@ -110,7 +110,7 @@ public class DataServiceImplTest {
     }
 
     @Test
-    public void testDeleteData_NotFound() {
+    void testDeleteData_NotFound() {
         Integer id = 1;
         when(dataDao.existsById(id)).thenReturn(false);
 
@@ -125,7 +125,7 @@ public class DataServiceImplTest {
     }
 
     @Test
-    public void testAllData() {
+    void testAllData() {
         List<Data> expectedData = new ArrayList<>();
         when(dataDao.findAll()).thenReturn(expectedData);
 
@@ -136,7 +136,7 @@ public class DataServiceImplTest {
     }
 
     @Test
-    public void testCount() {
+    void testCount() {
         Integer expectedCount = 5;
         when(dataDao.getCount()).thenReturn(expectedCount);
 
@@ -147,7 +147,7 @@ public class DataServiceImplTest {
     }
 
     @Test
-    public void testGetDataByTotalStarts_Success() {
+    void testGetDataByTotalStarts_Success() {
         Integer totalStarts = 1;
         List<Data> expectedData = new ArrayList<>();
         when(dataDao.getDataByTotalStarts(totalStarts)).thenReturn(expectedData);
@@ -159,7 +159,7 @@ public class DataServiceImplTest {
     }
 
     @Test
-    public void testGetDataByTotalStarts_Failure() {
+    void testGetDataByTotalStarts_Failure() {
         Integer totalStarts = 1;
         when(dataDao.getDataByTotalStarts(totalStarts)).thenThrow(new RuntimeException("Fetch failed"));
 
@@ -172,7 +172,7 @@ public class DataServiceImplTest {
     }
 
     @Test
-    public void testGetDataByTotalComplete_Success() {
+    void testGetDataByTotalComplete_Success() {
         Integer totalComplete = 1;
         List<Data> expectedData = new ArrayList<>();
         when(dataDao.getDataByTotalComplete(totalComplete)).thenReturn(expectedData);
@@ -184,7 +184,7 @@ public class DataServiceImplTest {
     }
 
     @Test
-    public void testGetDataByTotalComplete_Failure() {
+    void testGetDataByTotalComplete_Failure() {
         Integer totalComplete = 1;
         when(dataDao.getDataByTotalComplete(totalComplete)).thenThrow(new RuntimeException("Fetch failed"));
 
@@ -197,7 +197,7 @@ public class DataServiceImplTest {
     }
 
     @Test
-    public void testGetTotalStartsByArea_Success() {
+    void testGetTotalStartsByArea_Success() {
         String area = "TestArea";
         int expected = 10;
         when(dataDao.sumTotalStartsByCensusArea(area)).thenReturn(expected);
@@ -206,7 +206,7 @@ public class DataServiceImplTest {
     }
 
     @Test
-    public void testGetTotalCompleteByArea_Success() {
+    void testGetTotalCompleteByArea_Success() {
         String area = "TestArea";
         int expected = 10;
         when(dataDao.sumTotalCompleteByCensusArea(area)).thenReturn(expected);
@@ -215,7 +215,7 @@ public class DataServiceImplTest {
     }
 
     @Test
-    public void testGetTotalStartsByArea_NonExistentArea() {
+    void testGetTotalStartsByArea_NonExistentArea() {
         String area = "Nonexistent Area";
 
         when(dataDao.sumTotalStartsByCensusArea(area)).thenReturn(0);
@@ -226,7 +226,7 @@ public class DataServiceImplTest {
     }
 
     @Test
-    public void testGetTotalCompleteByArea_NonExistentArea() {
+    void testGetTotalCompleteByArea_NonExistentArea() {
         String area = "Nonexistent Area";
 
         when(dataDao.sumTotalCompleteByCensusArea(area)).thenReturn(0);
@@ -237,7 +237,7 @@ public class DataServiceImplTest {
     }
 
     @Test
-    public void testGetTotalStartsByArea_Failure() {
+    void testGetTotalStartsByArea_Failure() {
         String area = "TestArea";
         when(dataDao.sumTotalStartsByCensusArea(area)).thenThrow(new RuntimeException("Fetch failed"));
 
@@ -249,7 +249,7 @@ public class DataServiceImplTest {
         verify(dataDao).sumTotalStartsByCensusArea(area);
     }
     @Test
-    public void testGetTotalCompleteByArea_Failure() {
+    void testGetTotalCompleteByArea_Failure() {
         String area = "TestArea";
         when(dataDao.sumTotalCompleteByCensusArea(area)).thenThrow(new RuntimeException("Fetch failed"));
 
@@ -262,7 +262,7 @@ public class DataServiceImplTest {
     }
 
     @Test
-    public void testAllData_EmptyList() {
+    void testAllData_EmptyList() {
         when(dataDao.findAll()).thenReturn(new ArrayList<>());
         Iterable<Data> result = dataService.allData();
         assertNotNull(result);
