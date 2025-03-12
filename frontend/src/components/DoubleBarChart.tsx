@@ -64,7 +64,7 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
     }
 
     // Handle month selection change
-    private handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    private readonly handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
         const value = event.target.value;
         const selectedMonth = value === "all" ? null : parseInt(value, 10);
         
@@ -74,7 +74,7 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
         });
     };
 
-    private fetchData = async (): Promise<void> => {
+    private readonly fetchData = async (): Promise<void> => {
         try {
             // Fetch all housing data
             const response = await fetch('/api/housingStats');
@@ -167,7 +167,7 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
         }
     };
 
-    private getChartData = (): any => {
+    private readonly getChartData = (): any => {
         const { startsData, completionsData, showCompletions, selectedMonth } = this.state;
         let data = showCompletions ? completionsData : startsData;
         
