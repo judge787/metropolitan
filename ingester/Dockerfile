@@ -11,11 +11,11 @@ WORKDIR /usr/app/
 # Install system dependencies first
 RUN apt-get update && \
 apt-get install -y \
+cron \
 gcc \
-python3-dev \
 libmariadb-dev \
 libmariadb-dev-compat \
-cron \
+python3-dev \
 && rm -rf /var/lib/apt/lists/*
 
 # Copy the requirements file into the container
