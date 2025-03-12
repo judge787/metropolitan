@@ -39,8 +39,9 @@ class App extends Component<{}, AppState> {
                 <ul className="nav-links">
                   <li><Link to="/">Home</Link></li>
                   <li><Link to="/types">Types</Link></li>
-                  <li><Link to="/completions-starts">Completions / Starts</Link></li>
+                  <li><Link to="/completions-starts">Trends</Link></li>
                   <li><Link to="/contact">Contact Us</Link></li>
+                  <li><Link to="/mode">Mode</Link></li>
                 </ul>
               </nav>
             </div>
