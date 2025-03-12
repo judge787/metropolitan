@@ -15,13 +15,13 @@ class App extends Component<{}, AppState> {
     showCompletions: false, // Default to showing housing starts
   };
 
-  private handleContactClick = (): void => {
+  private readonly handleContactClick = (): void => {
     this.setState((prevState) => ({
       showContactInfo: !prevState.showContactInfo,
     }));
   };
 
-  private handleToggleView = (): void => {
+  private readonly handleToggleView = (): void => {
     this.setState((prevState) => ({
       showCompletions: !prevState.showCompletions,
     }));
