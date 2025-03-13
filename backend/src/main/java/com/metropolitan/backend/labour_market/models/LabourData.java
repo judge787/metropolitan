@@ -18,11 +18,11 @@ public class LabourData {
     @Column(name = "labour_force_status")
     private Integer labourForceStatus;
 
-    public LabourData(Integer id, Integer province, Integer labour_force_status, Integer education_level) {
+    public LabourData(Integer id, Integer province, Integer labourForceStatus, Integer educationLevel) {
         this.id = id;
         this.province = province;
-        this.labourForceStatus = labour_force_status;
-        this.educationLevel = education_level;
+        this.labourForceStatus = labourForceStatus;
+        this.educationLevel = educationLevel;
     }
 
     public LabourData() {
