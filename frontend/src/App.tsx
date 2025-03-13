@@ -4,11 +4,8 @@ import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import ProductPitch from './components/ProductPitch';
 import HousingChart from './components/DoubleBarChart';
 import DoubleRadarChart from './components/DoubleRadarChart';
-<<<<<<< HEAD
 import LineChartEmployment from './components/LineChartEmployment';
 
-=======
->>>>>>> 81f5cdb186e9e45d6a309e639d42d4e2be926bc3
 interface AppState {
   showContactInfo: boolean;
   showCompletions: boolean; // Added state to track which data to display
@@ -48,14 +45,6 @@ class App extends Component<{}, AppState> {
               <img src={this.state.darkMode ? "./logoMetroDark.png": "./logoMetro.webp"  }  alt="Logo" style={{ height: '75px' }} />
               <nav>
                 <ul className="nav-links">
-<<<<<<< HEAD
-                  <li><Link to="/">Home</Link></li>
-                  <li><Link to="/types">Types</Link></li>
-                  <li><Link to="/completions-starts">Trends</Link></li>
-                  <li><Link to="/contact">Contact Us</Link></li>
-                  <li><Link to="/mode">Mode</Link></li>
-                  <li><Link to="/employment">Employment</Link></li>
-=======
                   <li><Link to="/" className={this.state.darkMode ? 'dark-mode' : ''}>Home</Link></li>
                   <li><Link to="/types" className={this.state.darkMode ? 'dark-mode' : ''}>Types</Link></li>
                   <li><Link to="/completions-starts" className={this.state.darkMode ? 'dark-mode' : ''}>Trends</Link></li>
@@ -68,7 +57,6 @@ class App extends Component<{}, AppState> {
                     {this.state.darkMode ? '🔆' : '🌙'}
                   </button>
                   </li>
->>>>>>> 81f5cdb186e9e45d6a309e639d42d4e2be926bc3
                 </ul>
               </nav>
             </div>
