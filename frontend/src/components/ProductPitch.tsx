@@ -4,9 +4,9 @@ class ProductPitch extends Component {
   public render(): React.JSX.Element {
     return (
       <div className="flex items-start flex justify-center items-center min-h-screen">
-      <section className="bg-[#d3f3f8] p-8 w-200 h-80 rounded-lg shadow-md">
+      <section className="bg-[#d3f3f8] p-8 w-200 h-90 rounded-lg shadow-md">
         <div className="max-w-4xl mx-auto">
-        <h2 className="text-xl font-bold">About Us</h2> 
+        <h2 className="text-xl font-bold" style={{ color: '#d3f3f8' }}>About Us</h2> 
         <p className="text-lg text-black leading-relaxed" style={{ fontFamily: 'sans-serif'}}>
             What if you could easily track how housing and employment growth are shaping the future of Hamilton and Toronto—all in one place?
             Regional planners, real estate investors, and policymakers often struggle with fragmented data, making informed decisions difficult.
