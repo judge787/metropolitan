@@ -44,21 +44,23 @@ class App extends Component<{}, AppState> {
             <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
               <img src={this.state.darkMode ? "./logoMetroDark.png": "./logoMetro.webp"  }  alt="Logo" style={{ height: '75px' }} />
               <nav>
-                <ul className="nav-links">
-                  <li><Link to="/" className={this.state.darkMode ? 'dark-mode' : ''}>Home</Link></li>
-                  <li><Link to="/types" className={this.state.darkMode ? 'dark-mode' : ''}>Types</Link></li>
-                  <li><Link to="/completions-starts" className={this.state.darkMode ? 'dark-mode' : ''}>Trends</Link></li>
-                  <li><Link to="/contact" className={this.state.darkMode ? 'dark-mode' : ''}>Contact Us</Link></li>
-                  <li>
-                  <button 
-                    onClick={this.handleToggleDarkMode} 
-                    className={`px-4 py-2 rounded text-white hover:bg-blue-600 transition ${this.state.darkMode ? 'bg-[#1e1421]' : 'bg-[#b5e3f7]'}`}
-                  >
-                    {this.state.darkMode ? '🔆' : '🌙'}
-                  </button>
-                  </li>
-                </ul>
-              </nav>
+  <ul className="nav-links">
+    <li><Link to="/" className={this.state.darkMode ? 'dark-mode' : ''}>Home</Link></li>
+    <li><Link to="/types" className={this.state.darkMode ? 'dark-mode' : ''}>Types</Link></li>
+    <li><Link to="/completions-starts" className={this.state.darkMode ? 'dark-mode' : ''}>Trends</Link></li>
+    <li><Link to="/employment" className={this.state.darkMode ? 'dark-mode' : ''}>Employment</Link></li>
+    <li><Link to="/contact" className={this.state.darkMode ? 'dark-mode' : ''}>Contact Us</Link></li>
+    <li>
+      <button 
+        onClick={this.handleToggleDarkMode} 
+        className={`px-4 py-2 rounded text-white hover:bg-blue-600 transition ${this.state.darkMode ? 'bg-[#1e1421]' : 'bg-[#b5e3f7]'}`}
+      >
+        {this.state.darkMode ? '🔆' : '🌙'}
+      </button>
+    </li>
+  </ul>
+</nav>
+
             </div>
           </header>
             <Routes>
@@ -138,10 +140,12 @@ class App extends Component<{}, AppState> {
                       <img 
                         src="./employment.png" 
                         alt="Employment" 
-                        style={{ height: '250px' }}
+                        style={{ width: '300px', height: '250px' }}
                       />
                     </div>
-                    <LineChartEmployment />
+                    <div className="max-w-4xl mx-auto">
+                      <LineChartEmployment />
+                    </div>
                   </section>
                 } 
               />
