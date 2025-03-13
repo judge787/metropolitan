@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import ProductPitch from './components/ProductPitch';
 import HousingChart from './components/DoubleBarChart';
 import DoubleRadarChart from './components/DoubleRadarChart';
+import LineChartEmployment from './components/LineChartEmployment';
 
 interface AppState {
   showContactInfo: boolean;
@@ -42,6 +43,7 @@ class App extends Component<{}, AppState> {
                   <li><Link to="/completions-starts">Trends</Link></li>
                   <li><Link to="/contact">Contact Us</Link></li>
                   <li><Link to="/mode">Mode</Link></li>
+                  <li><Link to="/employment">Employment</Link></li>
                 </ul>
               </nav>
             </div>
@@ -109,6 +111,21 @@ class App extends Component<{}, AppState> {
               }
               >
               </Route>
+              <Route 
+                path="/employment" 
+                element={
+                  <section className="my-12">
+                    <div className="flex justify-center items-center mb-1">
+                      <img 
+                        src="./employment.png" 
+                        alt="Employment" 
+                        style={{ height: '250px' }}
+                      />
+                    </div>
+                    <LineChartEmployment />
+                  </section>
+                } 
+              />
             </Routes>
           </main>
         </div>
