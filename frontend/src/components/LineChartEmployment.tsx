@@ -291,14 +291,12 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
           <label htmlFor="chart-description" className="block text-[rgba(0,65,187,0.8)] font-semibold mb-2 text-3xl" style={{ fontFamily: 'Others' }}>
             Data Summary
           </label>
-          <textarea
-            id="chart-description"
-            className="w-full p-2 border-2 border-[#1ed1d6] rounded-lg resize-none text-[rgba(0,65,187,0.8)]" 
-            style={{ fontFamily: 'Sans-Serif', minHeight: '150px'}}
-            rows={5}
-            value={description}
-            readOnly
-          />
+          <div 
+            className="w-full p-2 border-2 border-[#1ed1d6] rounded-lg text-[rgba(0,65,187,0.8)]" 
+            style={{ fontFamily: 'Sans-Serif' }}
+          >
+            {description}
+          </div>
         </div>
       </div>
     );
