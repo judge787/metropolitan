@@ -27,7 +27,7 @@ public class HousingDataController {
     }
 
     @PostMapping()
-    public ResponseEntity<String> addData(@RequestBody Data newData) {
+    private ResponseEntity<String> addData(@RequestBody Data newData) {
         String result = dataService.addData(newData);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
@@ -55,7 +55,7 @@ public class HousingDataController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteData(@PathVariable Integer id) {
+    private ResponseEntity<String> deleteData(@PathVariable Integer id) {
         String result = dataService.deleteData(id);
         if ("Deleted".equals(result)) {
             return ResponseEntity.ok(result);
@@ -71,12 +71,12 @@ public class HousingDataController {
     }
 
     @GetMapping("/count")
-    public ResponseEntity<Integer> count() {
+    private ResponseEntity<Integer> count() {
         Integer count = dataService.count();
         return ResponseEntity.ok(count);
     }
     @GetMapping("/starts/{censusArea}")
-    public ResponseEntity<Integer> getTotalHousingStartsByCensusArea(@PathVariable String censusArea){
+    private ResponseEntity<Integer> getTotalHousingStartsByCensusArea(@PathVariable String censusArea){
         Integer total = dataService.getTotalStartsByArea(censusArea);
         return  ResponseEntity.ok(total);
     }
