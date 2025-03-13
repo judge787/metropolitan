@@ -55,16 +55,10 @@ test {
 
 jacocoTestReport {
     dependsOn test // tests are required to run before generating the report
-        reports {
-        csv.required = true
+	reports {
+        html.required = true
         xml.required = true
-    }
-
-    doLast {
-        def coverage = file("${buildDir}/reports/jacoco/test/jacocoTestReport.csv").text
-        println("Test Coverage Summary:")
-        println(coverage)
-    }
+	}
 }
 
 sonar {
