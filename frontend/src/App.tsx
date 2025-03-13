@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import ProductPitch from './components/ProductPitch';
 import HousingChart from './components/DoubleBarChart';
 import DoubleRadarChart from './components/DoubleRadarChart';
+import LineChartEmployment from './components/LineChartEmployment';
+
 interface AppState {
   showContactInfo: boolean;
   showCompletions: boolean; // Added state to track which data to display
@@ -42,21 +44,23 @@ class App extends Component<{}, AppState> {
             <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
               <img src={this.state.darkMode ? "./logoMetroDark.png": "./logoMetro.webp"  }  alt="Logo" style={{ height: '75px' }} />
               <nav>
-                <ul className="nav-links">
-                  <li><Link to="/" className={this.state.darkMode ? 'dark-mode' : ''}>Home</Link></li>
-                  <li><Link to="/types" className={this.state.darkMode ? 'dark-mode' : ''}>Types</Link></li>
-                  <li><Link to="/completions-starts" className={this.state.darkMode ? 'dark-mode' : ''}>Trends</Link></li>
-                  <li><Link to="/contact" className={this.state.darkMode ? 'dark-mode' : ''}>Contact Us</Link></li>
-                  <li>
-                  <button 
-                    onClick={this.handleToggleDarkMode} 
-                    className={`px-4 py-2 rounded text-white hover:bg-blue-600 transition ${this.state.darkMode ? 'bg-[#1e1421]' : 'bg-[#b5e3f7]'}`}
-                  >
-                    {this.state.darkMode ? '🔆' : '🌙'}
-                  </button>
-                  </li>
-                </ul>
-              </nav>
+  <ul className="nav-links">
+    <li><Link to="/" className={this.state.darkMode ? 'dark-mode' : ''}>Home</Link></li>
+    <li><Link to="/types" className={this.state.darkMode ? 'dark-mode' : ''}>Types</Link></li>
+    <li><Link to="/completions-starts" className={this.state.darkMode ? 'dark-mode' : ''}>Trends</Link></li>
+    <li><Link to="/employment" className={this.state.darkMode ? 'dark-mode' : ''}>Employment</Link></li>
+    <li><Link to="/contact" className={this.state.darkMode ? 'dark-mode' : ''}>Contact Us</Link></li>
+    <li>
+      <button 
+        onClick={this.handleToggleDarkMode} 
+        className={`px-4 py-2 rounded text-white hover:bg-blue-600 transition ${this.state.darkMode ? 'bg-[#1e1421]' : 'bg-[#b5e3f7]'}`}
+      >
+        {this.state.darkMode ? '🔆' : '🌙'}
+      </button>
+    </li>
+  </ul>
+</nav>
+
             </div>
           </header>
             <Routes>
@@ -128,6 +132,23 @@ class App extends Component<{}, AppState> {
                 }
               >
               </Route>
+              <Route 
+                path="/employment" 
+                element={
+                  <section className="my-12">
+                    <div className="flex justify-center items-center mb-1">
+                      <img 
+                        src="./employment.png" 
+                        alt="Employment" 
+                        style={{ width: '300px', height: '250px' }}
+                      />
+                    </div>
+                    <div className="max-w-4xl mx-auto">
+                      <LineChartEmployment />
+                    </div>
+                  </section>
+                } 
+              />
             </Routes>
         </div>
         </main>
