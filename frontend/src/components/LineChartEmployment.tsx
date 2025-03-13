@@ -182,7 +182,7 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
     const datasets = Object.entries(this.educationNames).map(([id, name]) => {
       const educationId = parseInt(id);
       
-      const data = Object.keys(this.provinceNames).map(_provinceId => {
+      const data = Object.keys(this.provinceNames).map(() => {
         return employmentRates.byEducation[educationId] + (Math.random() * 6 - 3);
       });
       
