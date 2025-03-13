@@ -27,13 +27,10 @@ interface LineChartState {
   loading: boolean;
   error: string | null;
   chartKey: number;
-  showByEducation: boolean;
   description: string;
 }
 
-interface LineChartProps {
-  showByEducation?: boolean;
-}
+interface LineChartProps {}
 
 class LineChartEmployment extends Component<LineChartProps, LineChartState> {
   private provinceNames: Record<number, string> = {
@@ -66,22 +63,11 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
     loading: true,
     error: null,
     chartKey: Date.now(),
-    showByEducation: this.props.showByEducation || true,
-    description: "This chart displays employment rates based on education level across different provinces. The employment rate is calculated as the percentage of people in the labour force who are employed. Toggle between viewing by education level or by province to see different perspectives on employment trends."
+    description: "This chart displays employment rates based on education level across different provinces. The employment rate is calculated as the percentage of people in the labour force who are employed."
   };
 
   public componentDidMount(): void {
     this.setState({ loading: false, chartKey: Date.now() });
-  }
-
-  public componentDidUpdate(prevProps: LineChartProps): void {
-    if (prevProps.showByEducation !== this.props.showByEducation && 
-        this.props.showByEducation !== undefined) {
-      this.setState({
-        showByEducation: this.props.showByEducation,
-        chartKey: Date.now()
-      });
-    }
   }
 
   public componentWillUnmount(): void {
@@ -90,13 +76,6 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
       chartInstance.destroy();
     }
   }
-
-  private toggleView = (): void => {
-    this.setState(prevState => ({
-      showByEducation: !prevState.showByEducation,
-      chartKey: Date.now()
-    }));
-  };
 
   private getSimulatedData() {
     const simulatedData = [];
@@ -190,7 +169,6 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
   }
 
   private getLineChartData = (): any => {
-    const { showByEducation } = this.state;
     const simulatedData = this.getSimulatedData();
     const employmentRates = this.calculateEmploymentRates(simulatedData);
     
@@ -201,75 +179,33 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
       4: { bg: 'rgba(75, 192, 192, 0.2)', border: 'rgba(75, 192, 192, 1)' }
     };
     
-    const provinceColors = {
-      1: { bg: 'rgba(153, 102, 255, 0.2)', border: 'rgba(153, 102, 255, 1)' },
-      2: { bg: 'rgba(255, 159, 64, 0.2)', border: 'rgba(255, 159, 64, 1)' },
-      3: { bg: 'rgba(199, 199, 199, 0.2)', border: 'rgba(199, 199, 199, 1)' },
-      4: { bg: 'rgba(83, 102, 255, 0.2)', border: 'rgba(83, 102, 255, 1)' },
-      5: { bg: 'rgba(220, 20, 60, 0.2)', border: 'rgba(220, 20, 60, 1)' },
-      6: { bg: 'rgba(0, 128, 0, 0.2)', border: 'rgba(0, 128, 0, 1)' },
-      7: { bg: 'rgba(255, 0, 255, 0.2)', border: 'rgba(255, 0, 255, 1)' },
-      8: { bg: 'rgba(0, 0, 128, 0.2)', border: 'rgba(0, 0, 128, 1)' },
-      9: { bg: 'rgba(128, 0, 0, 0.2)', border: 'rgba(128, 0, 0, 1)' },
-      10: { bg: 'rgba(0, 128, 128, 0.2)', border: 'rgba(0, 128, 128, 1)' }
-    };
+    const datasets = Object.entries(this.educationNames).map(([id, name]) => {
+      const educationId = parseInt(id);
+      
+      const data = Object.keys(this.provinceNames).map(provinceId => {
+        return employmentRates.byEducation[educationId] + (Math.random() * 6 - 3);
+      });
+      
+      return {
+        label: name,
+        data,
+        backgroundColor: educationColors[educationId].bg,
+        borderColor: educationColors[educationId].border,
+        borderWidth: 2,
+        tension: 0.4,
+        fill: true,
+        pointRadius: 3,
+      };
+    });
     
-    if (showByEducation) {
-      const datasets = Object.entries(this.educationNames).map(([id, name]) => {
-        const educationId = parseInt(id);
-        
-        const data = Object.keys(this.provinceNames).map(provinceId => {
-          return employmentRates.byEducation[educationId] + (Math.random() * 6 - 3);
-        });
-        
-        return {
-          label: name,
-          data,
-          backgroundColor: educationColors[educationId].bg,
-          borderColor: educationColors[educationId].border,
-          borderWidth: 2,
-          tension: 0.4,
-          fill: true,
-          pointRadius: 3,
-        };
-      });
-      
-      return {
-        labels: Object.values(this.provinceNames),
-        datasets
-      };
-    } else {
-      const datasets = Object.entries(this.provinceNames).map(([id, name]) => {
-        const provinceId = parseInt(id);
-        
-        const data = Object.keys(this.educationNames).map(educationId => {
-          return employmentRates.byProvince[provinceId] + (Math.random() * 6 - 3);
-        });
-        
-        return {
-          label: name,
-          data,
-          backgroundColor: provinceColors[provinceId].bg,
-          borderColor: provinceColors[provinceId].border,
-          borderWidth: 2,
-          tension: 0.4,
-          fill: true,
-          pointRadius: 3,
-        };
-      });
-      
-      return {
-        labels: Object.values(this.educationNames),
-        datasets
-      };
-    }
+    return {
+      labels: Object.values(this.provinceNames),
+      datasets
+    };
   };
 
   private getLineOptions = (): any => {
-    const { showByEducation } = this.state;
-    const chartTitle = showByEducation ? 
-      'Employment Rate by Education Level Across Provinces' : 
-      'Employment Rate by Province Across Education Levels';
+    const chartTitle = 'Employment Rate by Education Level Across Provinces';
     
     return {
       responsive: true,
@@ -321,7 +257,7 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
         x: {
           title: {
             display: true,
-            text: showByEducation ? 'Provinces' : 'Education Levels',
+            text: 'Provinces',
             font: {
               weight: 'bold'
             }
@@ -332,7 +268,7 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
   };
 
   public render(): React.JSX.Element {
-    const { loading, error, chartKey, description, showByEducation } = this.state;
+    const { loading, error, chartKey, description } = this.state;
 
     if (loading) {
       return <div className="text-center text-gray-600">Loading...</div>;
@@ -341,14 +277,6 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
     return (
       <div className="border-2 border-[#1ed1d6] rounded-lg shadow-md p-4">
         {error && <div className="error-banner bg-red-100 text-red-700 p-2 rounded mb-4">{error}</div>}
-        <div className="mb-4">
-          <button 
-            onClick={this.toggleView}
-            className="px-4 py-2 bg-[rgba(0,65,187,1)] text-white rounded hover:bg-blue-700 transition duration-200"
-          >
-            {showByEducation ? "Show By Province" : "Show By Education Level"}
-          </button>
-        </div>
         
         <div style={{ height: '400px', width: '100%', maxWidth: '900px', margin: '0 auto' }}>
           <Line 
