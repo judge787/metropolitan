@@ -3,7 +3,7 @@ FROM python:3.11-slim
 
 # Set the timezone in the container
 ENV TZ=America/Toronto
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN ln -snf /usr/share/zoneinfo/"$TZ" /etc/localtime && echo "$TZ" > /etc/timezone
 
 # Set the working directory in the container
 WORKDIR /usr/app/
@@ -11,11 +11,11 @@ WORKDIR /usr/app/
 # Install system dependencies first
 RUN apt-get update && \
 apt-get install -y \
+cron \
 gcc \
-python3-dev \
 libmariadb-dev \
 libmariadb-dev-compat \
-cron \
+python3-dev \
 && rm -rf /var/lib/apt/lists/*
 
 # Copy the requirements file into the container
