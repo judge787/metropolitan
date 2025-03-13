@@ -17,12 +17,12 @@ class App extends Component<{}, AppState> {
     darkMode: false, // Default to light mode
   };
 
-  private readonly handleContactClick = (): void => {
+  private handleContactClick = (): void => {
     this.setState((prevState) => ({
       showContactInfo: !prevState.showContactInfo,
     }));
   };
-  private readonly handleToggleView = (): void => {
+  private handleToggleDarkMode = (): void => {
     this.setState((prevState) => ({
       darkMode: !prevState.darkMode,
     }));
@@ -106,7 +106,7 @@ class App extends Component<{}, AppState> {
                     <HousingChart 
                       showCompletions={this.state.showCompletions} // Pass the state for showCompletions
                       onToggleView={this.handleToggleView} />
-                    </div>
+                      </div>
                   </section>
                 } 
               />
