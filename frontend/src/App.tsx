@@ -17,12 +17,12 @@ class App extends Component<{}, AppState> {
     darkMode: false, // Default to light mode
   };
 
-  private handleContactClick = (): void => {
+  private readonly handleContactClick = (): void => {
     this.setState((prevState) => ({
       showContactInfo: !prevState.showContactInfo,
     }));
   };
-  private handleToggleDarkMode = (): void => {
+  private readonly handleToggleView = (): void => {
     this.setState((prevState) => ({
       darkMode: !prevState.darkMode,
     }));
