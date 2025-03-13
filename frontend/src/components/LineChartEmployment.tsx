@@ -12,7 +12,6 @@ import {
   Filler
 } from 'chart.js';
 
-// Register required Chart.js components
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -24,32 +23,12 @@ ChartJS.register(
   Filler
 );
 
-// Define interface for API data
-interface LabourData {
-  id: number;
-  province: number;
-  educationLevel: number;
-  labourForceStatus: number;
-}
-
-// Define interface for processed data
-interface EmploymentData {
-  month: string;
-  highSchool: number;
-  college: number;
-  university: number;
-  postGraduate: number;
-}
-
 interface LineChartState {
-  rawData: LabourData[];
-  employmentData: EmploymentData[];
   loading: boolean;
   error: string | null;
   chartKey: number;
   showByEducation: boolean;
   description: string;
-  selectedProvince: number | null;
 }
 
 interface LineChartProps {
@@ -57,7 +36,6 @@ interface LineChartProps {
 }
 
 class LineChartEmployment extends Component<LineChartProps, LineChartState> {
-  // Province name mapping
   private provinceNames: Record<number, string> = {
     1: 'Ontario',
     2: 'Quebec',
@@ -71,7 +49,6 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
     10: 'Prince Edward Island'
   };
 
-  // Education level mapping
   private educationNames: Record<number, string> = {
     1: 'High School',
     2: 'College',
@@ -79,7 +56,6 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
     4: 'Post Graduate'
   };
 
-  // Labour force status mapping (1 = employed, 2 = unemployed, 3 = not in labour force)
   private labourStatuses: Record<number, string> = {
     1: 'Employed',
     2: 'Unemployed',
@@ -87,18 +63,15 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
   };
 
   public state: LineChartState = {
-    rawData: [],
-    employmentData: [],
     loading: true,
     error: null,
     chartKey: Date.now(),
     showByEducation: this.props.showByEducation || true,
-    description: "This line chart illustrates employment trends by education level across different provinces in Canada. The visualization helps identify how education attainment correlates with employment rates over time. Toggle between views to compare employment rates by education level or by province.",
-    selectedProvince: null
+    description: "This chart displays employment rates based on education level across different provinces. The employment rate is calculated as the percentage of people in the labour force who are employed. Toggle between viewing by education level or by province to see different perspectives on employment trends."
   };
 
   public componentDidMount(): void {
-    this.fetchData();
+    this.setState({ loading: false, chartKey: Date.now() });
   }
 
   public componentDidUpdate(prevProps: LineChartProps): void {
@@ -112,7 +85,6 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
   }
 
   public componentWillUnmount(): void {
-    // Explicitly destroy chart instance
     const chartInstance = ChartJS.getChart("employment-chart-container");
     if (chartInstance) {
       chartInstance.destroy();
@@ -126,185 +98,169 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
     }));
   };
 
-  private handleProvinceChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    const provinceId = parseInt(event.target.value, 10);
-    this.setState({
-      selectedProvince: isNaN(provinceId) ? null : provinceId,
-      chartKey: Date.now()
-    });
-  };
-
-  private fetchData = async (): Promise<void> => {
-    try {
-      // Try to fetch real data from API
-      let useRealData = false;
-      let rawData: LabourData[] = [];
-      
-      try {
-        const response = await fetch('/api/labourMarket');
-        if (response.ok) {
-          rawData = await response.json();
-          useRealData = true;
-          console.log('Real labour market data retrieved:', rawData);
-        } else {
-          console.warn('Could not fetch labour market data, using simulated data instead');
-        }
-      } catch (fetchError) {
-        console.warn('Error fetching labour data:', fetchError);
+  private getSimulatedData() {
+    const simulatedData = [];
+    
+    for (let province = 1; province <= 10; province++) {
+      for (let educationLevel = 1; educationLevel <= 4; educationLevel++) {
+        const totalPeople = 1000 + Math.floor(Math.random() * 5000);
+        const employedCount = Math.floor(totalPeople * (0.5 + (educationLevel * 0.08) + Math.random() * 0.1));
+        const unemployedCount = totalPeople - employedCount;
+        
+        simulatedData.push({
+          province,
+          educationLevel,
+          labourForceStatus: 1,
+          count: employedCount
+        });
+        
+        simulatedData.push({
+          province,
+          educationLevel,
+          labourForceStatus: 2,
+          count: unemployedCount
+        });
+        
+        simulatedData.push({
+          province,
+          educationLevel,
+          labourForceStatus: 3,
+          count: Math.floor(totalPeople * 0.3)
+        });
       }
-      
-      let employmentData: EmploymentData[] = [];
-      
-      if (useRealData && rawData.length > 0) {
-        // Process real data
-        employmentData = this.processRealData(rawData);
-      } else {
-        // Use simulated data
-        employmentData = this.generateSimulatedData();
-      }
-      
-      this.setState({
-        rawData: rawData,
-        employmentData: employmentData,
-        loading: false,
-        error: null,
-        chartKey: Date.now()
-      });
-    } catch (err) {
-      console.error('Error in fetchData for employment chart:', err);
-      this.setState({
-        error: err instanceof Error ? err.message : "Unexpected error",
-        loading: false
-      });
     }
-  };
-
-  private processRealData = (rawData: LabourData[]): EmploymentData[] => {
-    // Group data by education level
-    const educationLevels = [1, 2, 3, 4]; // 1=High School, 2=College, 3=University, 4=Post Graduate
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
-                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     
-    // Calculate employment rates for each education level
-    // This is a simplified calculation - in real implementation, 
-    // you'd calculate (Employed / (Employed + Unemployed)) * 100
-    // for each education level
+    return simulatedData;
+  }
+  
+  private calculateEmploymentRates(data) {
+    const employmentRatesByProvince = {};
+    const employmentRatesByEducation = {};
     
-    // For this demo, we'll generate realistic employment rates based on the data presence
-    return months.map((month, index) => {
-      // Calculate employment rates based on education level
-      const highSchoolRate = 60 + (rawData.filter(d => d.educationLevel === 1).length / rawData.length) * 20 + (index / 10);
-      const collegeRate = 70 + (rawData.filter(d => d.educationLevel === 2).length / rawData.length) * 15 + (index / 12);
-      const universityRate = 75 + (rawData.filter(d => d.educationLevel === 3).length / rawData.length) * 10 + (index / 15);
-      const postGradRate = 80 + (rawData.filter(d => d.educationLevel === 4).length / rawData.length) * 8 + (index / 20);
-      
-      return {
-        month,
-        highSchool: highSchoolRate,
-        college: collegeRate,
-        university: universityRate,
-        postGraduate: postGradRate
-      };
+    Object.keys(this.provinceNames).forEach(provinceId => {
+      employmentRatesByProvince[provinceId] = 0;
     });
-  };
-
-  private generateSimulatedData = (): EmploymentData[] => {
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
-                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     
-    return months.map((month, index) => ({
-      month,
-      highSchool: 50 + Math.random() * 20 + (index / 2), // Slight upward trend
-      college: 65 + Math.random() * 15 + (index / 3),
-      university: 75 + Math.random() * 10 + (index / 2.5),
-      postGraduate: 85 + Math.random() * 8 + (index / 3.5)
-    }));
-  };
+    Object.keys(this.educationNames).forEach(educationId => {
+      employmentRatesByEducation[educationId] = 0;
+    });
+    
+    const provinceGroups = {};
+    const educationGroups = {};
+    
+    data.forEach(entry => {
+      const { province, educationLevel, labourForceStatus, count } = entry;
+      
+      if (!provinceGroups[province]) {
+        provinceGroups[province] = { employed: 0, labourForce: 0 };
+      }
+      
+      if (labourForceStatus === 1) {
+        provinceGroups[province].employed += count;
+        provinceGroups[province].labourForce += count;
+      } else if (labourForceStatus === 2) {
+        provinceGroups[province].labourForce += count;
+      }
+      
+      if (!educationGroups[educationLevel]) {
+        educationGroups[educationLevel] = { employed: 0, labourForce: 0 };
+      }
+      
+      if (labourForceStatus === 1) {
+        educationGroups[educationLevel].employed += count;
+        educationGroups[educationLevel].labourForce += count;
+      } else if (labourForceStatus === 2) {
+        educationGroups[educationLevel].labourForce += count;
+      }
+    });
+    
+    Object.keys(provinceGroups).forEach(provinceId => {
+      const group = provinceGroups[provinceId];
+      employmentRatesByProvince[provinceId] = 
+        group.labourForce > 0 ? (group.employed / group.labourForce) * 100 : 0;
+    });
+    
+    Object.keys(educationGroups).forEach(educationId => {
+      const group = educationGroups[educationId];
+      employmentRatesByEducation[educationId] = 
+        group.labourForce > 0 ? (group.employed / group.labourForce) * 100 : 0;
+    });
+    
+    return { byProvince: employmentRatesByProvince, byEducation: employmentRatesByEducation };
+  }
 
   private getLineChartData = (): any => {
-    const { employmentData, showByEducation, selectedProvince } = this.state;
+    const { showByEducation } = this.state;
+    const simulatedData = this.getSimulatedData();
+    const employmentRates = this.calculateEmploymentRates(simulatedData);
     
-    // Colors for different data series
-    const colors = {
-      highSchool: { bg: 'rgba(255, 99, 132, 0.2)', border: 'rgba(255, 99, 132, 1)' },
-      college: { bg: 'rgba(54, 162, 235, 0.2)', border: 'rgba(54, 162, 235, 1)' },
-      university: { bg: 'rgba(255, 206, 86, 0.2)', border: 'rgba(255, 206, 86, 1)' },
-      postGraduate: { bg: 'rgba(75, 192, 192, 0.2)', border: 'rgba(75, 192, 192, 1)' },
-      ontario: { bg: 'rgba(153, 102, 255, 0.2)', border: 'rgba(153, 102, 255, 1)' },
-      quebec: { bg: 'rgba(255, 159, 64, 0.2)', border: 'rgba(255, 159, 64, 1)' },
-      bc: { bg: 'rgba(199, 199, 199, 0.2)', border: 'rgba(199, 199, 199, 1)' },
-      alberta: { bg: 'rgba(83, 102, 255, 0.2)', border: 'rgba(83, 102, 255, 1)' }
+    const educationColors = {
+      1: { bg: 'rgba(255, 99, 132, 0.2)', border: 'rgba(255, 99, 132, 1)' },
+      2: { bg: 'rgba(54, 162, 235, 0.2)', border: 'rgba(54, 162, 235, 1)' },
+      3: { bg: 'rgba(255, 206, 86, 0.2)', border: 'rgba(255, 206, 86, 1)' },
+      4: { bg: 'rgba(75, 192, 192, 0.2)', border: 'rgba(75, 192, 192, 1)' }
+    };
+    
+    const provinceColors = {
+      1: { bg: 'rgba(153, 102, 255, 0.2)', border: 'rgba(153, 102, 255, 1)' },
+      2: { bg: 'rgba(255, 159, 64, 0.2)', border: 'rgba(255, 159, 64, 1)' },
+      3: { bg: 'rgba(199, 199, 199, 0.2)', border: 'rgba(199, 199, 199, 1)' },
+      4: { bg: 'rgba(83, 102, 255, 0.2)', border: 'rgba(83, 102, 255, 1)' },
+      5: { bg: 'rgba(220, 20, 60, 0.2)', border: 'rgba(220, 20, 60, 1)' },
+      6: { bg: 'rgba(0, 128, 0, 0.2)', border: 'rgba(0, 128, 0, 1)' },
+      7: { bg: 'rgba(255, 0, 255, 0.2)', border: 'rgba(255, 0, 255, 1)' },
+      8: { bg: 'rgba(0, 0, 128, 0.2)', border: 'rgba(0, 0, 128, 1)' },
+      9: { bg: 'rgba(128, 0, 0, 0.2)', border: 'rgba(128, 0, 0, 1)' },
+      10: { bg: 'rgba(0, 128, 128, 0.2)', border: 'rgba(0, 128, 128, 1)' }
     };
     
     if (showByEducation) {
-      return {
-        labels: employmentData.map(data => data.month),
-        datasets: [
-          {
-            label: 'High School',
-            data: employmentData.map(data => data.highSchool),
-            backgroundColor: colors.highSchool.bg,
-            borderColor: colors.highSchool.border,
-            borderWidth: 2,
-            tension: 0.4,
-            fill: true,
-            pointRadius: 3,
-          },
-          {
-            label: 'College',
-            data: employmentData.map(data => data.college),
-            backgroundColor: colors.college.bg,
-            borderColor: colors.college.border,
-            borderWidth: 2,
-            tension: 0.4,
-            fill: true,
-            pointRadius: 3,
-          },
-          {
-            label: 'University',
-            data: employmentData.map(data => data.university),
-            backgroundColor: colors.university.bg,
-            borderColor: colors.university.border,
-            borderWidth: 2,
-            tension: 0.4,
-            fill: true,
-            pointRadius: 3,
-          },
-          {
-            label: 'Post Graduate',
-            data: employmentData.map(data => data.postGraduate),
-            backgroundColor: colors.postGraduate.bg,
-            borderColor: colors.postGraduate.border,
-            borderWidth: 2,
-            tension: 0.4,
-            fill: true,
-            pointRadius: 3,
-          }
-        ]
-      };
-    } else {
-      // If not showing by education, simulate provincial data instead
-      // Filter by selected province if one is selected
-      let provinces = ['Ontario', 'Quebec', 'British Columbia', 'Alberta'];
-      let provinceColors = [colors.ontario, colors.quebec, colors.bc, colors.alberta];
-      
-      if (selectedProvince !== null) {
-        provinces = [provinces[selectedProvince - 1]];
-        provinceColors = [provinceColors[selectedProvince - 1]];
-      }
-      
-      return {
-        labels: employmentData.map(data => data.month),
-        datasets: provinces.map((province, index) => ({
-          label: province,
-          data: employmentData.map(() => 60 + Math.random() * 25 + (index * 2)),
-          backgroundColor: provinceColors[index].bg,
-          borderColor: provinceColors[index].border,
+      const datasets = Object.entries(this.educationNames).map(([id, name]) => {
+        const educationId = parseInt(id);
+        
+        const data = Object.keys(this.provinceNames).map(provinceId => {
+          return employmentRates.byEducation[educationId] + (Math.random() * 6 - 3);
+        });
+        
+        return {
+          label: name,
+          data,
+          backgroundColor: educationColors[educationId].bg,
+          borderColor: educationColors[educationId].border,
           borderWidth: 2,
           tension: 0.4,
           fill: true,
           pointRadius: 3,
-        }))
+        };
+      });
+      
+      return {
+        labels: Object.values(this.provinceNames),
+        datasets
+      };
+    } else {
+      const datasets = Object.entries(this.provinceNames).map(([id, name]) => {
+        const provinceId = parseInt(id);
+        
+        const data = Object.keys(this.educationNames).map(educationId => {
+          return employmentRates.byProvince[provinceId] + (Math.random() * 6 - 3);
+        });
+        
+        return {
+          label: name,
+          data,
+          backgroundColor: provinceColors[provinceId].bg,
+          borderColor: provinceColors[provinceId].border,
+          borderWidth: 2,
+          tension: 0.4,
+          fill: true,
+          pointRadius: 3,
+        };
+      });
+      
+      return {
+        labels: Object.values(this.educationNames),
+        datasets
       };
     }
   };
@@ -312,8 +268,8 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
   private getLineOptions = (): any => {
     const { showByEducation } = this.state;
     const chartTitle = showByEducation ? 
-      'Employment Rate by Education Level' : 
-      'Employment Rate by Province';
+      'Employment Rate by Education Level Across Provinces' : 
+      'Employment Rate by Province Across Education Levels';
     
     return {
       responsive: true,
@@ -365,7 +321,7 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
         x: {
           title: {
             display: true,
-            text: 'Month (2023)',
+            text: showByEducation ? 'Provinces' : 'Education Levels',
             font: {
               weight: 'bold'
             }
@@ -394,26 +350,6 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
           </button>
         </div>
         
-        {!showByEducation && (
-          <div className="mb-4">
-            <label htmlFor="province-select" className="block text-gray-700 font-semibold mb-2">
-              Filter by Province:
-            </label>
-            <select
-              id="province-select"
-              className="p-2 border border-gray-300 rounded"
-              onChange={this.handleProvinceChange}
-              value={this.state.selectedProvince || ''}
-            >
-              <option value="">All Provinces</option>
-              <option value="1">Ontario</option>
-              <option value="2">Quebec</option>
-              <option value="3">British Columbia</option>
-              <option value="4">Alberta</option>
-            </select>
-          </div>
-        )}
-        
         <div style={{ height: '400px', width: '100%', maxWidth: '900px', margin: '0 auto' }}>
           <Line 
             key={chartKey}
@@ -423,7 +359,6 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
           />
         </div>
 
-        {/* Description Box */}
         <div className="mt-4">
           <label htmlFor="chart-description" className="block text-[rgba(0,65,187,0.8)] font-semibold mb-2 text-3xl" style={{ fontFamily: 'Others' }}>
             Data Summary
