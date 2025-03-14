@@ -142,8 +142,8 @@ sonar-analysis-frontend:
       -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info 
       -Dsonar.qualitygate.wait=true
   allow_failure: true
-  #only:
-  #  - main
+  only:
+    - main
 
 sonar-analysis-backend:
   stage: sonar_analysis
@@ -157,8 +157,8 @@ sonar-analysis-backend:
         -Dsonar.login=$SONAR_BACKEND_TOKEN
         -Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/test/jacocoTestReport.xml
   allow_failure: true
-  #only:
-  #  - main
+  only:
+    - main
 
 sonar-analysis-ingester:
   stage: sonar_analysis
@@ -181,5 +181,5 @@ sonar-analysis-ingester:
       -Dsonar.python.coverage.reportPaths=coverage.xml 
       -Dsonar.qualitygate.wait=true
   allow_failure: true
-  #only:
-  #  - main
+  only:
+    - main
