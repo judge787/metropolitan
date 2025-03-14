@@ -1,16 +1,10 @@
 import React, { Component } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { MonthlyData, fetchProcessedHousingData } from '../services/HousingDataService';
 
 // Register required Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-
-// Define interface for month data
-interface MonthlyData {
-    month: number;
-    toronto: number;
-    hamilton: number;
-}
 
 interface HousingChartState {
     startsData: MonthlyData[];
@@ -20,8 +14,8 @@ interface HousingChartState {
     chartKey: number;
     showCompletions: boolean;
     description: string;
-    selectedMonth: number | null; // Add selected month state
-    availableMonths: number[]; // Track available months for the dropdown
+    selectedMonth: number | null;
+    availableMonths: number[];
 }
 
 interface HousingChartProps {
@@ -43,7 +37,7 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
     };
 
     public componentDidMount(): void {
-        this.fetchData();
+        this.loadData();
     }
 
     public componentDidUpdate(prevProps: HousingChartProps): void {
@@ -74,92 +68,20 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
         });
     };
 
-    private readonly fetchData = async (): Promise<void> => {
+    private readonly loadData = async (): Promise<void> => {
         try {
-            // Fetch all housing data
-            const response = await fetch('/api/housingStats');
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            
-            const allData = await response.json();
-            console.log('Raw data from API:', allData); // Debug log to see what data we're receiving
-            
-            // Process the data to group by month
-            const startsDataMap = new Map<number, MonthlyData>();
-            const completionsDataMap = new Map<number, MonthlyData>();
-            const monthsSet = new Set<number>();
-            
-            allData.forEach((item: any) => {
-                // Handle potentially missing month data - default to 1 if not present
-                const month = item.month !== null && item.month !== undefined ? 
-                    parseInt(item.month, 10) : 1;
-                
-                // Add to available months
-                monthsSet.add(month);
-                
-                // Debug log for problematic records
-                if (item.month === null || item.month === undefined) {
-                    console.warn('Record with missing month:', item);
-                }
-                
-                // Process starts data
-                if (!startsDataMap.has(month)) {
-                    startsDataMap.set(month, {
-                        month,
-                        toronto: 0,
-                        hamilton: 0
-                    });
-                }
-                
-                // Process completions data
-                if (!completionsDataMap.has(month)) {
-                    completionsDataMap.set(month, {
-                        month,
-                        toronto: 0,
-                        hamilton: 0
-                    });
-                }
-                
-                // Update data based on census area
-                if (item.censusArea === "Toronto") {
-                    const existingStartsData = startsDataMap.get(month)!;
-                    existingStartsData.toronto += item.totalStarts || 0;
-                    startsDataMap.set(month, existingStartsData);
-                    
-                    const existingCompletionsData = completionsDataMap.get(month)!;
-                    existingCompletionsData.toronto += item.totalComplete || 0;
-                    completionsDataMap.set(month, existingCompletionsData);
-                } else if (item.censusArea === "Hamilton") {
-                    const existingStartsData = startsDataMap.get(month)!;
-                    existingStartsData.hamilton += item.totalStarts || 0;
-                    startsDataMap.set(month, existingStartsData);
-                    
-                    const existingCompletionsData = completionsDataMap.get(month)!;
-                    existingCompletionsData.hamilton += item.totalComplete || 0;
-                    completionsDataMap.set(month, existingCompletionsData);
-                }
-            });
-            
-            // Convert maps to arrays and sort by month
-            const startsData = Array.from(startsDataMap.values()).sort((a, b) => a.month - b.month);
-            const completionsData = Array.from(completionsDataMap.values()).sort((a, b) => a.month - b.month);
-            const availableMonths = Array.from(monthsSet).sort((a, b) => a - b);
-            
-            console.log('Processed starts data:', startsData);
-            console.log('Processed completions data:', completionsData);
-            console.log('Available months:', availableMonths);
+            const data = await fetchProcessedHousingData();
             
             this.setState({
-                startsData,
-                completionsData,
-                availableMonths,
+                startsData: data.startsData,
+                completionsData: data.completionsData,
+                availableMonths: data.availableMonths,
                 loading: false,
                 error: null,
                 chartKey: Date.now()
             });
         } catch (err) {
-            console.error('Error in fetchData:', err);
+            console.error('Error loading housing data:', err);
             this.setState({
                 error: err instanceof Error ? err.message : "Unexpected error",
                 loading: false
