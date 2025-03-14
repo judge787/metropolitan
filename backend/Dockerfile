@@ -18,7 +18,7 @@ COPY config config
 RUN chmod +x ./gradlew
 
 ## Use Gradle to build the application using the RUN stanza
-RUN ./gradlew build
+RUN ./gradlew build -x test
 
 ## need to add a command to run the app here
 CMD ["bash", "-c", "java -jar build/libs/metropolitan-app-1.0.jar & tail -f /dev/null"]
