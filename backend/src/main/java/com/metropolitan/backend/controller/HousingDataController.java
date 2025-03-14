@@ -26,11 +26,6 @@ public class HousingDataController {
         this.dataService = dataService;
     }
 
-    @PostMapping()
-    private ResponseEntity<String> addData(@RequestBody Data newData) {
-        String result = dataService.addData(newData);
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
-    }
 
     // retrieves housing data by ID
     @GetMapping("/{id}")
@@ -43,40 +38,14 @@ public class HousingDataController {
         }
     }
 
-    // handles HTTP PUT requests to update existing housing data records
-    @PutMapping()
-    public ResponseEntity<String> updateData(@RequestBody Data updatedData) {
-        String result = dataService.updateData(updatedData);
-        if ("Updated".equals(result)) {
-            return ResponseEntity.ok(result);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    private ResponseEntity<String> deleteData(@PathVariable Integer id) {
-        String result = dataService.deleteData(id);
-        if ("Deleted".equals(result)) {
-            return ResponseEntity.ok(result);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
-        }
-    }
-
     @GetMapping()
-    private ResponseEntity<Iterable<Data>> allData() {
+    public ResponseEntity<Iterable<Data>> allData() {
         Iterable<Data> data = dataService.allData();
         return ResponseEntity.ok(data);
     }
 
-    @GetMapping("/count")
-    private ResponseEntity<Integer> count() {
-        Integer count = dataService.count();
-        return ResponseEntity.ok(count);
-    }
     @GetMapping("/starts/{censusArea}")
-    private ResponseEntity<Integer> getTotalHousingStartsByCensusArea(@PathVariable String censusArea){
+    public ResponseEntity<Integer> getTotalHousingStartsByCensusArea(@PathVariable String censusArea){
         Integer total = dataService.getTotalStartsByArea(censusArea);
         return  ResponseEntity.ok(total);
     }

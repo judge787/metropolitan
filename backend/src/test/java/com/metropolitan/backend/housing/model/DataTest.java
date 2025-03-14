@@ -4,7 +4,7 @@ import com.metropolitan.backend.housing.models.Data;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DataTest {
+class DataTest {
 
     @Test
     public void testConstructorAndGetters() {

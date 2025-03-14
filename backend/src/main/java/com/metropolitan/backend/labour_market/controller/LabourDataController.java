@@ -31,7 +31,7 @@ public class LabourDataController {
         }
     }
     @GetMapping()
-    private ResponseEntity<Iterable<LabourData>> allData() {
+    public ResponseEntity<Iterable<LabourData>> allData() {
         Iterable<LabourData> data = labourDataService.allData();
         return ResponseEntity.ok(data);
     }
