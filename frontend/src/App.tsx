@@ -19,17 +19,19 @@ class App extends Component<{}, AppState> {
     darkMode: false, // Default to light mode
   };
 
-  private handleContactClick = (): void => {
+  /*
+  private readonly handleContactClick = (): void => {
     this.setState((prevState) => ({
       showContactInfo: !prevState.showContactInfo,
     }));
   };
-  private handleToggleDarkMode = (): void => {
+  */
+  private readonly handleToggleDarkMode = (): void => {
     this.setState((prevState) => ({
       darkMode: !prevState.darkMode,
     }));
   };
-  private handleToggleView = (): void => {
+  private readonly handleToggleView = (): void => {
     this.setState((prevState) => ({
       showCompletions: !prevState.showCompletions,
     }));
@@ -67,7 +69,6 @@ class App extends Component<{}, AppState> {
               <Route 
                 path="/" 
                 element={
-                  <>
                     <section className="my-0">
                       <div className="flex justify-center items-center mb-1">
                       <img 
@@ -78,7 +79,6 @@ class App extends Component<{}, AppState> {
                       </div>
                       <ProductPitch darkMode={this.state.darkMode} />
                     </section>
-                  </>
                 } 
               />
               <Route 
@@ -100,9 +100,13 @@ class App extends Component<{}, AppState> {
                     <div className="flex justify-center items-center mb-1">
                     <img 
                     src={
-                      this.state.darkMode 
-                        ? (this.state.showCompletions ? "./HCD.png" : "./HSD.png") 
-                        : (this.state.showCompletions ? "./HC.png" : "./HS.png")
+                      (() => {
+                        if (this.state.darkMode) {
+                          return this.state.showCompletions ? "./HCD.png" : "./HSD.png";
+                        } else {
+                          return this.state.showCompletions ? "./HC.png" : "./HS.png";
+                        }
+                      })()
                     } alt="Housing" 
                     style={this.state.showCompletions ? { height: '300px' } : { height: '250px'}} />
                     </div>
