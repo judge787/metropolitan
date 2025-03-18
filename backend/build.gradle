@@ -46,6 +46,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:3.11.2' // Adding Mockito dependency for testing
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1' // Adding JUnit 5 dependency for testing
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1' // Adding JUnit 5 engine for testing
+    testImplementation 'com.h2database:h2'
 }
 
 test {
