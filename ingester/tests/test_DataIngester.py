@@ -207,7 +207,7 @@ def test_fetch_data_invalid_date_format(data_ingester):
     with patch('requests.get', return_value=mock_response) as mock_get, \
          patch.object(data_ingester, 'get_last_update', return_value='invalid-date'):
         
-        data = data_ingester.fetch_data(data_ingester.api_housing)
+        data_ingester.fetch_data(data_ingester.api_housing)
         # Should still make the request but with the raw invalid date
         mock_get.assert_called_once()
         assert 'after' in mock_get.call_args[1]['params']
