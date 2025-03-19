@@ -31,13 +31,14 @@ ENV PYTHONPATH=/usr/app
 
 
 # These next lines set up a cron job
+# Copy the cron job file
 COPY ingester-cron /etc/cron.d/ingester-cron
-# Give execution rights on the cron job
-RUN chmod 0644 /etc/cron.d/ingester-cron
-# Apply cron job
-RUN crontab /etc/cron.d/ingester-cron
-# Create log file for cron
-RUN touch /var/log/cron.log
+
+# Set up the cron job in a single RUN instruction
+RUN chmod 0644 /etc/cron.d/ingester-cron && \
+    crontab /etc/cron.d/ingester-cron && \
+    touch /var/log/cron.log
+
 
 # Start cron, run script once immediately, and keep container alive
 CMD ["sh", "-c", "cron && python src/DataIngester.py && tail -f /var/log/cron.log"]
