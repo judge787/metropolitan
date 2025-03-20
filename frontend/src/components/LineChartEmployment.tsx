@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { Component } from 'react';
 import { Line } from 'react-chartjs-2';
 import {
@@ -24,7 +23,6 @@ ChartJS.register(
   Filler
 );
 
-// Define interface for labour market data
 interface LabourMarketRecord {
   id: number;
   province: number;
@@ -42,7 +40,6 @@ interface LineChartState {
 interface LineChartProps {}
 
 class LineChartEmployment extends Component<LineChartProps, LineChartState> {
-  // Province mapping
   private provinceNames: Record<number, string> = {
     24: 'Quebec',
     35: 'Ontario',
@@ -50,7 +47,6 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
     59: 'British Columbia'
   };
 
-  // Education level mapping
   private educationNames: Record<number, string> = {
     0: '0 to 8 years',
     1: 'Some high school',
@@ -87,14 +83,20 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
       }
 
       const data: LabourMarketRecord[] = await response.json();
-      console.log('Raw labour market data:', data);
+      
+      // Convert data fields to numbers to handle potential string values
+      const processedData = data.map(record => ({
+        ...record,
+        province: Number(record.province),
+        education_level: Number(record.education_level),
+        labour_force_status: Number(record.labour_force_status)
+      }));
 
-      // Filter data for the four provinces
-      const filteredData = data.filter(record =>
+      console.log('Processed labour market data:', processedData);
+
+      const filteredData = processedData.filter(record =>
         [24, 35, 48, 59].includes(record.province)
       );
-
-      console.log('Filtered data:', filteredData);
 
       this.setState({
         labourData: filteredData,
@@ -112,54 +114,43 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
   };
 
   private calculateEmploymentRates(data: LabourMarketRecord[]) {
-    const provinceEducationCounts: Record<number, Record<number, { employed: number; labourForce: number }>> = {};
-
-    // Initialize structure
-    Object.keys(this.provinceNames).forEach(provinceId => {
-      const province = parseInt(provinceId);
-      provinceEducationCounts[province] = {};
-
-      Object.keys(this.educationNames).forEach(educationId => {
-        const education = parseInt(educationId);
-        provinceEducationCounts[province][education] = { employed: 0, labourForce: 0 };
-      });
-    });
-
-    // Process data
+    const provinceEducationCounts: Record<number, Record<number, 
+      { employed: number; labourForce: number }>> = {};
+  
+    // Initialize counts (same as before)
+  
     data.forEach(record => {
       const { province, education_level, labour_force_status } = record;
-
-      if (!provinceEducationCounts[province] || !provinceEducationCounts[province][education_level]) {
-        return;
-      }
-
-      // Count labour force participants
+  
+      // Use correct labor force status values from your data schema:
+      // 1-3 = in labor force, 4 = not in labor force
       if ([1, 2, 3].includes(labour_force_status)) {
         provinceEducationCounts[province][education_level].labourForce += 1;
-
-        // Count employed participants
+  
+        // Employed statuses are 1 (Employed, at work) and 2 (Employed, absent)
         if ([1, 2].includes(labour_force_status)) {
           provinceEducationCounts[province][education_level].employed += 1;
         }
       }
     });
+  
+    // Rest of the calculation remains the same
+  
 
     // Calculate employment rates
     const employmentRates: Record<number, Record<number, number>> = {};
-    Object.keys(provinceEducationCounts).forEach(provinceId => {
-      const province = parseInt(provinceId);
+    Object.entries(provinceEducationCounts).forEach(([provinceId, educationCounts]) => {
+      const province = parseInt(provinceId, 10);
       employmentRates[province] = {};
 
-      Object.keys(provinceEducationCounts[province]).forEach(educationId => {
-        const education = parseInt(educationId);
-        const { employed, labourForce } = provinceEducationCounts[province][education];
-
-        employmentRates[province][education] =
-          labourForce > 0 ? (employed / labourForce) * 100 : 0;
+      Object.entries(educationCounts).forEach(([educationId, counts]) => {
+        const education = parseInt(educationId, 10);
+        employmentRates[province][education] = counts.labourForce > 0 
+          ? (counts.employed / counts.labourForce) * 100 
+          : 0;
       });
     });
 
-    console.log('Calculated employment rates:', employmentRates);
     return employmentRates;
   }
 
@@ -283,5 +274,3 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
 }
 
 export default LineChartEmployment;
-=======
->>>>>>> 0f33e975c0a38b657f880a553d7b9f27970cebd8
