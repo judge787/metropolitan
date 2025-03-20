@@ -76,7 +76,6 @@ interface LabourForceStatsState {
   chartKey: number;
   selectedMetric: 'employment' | 'unemployment' | 'participation';
   selectedHousingType: 'total' | 'single' | 'multiUnit';
-  selectedTimePeriod: 'quarterly' | 'annual';
   description: string;
 }
 
@@ -96,7 +95,6 @@ class LabourForceStats extends Component<LabourForceStatsProps, LabourForceStats
     chartKey: Date.now(),
     selectedMetric: 'employment',
     selectedHousingType: 'total',
-    selectedTimePeriod: 'quarterly',
     description: "This chart visualizes the correlation between labor force statistics and housing starts in Toronto. It helps city planners understand whether changes in the labor market align with new housing developments. A strong positive correlation may indicate that housing construction responds to labor market demands, while a negative correlation or lack of alignment may suggest potential planning challenges or opportunities for improvement."
   };
 
@@ -138,8 +136,8 @@ class LabourForceStats extends Component<LabourForceStatsProps, LabourForceStats
   };
 
   private getSimulatedData(): CorrelationData {
-    // Generate 20 quarters (5 years) of simulated data
-    const quarters = 20;
+    // Generate 5 years of annual data
+    const years = 5;
     const laborForceData: LaborForceData[] = [];
     const housingStartsData: HousingStartsData[] = [];
     const timePeriodsLabels: string[] = [];
@@ -153,18 +151,17 @@ class LabourForceStats extends Component<LabourForceStatsProps, LabourForceStats
     let singleStarts = 1000 + Math.random() * 500; // 1000-1500
     let multiUnitStarts = 3000 + Math.random() * 500; // 3000-3500
 
-    // Year and quarter trackers
+    // Year tracker
     let currentYear = 2019;
-    let currentQuarter = 1;
 
-    // Create simulated data with some correlation between employment and housing starts
-    for (let i = 0; i < quarters; i++) {
-      // Create time period label (e.g., "Q1 2019")
-      const periodLabel = `Q${currentQuarter} ${currentYear}`;
+    // Create simulated annual data with correlation between employment and housing starts
+    for (let i = 0; i < years; i++) {
+      // Create year label
+      const periodLabel = `${currentYear}`;
       timePeriodsLabels.push(periodLabel);
       
       // Add some random variation to employment rate
-      const employmentChange = (Math.random() * 2 - 1) * 1.5; // -1.5 to +1.5
+      const employmentChange = (Math.random() * 2 - 1) * 2; // -2 to +2
       employmentRate += employmentChange;
       employmentRate = Math.min(Math.max(employmentRate, 60), 75); // Keep between 60-75%
       
@@ -178,11 +175,11 @@ class LabourForceStats extends Component<LabourForceStatsProps, LabourForceStats
       
       // Create housing starts with some correlation to employment rate
       // Higher employment → more housing starts with some delay and noise
-      const employmentEffect = (employmentRate - 65) * 50; // Base effect of employment on housing
-      const randomNoise = (Math.random() * 2 - 1) * 800; // Random variation
+      const employmentEffect = (employmentRate - 65) * 100; // Base effect of employment on housing
+      const randomNoise = (Math.random() * 2 - 1) * 1200; // Random variation
       
-      totalStarts = 4000 + employmentEffect + randomNoise;
-      totalStarts = Math.max(totalStarts, 2500); // Minimum 2500 starts
+      totalStarts = 16000 + employmentEffect + randomNoise;
+      totalStarts = Math.max(totalStarts, 12000); // Minimum starts for annual data
       
       singleStarts = totalStarts * (0.2 + Math.random() * 0.1); // 20-30% of total
       multiUnitStarts = totalStarts - singleStarts;
@@ -202,12 +199,8 @@ class LabourForceStats extends Component<LabourForceStatsProps, LabourForceStats
         multiUnitStarts
       });
       
-      // Increment quarter and year
-      currentQuarter++;
-      if (currentQuarter > 4) {
-        currentQuarter = 1;
-        currentYear++;
-      }
+      // Increment year
+      currentYear++;
     }
     
     return {
@@ -227,13 +220,6 @@ class LabourForceStats extends Component<LabourForceStatsProps, LabourForceStats
   private readonly handleHousingTypeChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     this.setState({ 
       selectedHousingType: event.target.value as 'total' | 'single' | 'multiUnit',
-      chartKey: Date.now() 
-    });
-  };
-
-  private readonly handleTimePeriodChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    this.setState({ 
-      selectedTimePeriod: event.target.value as 'quarterly' | 'annual',
       chartKey: Date.now() 
     });
   };
@@ -413,7 +399,7 @@ class LabourForceStats extends Component<LabourForceStatsProps, LabourForceStats
   };
 
   public render(): React.JSX.Element {
-    const { loading, error, chartKey, description, selectedMetric, selectedHousingType, selectedTimePeriod } = this.state;
+    const { loading, error, chartKey, description, selectedMetric, selectedHousingType } = this.state;
 
     if (loading) {
       return <div className="text-center text-gray-600">Loading...</div>;
@@ -457,21 +443,6 @@ class LabourForceStats extends Component<LabourForceStatsProps, LabourForceStats
                   <option value="total">Total Housing Starts</option>
                   <option value="single">Single-Unit Housing</option>
                   <option value="multiUnit">Multi-Unit Housing</option>
-                </select>
-              </div>
-              
-              <div>
-                <label htmlFor="period-select" className="block text-sm font-medium text-gray-700 mb-1">
-                  Time Period:
-                </label>
-                <select
-                  id="period-select"
-                  value={selectedTimePeriod}
-                  onChange={this.handleTimePeriodChange}
-                  className="p-2 border border-gray-300 rounded-lg bg-white text-black"
-                >
-                  <option value="quarterly">Quarterly</option>
-                  <option value="annual">Annual</option>
                 </select>
               </div>
             </div>
