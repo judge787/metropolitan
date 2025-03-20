@@ -6,6 +6,29 @@ import { MonthlyData, fetchProcessedHousingData } from '../services/HousingDataS
 // Register required Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
+// DateTime Component (Corrected)
+const DateTime: React.FC = () => {
+    const [currentTime, setCurrentTime] = React.useState(new Date());
+
+    React.useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentTime(new Date());
+        }, 1000);
+        return () => clearInterval(interval);
+    }, []);
+
+    return (
+        <div className="p-4 bg-gray-100 rounded-lg shadow-md text-center">
+            <p className="text-lg font-semibold text-gray-700">
+                Time: {currentTime.toLocaleTimeString()}
+            </p>
+            <p className="text-lg font-semibold text-gray-700">
+                Date: {currentTime.toLocaleDateString()}
+            </p>
+        </div>
+    );
+};
+
 interface HousingChartState {
     startsData: MonthlyData[];
     completionsData: MonthlyData[];
@@ -31,9 +54,9 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
         error: null,
         chartKey: Date.now(),
         showCompletions: this.props.showCompletions,
-        description: "This interactive chart compares housing metrics between Toronto and Hamilton by month, providing valuable insights into regional development. The Housing Starts view displays the number of new construction projects initiated in each city, while the Housing Completions view shows the number of residential projects that reached completion. By toggling between these views, users can analyze the relationship between project initiation and completion rates, helping urban planners, real estate investors, and policymakers understand construction timelines, market efficiency, and housing supply trends.",
-        selectedMonth: null, // Default to showing all months
-        availableMonths: []
+        description: "This interactive chart compares housing metrics between Toronto and Hamilton by month, providing valuable insights into regional development...",
+        selectedMonth: null,
+        availableMonths: [],
     };
 
     public componentDidMount(): void {
@@ -44,47 +67,44 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
         if (prevProps.showCompletions !== this.props.showCompletions) {
             this.setState({
                 showCompletions: this.props.showCompletions,
-                chartKey: Date.now()
+                chartKey: Date.now(),
             });
         }
     }
 
     public componentWillUnmount(): void {
-        // Explicitly destroy chart instance
-        const chartInstance = ChartJS.getChart("chart-container");
+        const chartInstance = ChartJS.getChart('chart-container');
         if (chartInstance) {
             chartInstance.destroy();
         }
     }
 
-    // Handle month selection change
     private readonly handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
         const value = event.target.value;
-        const selectedMonth = value === "all" ? null : parseInt(value, 10);
+        const selectedMonth = value === 'all' ? null : parseInt(value, 10);
         
         this.setState({
             selectedMonth,
-            chartKey: Date.now()
+            chartKey: Date.now(),
         });
     };
 
     private readonly loadData = async (): Promise<void> => {
         try {
             const data = await fetchProcessedHousingData();
-            
             this.setState({
                 startsData: data.startsData,
                 completionsData: data.completionsData,
                 availableMonths: data.availableMonths,
                 loading: false,
                 error: null,
-                chartKey: Date.now()
+                chartKey: Date.now(),
             });
         } catch (err) {
             console.error('Error loading housing data:', err);
             this.setState({
-                error: err instanceof Error ? err.message : "Unexpected error",
-                loading: false
+                error: err instanceof Error ? err.message : 'Unexpected error',
+                loading: false,
             });
         }
     };
@@ -93,19 +113,15 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
         const { startsData, completionsData, showCompletions, selectedMonth } = this.state;
         let data = showCompletions ? completionsData : startsData;
         
-        // Filter by selected month if one is selected
         if (selectedMonth !== null) {
             data = data.filter(item => item.month === selectedMonth);
         }
         
-        // Convert month numbers to names
         const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         
         return {
             labels: data.map(item => {
-                // Ensure month is treated as a number and is within valid range
-                const monthIndex = typeof item.month === 'number' ? 
-                    Math.min(Math.max(Math.floor(item.month) - 1, 0), 11) : 0;
+                const monthIndex = typeof item.month === 'number' ? Math.max(0, Math.min(item.month - 1, 11)) : 0;
                 return monthNames[monthIndex] || `Month ${item.month}`;
             }),
             datasets: [
@@ -122,7 +138,7 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
                     backgroundColor: 'rgba(0, 65, 187, 0.5)',
                     borderColor: 'rgba(0, 65, 187, 1)',
                     borderWidth: 1,
-                }
+                },
             ],
         };
     };
@@ -133,118 +149,64 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
         if (loading) {
             return <div className="text-center text-gray-600">Loading...</div>;
         }
-        let chartTitle;
-        let yAxisTitle;
 
-        if (showCompletions) {
-            chartTitle = selectedMonth === null 
-                ? 'All Months Housing Completions Comparison' 
-                : 'Monthly Housing Completions Comparison';
-            yAxisTitle = 'Number of Housing Completions';
-        } else {
-            chartTitle = selectedMonth === null 
-                ? 'All Months Housing Starts Comparison' 
-                : 'Monthly Housing Starts Comparison';
-            yAxisTitle = 'Number of Housing Starts';
-        }
-        
-        // Convert month numbers to names for the dropdown
+        const chartTitle = showCompletions
+            ? selectedMonth === null ? 'All Months Housing Completions Comparison' : 'Monthly Housing Completions Comparison'
+            : selectedMonth === null ? 'All Months Housing Starts Comparison' : 'Monthly Housing Starts Comparison';
+
+        const yAxisTitle = showCompletions ? 'Number of Housing Completions' : 'Number of Housing Starts';
+
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
-                           'July', 'August', 'September', 'October', 'November', 'December'];
+                            'July', 'August', 'September', 'October', 'November', 'December'];
 
         return (
-            <div className="border-2 border-[#1ed1d6] rounded-lg shadow-md p-4">
-                {error && <div className="error-banner bg-red-100 text-red-700 p-2 rounded mb-4">{error}</div>}
-                <div className="mb-4 flex flex-wrap gap-4 items-center justify-between">
-                    <button 
-                        onClick={this.props.onToggleView}
-                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-200"
-                    >
-                        {showCompletions ? "Show Housing Starts" : "Show Housing Completions"}
-                    </button>
-                    
-                    <div className="flex items-center">
-                        <label htmlFor="month-filter" className="mr-2 font-semibold text-black">Filter by Month:</label>
-                        <select
-                            id="month-filter"
-                            value={selectedMonth === null ? "all" : selectedMonth.toString()}
-                            onChange={this.handleMonthChange}
-                            className="p-2 border border-gray-300 rounded-lg bg-white text-black"
+            <div className="flex flex-col md:flex-row gap-6 items-start">
+                {/* Chart Container */}
+                <div className="flex-1 border-2 border-[#1ed1d6] rounded-lg shadow-md p-4">
+                    {error && <div className="error-banner bg-red-100 text-red-700 p-2 rounded mb-4">{error}</div>}
+
+                    <div className="mb-4 flex flex-wrap gap-4 items-center justify-between">
+                        <button 
+                            onClick={this.props.onToggleView}
+                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-200"
                         >
-                            <option value="all">All Months</option>
-                            {availableMonths.map(month => (
-                                <option key={month} value={month.toString()}>
-                                    {monthNames[month - 1] || `Month ${month}`}
-                                </option>
-                            ))}
-                        </select>
+                            {showCompletions ? "Show Housing Starts" : "Show Housing Completions"}
+                        </button>
+                        
+                        <div className="flex items-center">
+                            <label htmlFor="month-filter" className="mr-2 font-semibold text-black">Filter by Month:</label>
+                            <select
+                                id="month-filter"
+                                value={selectedMonth === null ? "all" : selectedMonth.toString()}
+                                onChange={this.handleMonthChange}
+                                className="p-2 border border-gray-300 rounded-lg bg-white text-black"
+                            >
+                                <option value="all">All Months</option>
+                                {availableMonths.map(month => (
+                                    <option key={month} value={month.toString()}>
+                                        {monthNames[month - 1] || `Month ${month}`}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div style={{ height: '400px', width: '100%' }}>
+                        <Bar 
+                            key={chartKey}
+                            data={this.getChartData()} 
+                            options={{
+                                responsive: true,
+                                maintainAspectRatio: false,
+                            }}
+                            id="chart-container"
+                        />
                     </div>
                 </div>
-                
-                <div style={{ height: '400px', width: '100%' }}>
-                    <Bar 
-                        key={chartKey}
-                        data={this.getChartData()} 
-                        options={{
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                title: {
-                                    display: true,
-                                    text: chartTitle,
-                                    font: {
-                                        size: 20,
-                                        family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-                                        weight: 'bold',
-                                    },
-                                },
-                                legend: {
-                                    display: true,
-                                    position: 'top',
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    title: {
-                                        display: true,
-                                        text: yAxisTitle,
-                                        font: {
-                                            size: 16,
-                                            family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-                                            weight: 'normal',
-                                        },
-                                    },
-                                },
-                                x: {
-                                    title: {
-                                        display: true,
-                                        text: 'Month',
-                                        font: {
-                                            size: 16,
-                                            family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-                                            weight: 'normal',
-                                        },
-                                    },
-                                },
-                            },
-                        }}
-                        id="chart-container"
-                    />
-                </div>
 
-                {/* Description Box */}
-                <div className="mt-4">
-                    <label htmlFor="chart-description" className="block text-[rgba(0,65,187,0.8)] font-semibold mb-2 text-3xl" style={{ fontFamily: 'Others' }}>
-                        Data Summary
-                    </label>
-                    <textarea
-                        id="chart-description"
-                        className="w-full p-2 border-2 border-[#1ed1d6] rounded-lg resize-none text-[rgba(0,65,187,0.8)]" style={{ fontFamily: 'Sans-Serif' }}
-                        rows={6}
-                        value={description}
-                        readOnly
-                    />
+                {/* DateTime Display */}
+                <div className="w-full md:w-auto">
+                    <DateTime />
                 </div>
             </div>
         );

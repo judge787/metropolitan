@@ -23,6 +23,29 @@ ChartJS.register(
   Filler
 );
 
+// **DateTime Component for Live Time and Date Display**
+const DateTime: React.FC = () => {
+  const [currentTime, setCurrentTime] = React.useState(new Date());
+
+  React.useEffect(() => {
+      const interval = setInterval(() => {
+          setCurrentTime(new Date());
+      }, 1000);
+      return () => clearInterval(interval);
+  }, []);
+
+  return (
+      <div className="p-4 bg-gray-100 rounded-lg shadow-md text-center">
+          <p className="text-lg font-semibold text-gray-700">
+              Time: {currentTime.toLocaleTimeString()}
+          </p>
+          <p className="text-lg font-semibold text-gray-700">
+              Date: {currentTime.toLocaleDateString()}
+          </p>
+      </div>
+  );
+};
+
 interface LineChartState {
   loading: boolean;
   error: string | null;
@@ -275,28 +298,39 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
     }
 
     return (
-      <div className="border-2 border-[#1ed1d6] rounded-lg shadow-md p-4">
-        {error && <div className="error-banner bg-red-100 text-red-700 p-2 rounded mb-4">{error}</div>}
-        
-        <div style={{ height: '400px', width: '100%', maxWidth: '900px', margin: '0 auto' }}>
-          <Line 
-            key={chartKey}
-            data={this.getLineChartData()} 
-            options={this.getLineOptions()}
-            id="employment-chart-container"
-          />
+      <div className="flex flex-col md:flex-row gap-6 items-start">
+        {/* Chart Container */}
+        <div className="flex-1 border-2 border-[#1ed1d6] rounded-lg shadow-md p-4">
+          {error && <div className="error-banner bg-red-100 text-red-700 p-2 rounded mb-4">{error}</div>}
+
+          <div style={{ height: '400px', width: '100%', maxWidth: '900px', margin: '0 auto' }}>
+            <Line 
+              key={chartKey}
+              data={this.getLineChartData()} 
+              options={{
+                responsive: true,
+                maintainAspectRatio: false
+              }}
+              id="employment-chart-container"
+            />
+          </div>
+
+          {/* Description Box */}
+          <div className="mt-4">
+            <label htmlFor="chart-description" className="block text-blue-700 font-semibold mb-2 text-xl">
+              Data Summary
+            </label>
+            <div 
+              className="w-full p-2 border-2 border-[#1ed1d6] rounded-lg text-blue-700" 
+            >
+              {description}
+            </div>
+          </div>
         </div>
 
-        <div className="mt-4">
-          <label htmlFor="chart-description" className="block text-[rgba(0,65,187,0.8)] font-semibold mb-2 text-3xl" style={{ fontFamily: 'Others' }}>
-            Data Summary
-          </label>
-          <div 
-            className="w-full p-2 border-2 border-[#1ed1d6] rounded-lg text-[rgba(0,65,187,0.8)]" 
-            style={{ fontFamily: 'Sans-Serif' }}
-          >
-            {description}
-          </div>
+        {/* DateTime Display */}
+        <div className="w-full md:w-auto">
+          <DateTime />
         </div>
       </div>
     );

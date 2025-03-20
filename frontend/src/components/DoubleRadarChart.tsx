@@ -20,6 +20,29 @@ ChartJS.register(
   Legend
 );
 
+// Date/Time Component
+const DateTime: React.FC = () => {
+  const [currentTime, setCurrentTime] = React.useState(new Date());
+
+  React.useEffect(() => {
+      const interval = setInterval(() => {
+          setCurrentTime(new Date());
+      }, 1000);
+      return () => clearInterval(interval);
+  }, []);
+
+  return (
+      <div className="p-4 bg-gray-100 rounded-lg shadow-md text-center">
+          <p className="text-lg font-semibold text-gray-700">
+              Time: {currentTime.toLocaleTimeString()}
+          </p>
+          <p className="text-lg font-semibold text-gray-700">
+              Date: {currentTime.toLocaleDateString()}
+          </p>
+      </div>
+  );
+};
+
 // Define interface for city housing data
 interface CityHousingData {
   singlesStarts: number;
@@ -263,38 +286,47 @@ class DoubleRadarChart extends Component<RadarChartProps, RadarChartState> {
     }
 
     return (
-      <div className="border-2 border-[#1ed1d6] rounded-lg shadow-md p-4">
-        {error && <div className="error-banner bg-red-100 text-red-700 p-2 rounded mb-4">{error}</div>}
-        <div className="mb-4">
-          <button 
-            onClick={this.toggleView}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-200"
-          >
-            {showCompletions ? "Show Housing Starts" : "Show Housing Completions"}
-          </button>
-        </div>
-        <div style={{ height: '500px', width: '100%' }}>
-          <Radar 
-            key={chartKey}
-            data={this.getRadarChartData()} 
-            options={this.getRadarOptions()}
-            id="radar-chart-container"
-          />
-        </div>
+      <div className="flex flex-col md:flex-row gap-6 items-start">
+        {/* Radar Chart Container */}
+        <div className="flex-1 border-2 border-[#1ed1d6] rounded-lg shadow-md p-4">
+          {error && <div className="error-banner bg-red-100 text-red-700 p-2 rounded mb-4">{error}</div>}
+
+          <div className="mb-4">
+            <button 
+              onClick={this.toggleView}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-200"
+            >
+              {showCompletions ? "Show Housing Starts" : "Show Housing Completions"}
+            </button>
+          </div>
+
+          <div style={{ height: '500px', width: '100%' }}>
+            <Radar 
+              key={chartKey}
+              data={this.getRadarChartData()} 
+              options={{ responsive: true, maintainAspectRatio: false }}
+              id="radar-chart-container"
+            />
+          </div>
 
         {/* Description Box */}
         <div className="mt-4">
-          <label htmlFor="chart-description" className="block text-[rgba(0,65,187,0.8)] font-semibold mb-2 text-3xl" style={{ fontFamily: 'Others' }}>
-            Data Summary
-          </label>
-          <textarea
-            id="chart-description"
-            className="w-full p-2 border-2 border-[#1ed1d6] rounded-lg resize-none text-[rgba(0,65,187,0.8)] sans-serif-text"
-            rows={5}
-            style={{ minHeight: '150px'}}
-            value={description}
-            readOnly
-          />
+            <label htmlFor="chart-description" className="block text-blue-700 font-semibold mb-2 text-xl">
+              Data Summary
+            </label>
+            <textarea
+              id="chart-description"
+              className="w-full p-2 border-2 border-[#1ed1d6] rounded-lg resize-none text-blue-700"
+              rows={5}
+              value={description}
+              readOnly
+            />
+          </div>
+        </div>
+
+        {/* DateTime Display */}
+        <div className="w-full md:w-auto">
+          <DateTime />
         </div>
       </div>
     );
