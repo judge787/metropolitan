@@ -138,9 +138,9 @@ class DatabaseHandler:
                 AND apartment_complete = ?""",
                 (
                     housing_data.census_metropolitan_area,
-                    total_starts,
-                    total_complete,
-                    month,
+                    month,  
+                    total_starts, 
+                    total_complete,  
                     singles_starts,
                     semis_starts,
                     row_starts,
