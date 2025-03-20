@@ -6,6 +6,29 @@ import { MonthlyData, fetchProcessedHousingData } from '../services/HousingDataS
 // Register required Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
+//Date/time update
+const DateTime: React.FC = () => {
+    const [currentTime, setCurrentTime] = React.useState(new Date());
+
+    React.useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentTime(new Date());
+        }, 1000);
+        return () => clearInterval(interval);
+    }, []);
+
+    return (
+        <div className="p-4 bg-gray-100 rounded-lg shadow-md text-center">
+            <p className="text-lg font-semibold text-gray-700">
+                Time: {currentTime.toLocaleTimeString()}
+            </p>
+            <p className="text-lg font-semibold text-gray-700">
+                Date: {currentTime.toLocaleDateString()}
+            </p>
+        </div>
+    );
+};
+
 interface HousingChartState {
     startsData: MonthlyData[];
     completionsData: MonthlyData[];
@@ -129,13 +152,13 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
 
     public render(): React.JSX.Element {
         const { loading, error, chartKey, description, showCompletions, availableMonths, selectedMonth } = this.state;
-
+    
         if (loading) {
             return <div className="text-center text-gray-600">Loading...</div>;
         }
         let chartTitle;
         let yAxisTitle;
-
+    
         if (showCompletions) {
             chartTitle = selectedMonth === null 
                 ? 'All Months Housing Completions Comparison' 
@@ -151,104 +174,113 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
         // Convert month numbers to names for the dropdown
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
                            'July', 'August', 'September', 'October', 'November', 'December'];
-
+    
         return (
-            <div className="border-2 border-[#1ed1d6] rounded-lg shadow-md p-4">
-                {error && <div className="error-banner bg-red-100 text-red-700 p-2 rounded mb-4">{error}</div>}
-                <div className="mb-4 flex flex-wrap gap-4 items-center justify-between">
-                    <button 
-                        onClick={this.props.onToggleView}
-                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-200"
-                    >
-                        {showCompletions ? "Show Housing Starts" : "Show Housing Completions"}
-                    </button>
-                    
-                    <div className="flex items-center">
-                        <label htmlFor="month-filter" className="mr-2 font-semibold text-black">Filter by Month:</label>
-                        <select
-                            id="month-filter"
-                            value={selectedMonth === null ? "all" : selectedMonth.toString()}
-                            onChange={this.handleMonthChange}
-                            className="p-2 border border-gray-300 rounded-lg bg-white text-black"
+            <div className="flex flex-col md:flex-row gap-6 items-start">
+                {/* Chart Container */}
+                <div className="flex-1 border-2 border-[#1ed1d6] rounded-lg shadow-md p-4">
+                    {error && <div className="error-banner bg-red-100 text-red-700 p-2 rounded mb-4">{error}</div>}
+    
+                    <div className="mb-4 flex flex-wrap gap-4 items-center justify-between">
+                        <button 
+                            onClick={this.props.onToggleView}
+                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-200"
                         >
-                            <option value="all">All Months</option>
-                            {availableMonths.map(month => (
-                                <option key={month} value={month.toString()}>
-                                    {monthNames[month - 1] || `Month ${month}`}
-                                </option>
-                            ))}
-                        </select>
+                            {showCompletions ? "Show Housing Starts" : "Show Housing Completions"}
+                        </button>
+                        
+                        <div className="flex items-center">
+                            <label htmlFor="month-filter" className="mr-2 font-semibold text-black">Filter by Month:</label>
+                            <select
+                                id="month-filter"
+                                value={selectedMonth === null ? "all" : selectedMonth.toString()}
+                                onChange={this.handleMonthChange}
+                                className="p-2 border border-gray-300 rounded-lg bg-white text-black"
+                            >
+                                <option value="all">All Months</option>
+                                {availableMonths.map(month => (
+                                    <option key={month} value={month.toString()}>
+                                        {monthNames[month - 1] || `Month ${month}`}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div style={{ height: '400px', width: '100%' }}>
+                        <Bar 
+                            key={chartKey}
+                            data={this.getChartData()} 
+                            options={{
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: chartTitle,
+                                        font: {
+                                            size: 20,
+                                            family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+                                            weight: 'bold',
+                                        },
+                                    },
+                                    legend: {
+                                        display: true,
+                                        position: 'top',
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        title: {
+                                            display: true,
+                                            text: yAxisTitle,
+                                            font: {
+                                                size: 16,
+                                                family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+                                                weight: 'normal',
+                                            },
+                                        },
+                                    },
+                                    x: {
+                                        title: {
+                                            display: true,
+                                            text: 'Month',
+                                            font: {
+                                                size: 16,
+                                                family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+                                                weight: 'normal',
+                                            },
+                                        },
+                                    },
+                                },
+                            }}
+                            id="chart-container"
+                        />
+                    </div>
+    
+                    {/* Description Box */}
+                    <div className="mt-4">
+                        <label htmlFor="chart-description" className="block text-blue-700 font-semibold mb-2 text-xl">
+                            Data Summary
+                        </label>
+                        <textarea
+                            id="chart-description"
+                            className="w-full p-2 border-2 border-[#1ed1d6] rounded-lg resize-none text-blue-700"
+                            rows={5}
+                            value={description}
+                            readOnly
+                        />
                     </div>
                 </div>
-                
-                <div style={{ height: '400px', width: '100%' }}>
-                    <Bar 
-                        key={chartKey}
-                        data={this.getChartData()} 
-                        options={{
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                title: {
-                                    display: true,
-                                    text: chartTitle,
-                                    font: {
-                                        size: 20,
-                                        family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-                                        weight: 'bold',
-                                    },
-                                },
-                                legend: {
-                                    display: true,
-                                    position: 'top',
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    title: {
-                                        display: true,
-                                        text: yAxisTitle,
-                                        font: {
-                                            size: 16,
-                                            family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-                                            weight: 'normal',
-                                        },
-                                    },
-                                },
-                                x: {
-                                    title: {
-                                        display: true,
-                                        text: 'Month',
-                                        font: {
-                                            size: 16,
-                                            family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-                                            weight: 'normal',
-                                        },
-                                    },
-                                },
-                            },
-                        }}
-                        id="chart-container"
-                    />
-                </div>
-
-                {/* Description Box */}
-                <div className="mt-4">
-                    <label htmlFor="chart-description" className="block text-[rgba(0,65,187,0.8)] font-semibold mb-2 text-3xl" style={{ fontFamily: 'Others' }}>
-                        Data Summary
-                    </label>
-                    <textarea
-                        id="chart-description"
-                        className="w-full p-2 border-2 border-[#1ed1d6] rounded-lg resize-none text-[rgba(0,65,187,0.8)]" style={{ fontFamily: 'Sans-Serif' }}
-                        rows={6}
-                        value={description}
-                        readOnly
-                    />
+    
+                {/* DateTime Display (Correct Positioning) */}
+                <div className="w-full md:w-auto">
+                    <DateTime />
                 </div>
             </div>
         );
-    }
+    } 
 }
 
 export default HousingChart;
