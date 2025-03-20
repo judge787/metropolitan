@@ -69,7 +69,7 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
     10: 'Prince Edward Island'
   };
 
-  private educationNames: Record<number, string> = {
+  private readonly educationNames: Record<number, string> = {
     1: 'High School',
     2: 'College',
     3: 'University',
@@ -191,7 +191,7 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
     return { byProvince: employmentRatesByProvince, byEducation: employmentRatesByEducation };
   }
 
-  private getLineChartData = (): any => {
+  private readonly getLineChartData = (): any => {
     const simulatedData = this.getSimulatedData();
     const employmentRates = this.calculateEmploymentRates(simulatedData);
     
@@ -227,7 +227,7 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
     };
   };
 
-  private getLineOptions = (): any => {
+  private readonly getLineOptions = (): any => {
     const chartTitle = 'Employment Rate by Education Level Across Provinces';
     
     return {
