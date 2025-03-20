@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { Component } from 'react';
 import { Line } from 'react-chartjs-2';
 import {
@@ -282,3 +283,5 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
 }
 
 export default LineChartEmployment;
+=======
+>>>>>>> 0f33e975c0a38b657f880a553d7b9f27970cebd8
