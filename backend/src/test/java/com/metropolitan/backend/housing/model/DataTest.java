@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class DataTest {
 
     @Test
-    public void testConstructorAndGetters() {
+    void testConstructorAndGetters() {
         Data data = new Data(1, "Test Area", 100, 50, 12, 20, 10, 30, 40, 5, 15, 25, 5);
 
         assertEquals(1, data.getId());
@@ -26,7 +26,7 @@ class DataTest {
     }
 
     @Test
-    public void testSetters() {
+    void testSetters() {
         Data data = new Data();
         data.setId(1);
         data.setCensusArea("New Area");
@@ -58,7 +58,7 @@ class DataTest {
     }
 
     @Test
-    public void testDefaultConstructor() {
+    void testDefaultConstructor() {
         Data data = new Data();
 
         assertNull(data.getId());
