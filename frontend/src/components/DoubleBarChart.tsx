@@ -152,13 +152,13 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
 
     public render(): React.JSX.Element {
         const { loading, error, chartKey, description, showCompletions, availableMonths, selectedMonth } = this.state;
-
+    
         if (loading) {
             return <div className="text-center text-gray-600">Loading...</div>;
         }
         let chartTitle;
         let yAxisTitle;
-
+    
         if (showCompletions) {
             chartTitle = selectedMonth === null 
                 ? 'All Months Housing Completions Comparison' 
@@ -174,13 +174,13 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
         // Convert month numbers to names for the dropdown
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
                            'July', 'August', 'September', 'October', 'November', 'December'];
-
+    
         return (
             <div className="flex flex-col md:flex-row gap-6 items-start">
                 {/* Chart Container */}
                 <div className="flex-1 border-2 border-[#1ed1d6] rounded-lg shadow-md p-4">
                     {error && <div className="error-banner bg-red-100 text-red-700 p-2 rounded mb-4">{error}</div>}
-
+    
                     <div className="mb-4 flex flex-wrap gap-4 items-center justify-between">
                         <button 
                             onClick={this.props.onToggleView}
@@ -206,7 +206,7 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
                             </select>
                         </div>
                     </div>
-
+                    
                     <div style={{ height: '400px', width: '100%' }}>
                         <Bar 
                             key={chartKey}
@@ -214,11 +214,51 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
                             options={{
                                 responsive: true,
                                 maintainAspectRatio: false,
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: chartTitle,
+                                        font: {
+                                            size: 20,
+                                            family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+                                            weight: 'bold',
+                                        },
+                                    },
+                                    legend: {
+                                        display: true,
+                                        position: 'top',
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        title: {
+                                            display: true,
+                                            text: yAxisTitle,
+                                            font: {
+                                                size: 16,
+                                                family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+                                                weight: 'normal',
+                                            },
+                                        },
+                                    },
+                                    x: {
+                                        title: {
+                                            display: true,
+                                            text: 'Month',
+                                            font: {
+                                                size: 16,
+                                                family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+                                                weight: 'normal',
+                                            },
+                                        },
+                                    },
+                                },
                             }}
                             id="chart-container"
                         />
                     </div>
-
+    
                     {/* Description Box */}
                     <div className="mt-4">
                         <label htmlFor="chart-description" className="block text-blue-700 font-semibold mb-2 text-xl">
@@ -233,14 +273,14 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
                         />
                     </div>
                 </div>
-
-                {/* DateTime Display */}
+    
+                {/* DateTime Display (Correct Positioning) */}
                 <div className="w-full md:w-auto">
                     <DateTime />
                 </div>
             </div>
         );
-    }
+    } 
 }
 
 export default HousingChart;
