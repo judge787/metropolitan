@@ -33,7 +33,7 @@ interface LineChartState {
 interface LineChartProps {}
 
 class LineChartEmployment extends Component<LineChartProps, LineChartState> {
-  private provinceNames: Record<number, string> = {
+  private readonly provinceNames: Record<number, string> = {
     1: 'Ontario',
     2: 'Quebec',
     3: 'British Columbia',
@@ -53,7 +53,7 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
     4: 'Post Graduate'
   };
 
-  private labourStatuses: Record<number, string> = {
+  private readonly labourStatuses: Record<number, string> = {
     1: 'Employed',
     2: 'Unemployed',
     3: 'Not in Labour Force'
