@@ -79,13 +79,12 @@ nav {
     border-radius: 20px;
 }
 .contact-info {
-    padding: 10px;
-    border: 2px solid transparent;
-    transition: all 0.3s ease;
-  }
-  
-  .dark-mode .contact-info {
-    border-color: white;
+    border-color: #2b9bda ;
     background-color: transparent;
-    color: white;
   }
+
+.dark-mode .contact-info {
+border-color: white;
+background-color: transparent;
+color: white;
+}

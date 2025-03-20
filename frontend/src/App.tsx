@@ -108,7 +108,7 @@ class App extends Component<{}, AppState> {
                         }
                       })()
                     } alt="Housing" 
-                    style={this.state.showCompletions ? { height: '300px' } : { height: '250px'}} />
+                    style={this.state.showCompletions ? { height: '300px' } : { height: '200px'}} />
                     </div>
                     <div className = "max-w-4xl mx-auto">
                     <HousingChart 
@@ -118,19 +118,35 @@ class App extends Component<{}, AppState> {
                   </section>
                 } 
               />
-              <Route 
+              <Route
                 path="/contact"
                 element={
-                  <section className="my-14">
-                    <div className="flex justify-center items-center mb-1">
-                      <img src={this.state.darkMode ? "./CUD.png" : "./CU.png"}  alt="ContactUS" style={{ height: '250px' }} />
-                    </div>
-                    <div className={`contact-info w-full rounded-lg p-6 shadow-md ${this.state.darkMode ? 'bg-gray-800 text-white' : 'bg-[#d3f3f8] text-black'}`}>
-                      <h2 className={`font-semibold mb-2 text-3xl ${this.state.darkMode ? 'text-blue-400' : 'text-[rgba(0,65,187,0.8)]'}`}>
-                        Contact Information
-                      </h2>
-                      <p>Email: <a href="mailto:info@metropolitanindex.com" className={`hover:underline ${this.state.darkMode ? 'text-blue-300' : 'text-black'}`}>info@metropolitanindex.com</a></p>
-                      <p>Phone: <a href="tel:+11234567890" className={`hover:underline ${this.state.darkMode ? 'text-blue-300' : 'text-blue-600'}`}>(123) 456-7890</a></p>
+                  <section className="my-14 min-h-screen flex flex-col items-center justify-center">
+                    <img 
+                      src={this.state.darkMode ? "./CUD.png" : "./CU.png"} 
+                      alt="Contact Us" 
+                      style={{ height: '160px' }} 
+                      className="mb-6" 
+                    />
+                    <div className="contact-info w-full max-w-md rounded-lg p-6 text-center border-2 text-lg md:text-xl">
+                      <div className="flex items-center gap-3 mb-4">
+                        <img src= {this.state.darkMode ? "./mailDark.png" : "./mailLight.png"}  alt="Email Icon" className="h-8 w-8" />
+                        <a 
+                          href="mailto:info@metropolitanindex.com" 
+                          className={`hover:underline ${this.state.darkMode ? 'text-white' : 'text-[#2b9bda]'}`}
+                        >
+                          info@metropolitanindex.com
+                        </a>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <img src={this.state.darkMode ? "./phoneDark.png" : "./phoneLight.png"} alt="Phone Icon" className="h-8 w-8" />
+                        <a
+                          href="tel:+11234567890" 
+                          className={`hover:underline ${this.state.darkMode ? 'text-white' : 'text-[#2b9bda]'}`}
+                        >
+                          (123) 456-7890
+                        </a>
+                      </div>
                     </div>
                   </section>
                 }
@@ -153,6 +169,14 @@ class App extends Component<{}, AppState> {
                 } 
               />
             </Routes>
+            <footer className={`w-full px-4 py-6 text-center ${this.state.darkMode ? 'bg-[#1e1421] text-white' : 'bg-[#d3f3f8] text-black'}`}>
+              <p>&copy; 2025 Metropolitan Index. All Rights Reserved.</p>
+              <div className="social-links">
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="mx-2">Twitter</a>
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="mx-2">Facebook</a>
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="mx-2">LinkedIn</a>
+              </div>
+            </footer>
         </div>
         </main>
       </Router>
