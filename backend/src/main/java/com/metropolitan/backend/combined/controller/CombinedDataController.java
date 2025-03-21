@@ -16,7 +16,7 @@ public class CombinedDataController {
   @Autowired
   private CombinedDataService combinedDataService;
 
-  @GetMapping("/{censusArea}/{id}/")
+  @GetMapping("/{censusArea}/{id}")
   public ResponseEntity<CombinedDTO> getCombinedData(
     @PathVariable String censusArea,
     @PathVariable Integer id
