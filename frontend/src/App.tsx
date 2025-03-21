@@ -142,9 +142,8 @@ class App extends Component<{}, AppState> {
                   <section className="my-12">
                     <div className="flex justify-center items-center mb-1">
                       <img 
-                        src="./employment.png" 
-                        alt="Employment" 
-                        style={{ width: '300px', height: '250px' }}
+                        src={this.state.darkMode ?   "./employmentD.png" :"./employment.png"} alt="Employment" style={{ height: '250px' }}
+                      
                       />
                     </div>
                     <div className="max-w-4xl mx-auto">

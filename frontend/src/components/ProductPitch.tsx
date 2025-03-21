@@ -11,20 +11,16 @@ class ProductPitch extends Component<ProductPitchProps> {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <section
-          className={`p-8 w-[800px] rounded-lg shadow-md ${
-            darkMode ? 'px-30' : '-mt-30'
-          } ${
-            darkMode ? 'h-[610px]' : 'h-[400px]'
-          } ${darkMode ? '' : 'bg-[#d3f3f8]'}`}
+          className={`p-8 w-[700px] rounded-lg px-30 h-[480px] ${darkMode ? "": 'bg-[#d3f3f8]'}`}
           style={{
-            backgroundImage: darkMode ? "url('./boarder.png')" : 'none',
-            backgroundSize: '90%', // Scales the background image
-            backgroundPosition: 'top',
+            backgroundImage: darkMode ? "url('./boarder.png')" :"url('./boarderLight.png')",
+            backgroundSize: '100%', // Scales the background image
+            backgroundPosition: 'top  ',
             backgroundRepeat: 'no-repeat',
           }}
         >
           <div className={`max-w-4xl mx-auto ${
-            darkMode ? 'pt-10' : ''
+            darkMode ? '' : ''
           }`}>
             <h2 
               className="text-xl font-bold" 
@@ -34,7 +30,7 @@ class ProductPitch extends Component<ProductPitchProps> {
             </h2>
             <p 
               className={`text-lg leading-relaxed ${
-                darkMode ? 'text-white' : 'text-black'
+                darkMode ? 'text-white' : 'text-[#2b9bda]'
               }`} 
               style={{ fontFamily: 'sans-serif' }}
             >
