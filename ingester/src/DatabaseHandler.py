@@ -117,10 +117,13 @@ class DatabaseHandler:
             row_starts = 0 if housing_data.row_starts == "" else housing_data.row_starts
             apartment_starts = 0 if housing_data.apartment_starts == "" else housing_data.apartment_starts
             singles_complete = 0 if housing_data.singles_complete == "" else housing_data.singles_complete
-            semis_complete = 0 if housing_data.semis_complete == "" else housing_data.semis_complete
-            row_complete = 0 if housing_data.row_complete == "" else housing_data.row_complete
-            apartment_complete = 0 if housing_data.apartment_complete == "" else housing_data.apartment_complete
-            
+            semis_complete = (0 if housing_data.semis_complete == ""
+                            else housing_data.semis_complete)
+            row_complete = (0 if housing_data.row_complete == ""
+                        else housing_data.row_complete)
+            apartment_complete = (0 if housing_data.apartment_complete == ""
+                                else housing_data.apartment_complete)
+
             # First execute the query to check if housing data exists with all fields
             cursor.execute(
                 """SELECT id FROM housing_data 
@@ -138,9 +141,9 @@ class DatabaseHandler:
                 AND apartment_complete = ?""",
                 (
                     housing_data.census_metropolitan_area,
+                    month,
                     total_starts,
                     total_complete,
-                    month,
                     singles_starts,
                     semis_starts,
                     row_starts,
@@ -151,10 +154,10 @@ class DatabaseHandler:
                     apartment_complete
                 )
             )
-            
+
             # Now we can safely call fetchone() after executing a query
             result = cursor.fetchone()
-            
+    
             if result is None:
                 # Insert new record if no exact match exists
                 cursor.execute(
@@ -196,7 +199,7 @@ class DatabaseHandler:
             province = 0 if labour_market_data.province == "" else labour_market_data.province
             education_level = 0 if labour_market_data.education_level == "" else labour_market_data.education_level
             labour_force_status = 0 if labour_market_data.labour_force_status == "" else labour_market_data.labour_force_status
-            
+    
             # First check if this exact record already exists
             cursor.execute(
                 """SELECT id FROM labour_market_data 
@@ -209,9 +212,9 @@ class DatabaseHandler:
                     labour_force_status
                 )
             )
-            
+    
             result = cursor.fetchone()
-            
+    
             if result is None:
                 # Insert new record if no exact match exists
                 cursor.execute(

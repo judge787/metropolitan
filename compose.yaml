@@ -9,6 +9,7 @@ services:  # Defines the services that make up the application
     environment:  # Environment variables for the MySQL service
       - MYSQL_ROOT_PASSWORD=pwd  # The root password for MySQL
       - MYSQL_DATABASE=template_db  # The database to create when the container starts
+      - TZ=America/Toronto
     #Volumes: volumes: - mariadb_data:/var/lib/mysql mounts the named volume mariadb_data to /var/lib/mysql inside the container, providing persistent storage for the database.
     volumes:  # Persistent storage for the MySQL database
       - mariadb_data:/var/lib/mysql  # Maps 'mariadb_data' volume to the data directory of MySQL
