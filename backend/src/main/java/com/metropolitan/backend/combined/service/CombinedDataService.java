@@ -25,7 +25,7 @@ public class CombinedDataService {
   }
 
   public CombinedDTO getHousingStartsWithLabourData(String censusArea, Integer labourDataId) {
-    Integer totalCompleteByArea = dataService.getTotalCompleteByArea(censusArea);
+    Integer totalCompleteByArea = dataService.getTotalStartsByArea(censusArea);
     LabourData labourData = labourDataService.getDataById(labourDataId);
       return new CombinedDTO(censusArea, totalCompleteByArea, labourData);
   }

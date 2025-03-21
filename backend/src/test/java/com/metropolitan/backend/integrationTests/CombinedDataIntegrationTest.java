@@ -29,7 +29,7 @@ class CombinedDataIntegrationTest {
     mockMvc.perform(get("/api/combined/{censusArea}/{id}", censusArea, id.toString()))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.censusArea").value(censusArea))
-            .andExpect(jsonPath("$.totalStarts").value(230))
+            .andExpect(jsonPath("$.totalStarts").value(280))
             .andExpect(jsonPath("$.labourData.id").value(id))
             .andExpect(jsonPath("$.labourData.province").value(1))
             .andExpect(jsonPath("$.labourData.educationLevel").value(2))

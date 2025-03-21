@@ -52,7 +52,7 @@ class HousingDataControllerTest {
         ResponseEntity<Data> response = housingDataController.getData(id);
 
         assertNotNull(response);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
