@@ -1,3 +1,6 @@
+
+
+
   /* First Font: Pixel */
   @font-face {
     font-family: 'picel'; /* Custom name for the font */
@@ -52,9 +55,9 @@ nav {
 
 .nav-links {
     list-style: none;
-    display: flex; /* Makes items align side by side */
-    justify-content: center; /* Centers the nav links */
-    gap: 75px; /* Space between links */
+    display: flex;
+    justify-content: flex-end; /* Aligns nav items to the right */
+    gap: 50px;
     padding: 0;
 }
 
