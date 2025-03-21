@@ -46,7 +46,7 @@ class App extends Component<{}, AppState> {
 <main className={`min-h-screen w-screen overflow-x-hidden ${this.state.darkMode ? 'dark-mode' : ''}`}>
   <div className={`w-full px-0 ${this.state.darkMode ? 'main-content' : ''}`}>
     <header className={`w-full px-0 py-8 shadow-lg ${this.state.darkMode ? 'bg-[#3d3045]' : 'bg-[#d3f3f8]'}`}>
-            <div className="max-w-6xl flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="max-w-xl flex flex-col md:flex-row items-center justify-between gap-4">
               <img src={this.state.darkMode ? "./logoMetroDark.png": "./logoMetro.webp"  }  alt="Logo" className="ml-4" style={{ height: '75px' }} />
               <nav className="ml-auto">
   <ul className="nav-links">
@@ -54,17 +54,18 @@ class App extends Component<{}, AppState> {
     <li><Link to="/types" className={this.state.darkMode ? 'dark-mode' : ''}>Types</Link></li>
     <li><Link to="/completions-starts" className={this.state.darkMode ? 'dark-mode' : ''}>Trends</Link></li>
     <li><Link to="/employment" className={this.state.darkMode ? 'dark-mode' : ''}>Employment</Link></li>
-    <li><Link to="/labour-force-stats" className={this.state.darkMode ? 'dark-mode' : ''}>Labour & Housing</Link></li>
-    <li><Link to="/contact" className={this.state.darkMode ? 'dark-mode' : ''}>Contact Us</Link></li>
-    <li>
-
+    <li><Link to="/labour-force-stats" className={this.state.darkMode ? 'dark-mode' : ''}>Labour</Link></li>
+    <li><Link to="/contact" className={this.state.darkMode ? 'dark-mode' : ''}>Contact</Link></li>
+    
+    <div className="flex items-center gap-2">
       <button 
         onClick={this.handleToggleDarkMode} 
         className={`px-4 py-2 rounded text-white hover:bg-blue-600 transition ${this.state.darkMode ? 'bg-[#1e1421]' : 'bg-[#b5e3f7]'}`}
       >
         {this.state.darkMode ? '🔆' : '🌙'}
       </button>
-    </li>
+      <DateTime darkMode={this.state.darkMode} />
+    </div>
   </ul>
 </nav>
 
@@ -195,12 +196,10 @@ class App extends Component<{}, AppState> {
               <Route 
                 path="/labour-force-stats" 
                 element={
-                  <section className="my-12">
+                  <section className="my-0">
                     <div className="flex justify-center items-center mb-1">
                       <img 
-                        src="./labourForceStats.png" 
-                        alt="Labour Force Stats" 
-                        style={{ width: '300px', height: '250px' }}
+                        src={this.state.darkMode ?   "./LFD.png" :"./LF.png"} alt="Labour" style={{ height: '275px' }}
                       />
                     </div>
                     <div className="max-w-4xl mx-auto">

@@ -57,7 +57,7 @@ nav {
     list-style: none;
     display: flex;
     justify-content: flex-end; /* Aligns nav items to the right */
-    gap: 50px;
+    gap: 60px;
     padding: 0;
 }
 
@@ -83,6 +83,7 @@ nav {
 }
 .contact-info {
     border-color: #2b9bda ;
+
     background-color: transparent;
   }
 
