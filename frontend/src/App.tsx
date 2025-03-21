@@ -5,6 +5,7 @@ import ProductPitch from './components/ProductPitch';
 import HousingChart from './components/DoubleBarChart';
 import DoubleRadarChart from './components/DoubleRadarChart';
 import LineChartEmployment from './components/LineChartEmployment';
+import LabourForceStats from './components/LabourForceStats';
 
 interface AppState {
   showContactInfo: boolean;
@@ -51,6 +52,7 @@ class App extends Component<{}, AppState> {
     <li><Link to="/types" className={this.state.darkMode ? 'dark-mode' : ''}>Types</Link></li>
     <li><Link to="/completions-starts" className={this.state.darkMode ? 'dark-mode' : ''}>Trends</Link></li>
     <li><Link to="/employment" className={this.state.darkMode ? 'dark-mode' : ''}>Employment</Link></li>
+    <li><Link to="/labour-force-stats" className={this.state.darkMode ? 'dark-mode' : ''}>Labour & Housing</Link></li>
     <li><Link to="/contact" className={this.state.darkMode ? 'dark-mode' : ''}>Contact Us</Link></li>
     <li>
       <button 
@@ -148,6 +150,23 @@ class App extends Component<{}, AppState> {
                     </div>
                     <div className="max-w-4xl mx-auto">
                       <LineChartEmployment />
+                    </div>
+                  </section>
+                } 
+              />
+              <Route 
+                path="/labour-force-stats" 
+                element={
+                  <section className="my-12">
+                    <div className="flex justify-center items-center mb-1">
+                      <img 
+                        src="./labourForceStats.png" 
+                        alt="Labour Force Stats" 
+                        style={{ width: '300px', height: '250px' }}
+                      />
+                    </div>
+                    <div className="max-w-4xl mx-auto">
+                      <LabourForceStats />
                     </div>
                   </section>
                 } 
