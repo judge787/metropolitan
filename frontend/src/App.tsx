@@ -54,7 +54,9 @@ class App extends Component<{}, AppState> {
     <li><Link to="/completions-starts" className={this.state.darkMode ? 'dark-mode' : ''}>Trends</Link></li>
     <li><Link to="/employment" className={this.state.darkMode ? 'dark-mode' : ''}>Employment</Link></li>
     <li><Link to="/contact" className={this.state.darkMode ? 'dark-mode' : ''}>Contact</Link></li>
+    <li className="w-full md:w-auto"> <DateTime /></li>
     <li>
+
       <button 
         onClick={this.handleToggleDarkMode} 
         className={`px-4 py-2 rounded text-white hover:bg-blue-600 transition ${this.state.darkMode ? 'bg-[#1e1421]' : 'bg-[#b5e3f7]'}`}
@@ -214,25 +216,3 @@ export default App;
 
 
 
-
-import React from "react";
-
-const DateTime: React.FC = () => {
-  const [currentTime, setCurrentTime] = React.useState(new Date());
-
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <div className="text-sm font-semibold text-gray-700">
-      <p>Time: {currentTime.toLocaleTimeString()}</p>
-      <p>Date: {currentTime.toLocaleDateString()}</p>
-    </div>
-  );
-};
-
-export default DateTime;

@@ -23,28 +23,7 @@ ChartJS.register(
   Filler
 );
 
-// **DateTime Component for Live Time and Date Display**
-const DateTime: React.FC = () => {
-  const [currentTime, setCurrentTime] = React.useState(new Date());
 
-  React.useEffect(() => {
-      const interval = setInterval(() => {
-          setCurrentTime(new Date());
-      }, 1000);
-      return () => clearInterval(interval);
-  }, []);
-
-  return (
-      <div className="p-4 bg-gray-100 rounded-lg shadow-md text-center">
-          <p className="text-lg font-semibold text-gray-700">
-              Time: {currentTime.toLocaleTimeString()}
-          </p>
-          <p className="text-lg font-semibold text-gray-700">
-              Date: {currentTime.toLocaleDateString()}
-          </p>
-      </div>
-  );
-};
 
 interface LineChartState {
   loading: boolean;
@@ -328,10 +307,7 @@ class LineChartEmployment extends Component<LineChartProps, LineChartState> {
           </div>
         </div>
 
-        {/* DateTime Display */}
-        <div className="w-full md:w-auto">
-          <DateTime />
-        </div>
+       
       </div>
     );
   }

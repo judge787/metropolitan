@@ -6,28 +6,6 @@ import { MonthlyData, fetchProcessedHousingData } from '../services/HousingDataS
 // Register required Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-//Date/time update
-const DateTime: React.FC = () => {
-    const [currentTime, setCurrentTime] = React.useState(new Date());
-
-    React.useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentTime(new Date());
-        }, 1000);
-        return () => clearInterval(interval);
-    }, []);
-
-    return (
-        <div className="p-4 bg-gray-100 rounded-lg shadow-md text-center">
-            <p className="text-lg font-semibold text-gray-700">
-                Time: {currentTime.toLocaleTimeString()}
-            </p>
-            <p className="text-lg font-semibold text-gray-700">
-                Date: {currentTime.toLocaleDateString()}
-            </p>
-        </div>
-    );
-};
 
 interface HousingChartState {
     startsData: MonthlyData[];
@@ -274,10 +252,7 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
                     </div>
                 </div>
     
-                {/* DateTime Display (Correct Positioning) */}
-                <div className="w-full md:w-auto">
-                    <DateTime />
-                </div>
+               
             </div>
         );
     } 
