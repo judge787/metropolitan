@@ -45,12 +45,21 @@ class App extends Component<{}, AppState> {
       <Router>
 <main className={`min-h-screen w-screen overflow-x-hidden ${this.state.darkMode ? 'dark-mode' : ''}`}>
   <div className={`w-full px-0 ${this.state.darkMode ? 'main-content' : ''}`}>
-    <header className={`w-full px-0 py-8 shadow-lg ${this.state.darkMode ? 'bg-[#3d3045]' : 'bg-[#d3f3f8]'}`}>
-            <div className="max-w-xl flex flex-col md:flex-row items-center justify-between gap-4">
-              <img src={this.state.darkMode ? "./logoMetroDark.png": "./logoMetro.webp"  }  alt="Logo" className="ml-4" style={{ height: '75px' }} />
+    <header className={`w-full px-0  shadow-lg ${this.state.darkMode ? 'bg-[#3d3045]' : 'bg-[#d3f3f8]'}`}>
+            <div className="max-w-lg flex flex-col md:flex-row items-center justify-between gap-4">
               <nav className="ml-auto">
   <ul className="nav-links">
-    <li><Link to="/" className={this.state.darkMode ? 'dark-mode' : ''}>Home</Link></li>
+  <li>
+      <Link to="/" className={this.state.darkMode ? 'dark-mode' : ''}>
+      <img 
+          src={this.state.darkMode ? "./logoMetroDark.png" : "./logoMetro.webp"}  
+          alt="Logo" 
+          className="ml-4" 
+          style={{ height: '75px', width: 'auto' }} 
+      />
+      </Link>
+    </li>
+
     <li><Link to="/types" className={this.state.darkMode ? 'dark-mode' : ''}>Types</Link></li>
     <li><Link to="/completions-starts" className={this.state.darkMode ? 'dark-mode' : ''}>Trends</Link></li>
     <li><Link to="/employment" className={this.state.darkMode ? 'dark-mode' : ''}>Employment</Link></li>
