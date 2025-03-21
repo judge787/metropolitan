@@ -20,6 +20,10 @@ ChartJS.register(
   Legend
 );
 
+interface RadarChartProps {
+  showCompletions?: boolean;
+  darkMode: boolean; // Add darkMode prop
+}
 
 // Define interface for city housing data
 interface CityHousingData {
@@ -42,9 +46,6 @@ interface RadarChartState {
   description: string;
 }
 
-interface RadarChartProps {
-  showCompletions?: boolean;
-}
 
 class DoubleRadarChart extends Component<RadarChartProps, RadarChartState> {
   public state: RadarChartState = {
@@ -258,6 +259,7 @@ class DoubleRadarChart extends Component<RadarChartProps, RadarChartState> {
 
   public render(): React.JSX.Element {
     const { loading, error, chartKey, description, showCompletions } = this.state;
+    const { darkMode} = this.props;
 
     if (loading) {
       return <div className="text-center text-gray-600">Loading...</div>;
@@ -289,12 +291,12 @@ class DoubleRadarChart extends Component<RadarChartProps, RadarChartState> {
 
         {/* Description Box */}
         <div className="mt-4">
-            <label htmlFor="chart-description" className="block text-blue-700 font-semibold mb-2 text-xl">
+            <label htmlFor="chart-description" className= "block text-blue-700 font-semibold mb-2 text-xl">
               Data Summary
             </label>
             <textarea
               id="chart-description"
-              className="w-full p-2 border-2 border-[#1ed1d6] rounded-lg resize-none text-blue-700"
+              className={`w-full p-2 border-2 border-[#1ed1d6] rounded-lg resize-none ${darkMode ? 'text-white' : 'text-blue-700'}`}
               rows={5}
               value={description}
               readOnly

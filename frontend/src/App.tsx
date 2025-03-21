@@ -104,7 +104,7 @@ class App extends Component<{}, AppState> {
                     <img src={this.state.darkMode ? "./HTD.png" : "./HT.png"} alt="TitleHousing" style={{ height: '250px' }} />
                     </div>
                     <div className = "max-w-4xl mx-auto">
-                    <DoubleRadarChart />
+                    <DoubleRadarChart darkMode={this.state.darkMode}/>
                     </div>
                   </section>
                 }></Route>
