@@ -38,7 +38,7 @@ class DataIngester:
                 return date_str if date_str else None
         except FileNotFoundError:
             return None
-    
+
     def save_last_update(self):
         """
         save_last_update: Saves current UTC date in last_update_file, formatted as YYYY-MM-DD.
@@ -59,18 +59,18 @@ class DataIngester:
             try:
                 last_update_formatted = datetime.strptime(last_update, '%Y-%m-%d')
                 # subtract one day to make the original date inclusive
-                date_inclusive = (last_update_formatted - timedelta(days = 1)).strftime('%Y-%m-%d')
+                date_inclusive = (last_update_formatted - timedelta(days=1)).strftime('%Y-%m-%d')
                 params["after"] = date_inclusive
-            except Exception as e:
-                print(f"Error parsing last ingestion date: {e}")
+            except ValueError as parse_error:
+                print(f"Error parsing last ingestion date: {parse_error}")
                 params["after"] = last_update
 
         try:
-            response = requests.get(url, headers = headers, params = params, timeout = 100)
+            response = requests.get(url, headers=headers, params=params, timeout=100)
             response.raise_for_status()
             return response.json()
-        except requests.exceptions.RequestException as e:
-            print(f"Error fetching data from {url}: {e}")
+        except requests.exceptions.RequestException as parse_error:
+            print(f"Error fetching data from {url}: {parse_error}")
             return []
 
     def process_housing_data(self):
@@ -87,27 +87,27 @@ class DataIngester:
             try:
                 housing_data = HousingData(
                     census_metropolitan_area=d["CMA"],
-                    month = d["Month"],
-                    total_starts = d["Total_starts"],
-                    total_complete = d["Total_complete"],
-                    singles_starts = d["Singles_starts"],
-                    semis_starts = d["Semis_starts"],
-                    row_starts = d["Row_starts"],
-                    apartment_starts = d["Apt_Other_starts"],
-                    singles_complete = d["Singles_complete"],
-                    semis_complete = d["Semis_complete"],
-                    row_complete = d["Row_complete"],
-                    apartment_complete = d["Apt_other_complete"]
+                    month=d["Month"],
+                    total_starts=d["Total_starts"],
+                    total_complete=d["Total_complete"],
+                    singles_starts=d["Singles_starts"],
+                    semis_starts=d["Semis_starts"],
+                    row_starts=d["Row_starts"],
+                    apartment_starts=d["Apt_Other_starts"],
+                    singles_complete=d["Singles_complete"],
+                    semis_complete=d["Semis_complete"],
+                    row_complete=d["Row_complete"],
+                    apartment_complete=d["Apt_other_complete"]
                 )
                 self.db.insert_housing_data(housing_data)
                 records_processed += 1
                 print(f"Processed housing data: {housing_data.census_metropolitan_area}")
-            except KeyError as e:
-                print(f"Skipping invalid housing data: Missing field {e}")
+            except KeyError as key_error:
+                print(f"Skipping invalid housing data: Missing field {key_error}")
             # pylint: disable=broad-exception-caught
-            except Exception as e:
-                print(f"Error processing housing data: {e}")
-        
+            except Exception as process_error:
+                print(f"Error processing housing data: {process_error}")
+
         return records_processed
 
     def process_labour_market_data(self):
@@ -131,11 +131,11 @@ class DataIngester:
                 self.db.insert_labour_market_data(labour_market_data)
                 records_processed += 1
                 print(f"Processed labour market data for province: {labour_market_data.province}")
-            except KeyError as e:
-                print(f"Skipping invalid labour market data: Missing field {e}")
-            except Exception as e:
-                print(f"Error processing labour market data: {e}")
-        
+            except KeyError as key_error:
+                print(f"Skipping invalid labour market data: Missing field {key_error}")
+            except Exception as exception_error:
+                print(f"Error processing labour market data: {exception_error}")
+
         return records_processed
 
     def process_and_store(self):
@@ -144,10 +144,10 @@ class DataIngester:
         """
         housing_records = self.process_housing_data()
         labour_records = self.process_labour_market_data()
-        
+
         if housing_records > 0 or labour_records > 0:
             self.save_last_update()
-        
+
         print(f"Total records processed: Housing={housing_records}, Labour Market={labour_records}")
 
 

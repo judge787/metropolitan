@@ -18,7 +18,7 @@ public class Data {
     @Column(name = "total_complete")
     private Integer totalComplete;
 
-    @Column(name = "month")
+    @Column(name = "`month`")
     private Integer month;
 
     @Column(name = "singles_starts")
