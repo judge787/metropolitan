@@ -59,6 +59,7 @@ class DatabaseHandler:
                 """
                 CREATE TABLE IF NOT EXISTS housing_data (
                     id INT AUTO_INCREMENT PRIMARY KEY COMMENT 'Primary Key',
+                    jsonid INT DEFAULT 0 COMMENT 'JSON ID',
                     census_metropolitan_area VARCHAR(255) COMMENT 'Census Metropolitan Area',
                     month INT DEFAULT NULL COMMENT 'Month',
                     total_starts INT DEFAULT 0 COMMENT 'Total Starts',
@@ -127,7 +128,8 @@ class DatabaseHandler:
             # First execute the query to check if housing data exists with all fields
             cursor.execute(
                 """SELECT id FROM housing_data 
-                WHERE census_metropolitan_area = ? 
+                WHERE jsonid = ?
+                AND census_metropolitan_area = ? 
                 AND month = ? 
                 AND total_starts = ? 
                 AND total_complete = ? 
@@ -140,6 +142,7 @@ class DatabaseHandler:
                 AND row_complete = ? 
                 AND apartment_complete = ?""",
                 (
+                    housing_data.jsonid,
                     housing_data.census_metropolitan_area,
                     month,
                     total_starts,
@@ -162,11 +165,12 @@ class DatabaseHandler:
                 # Insert new record if no exact match exists
                 cursor.execute(
                     """INSERT INTO housing_data 
-                    (census_metropolitan_area, month, total_starts, total_complete, 
+                    (jsonid, census_metropolitan_area, month, total_starts, total_complete, 
                     singles_starts, semis_starts, row_starts, apartment_starts,
                     singles_complete, semis_complete, row_complete, apartment_complete)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                     (
+                        housing_data.jsonid,
                         housing_data.census_metropolitan_area,
                         housing_data.month,
                         total_starts,
@@ -181,7 +185,8 @@ class DatabaseHandler:
                         apartment_complete
                     )
                 )
-                print(f"Inserted housing data: {housing_data.census_metropolitan_area}")
+                # print(f"Inserted housing data: {housing_data.census_metropolitan_area}")
+                print(f"Inserted jsonid: {housing_data.jsonid}, housing data: {housing_data.census_metropolitan_area}, Month: {housing_data.month}, Total Starts: {total_starts}, Total Complete: {total_complete}")
                 self.conn.commit()
         except mariadb.Error as e:
             print(f"Error inserting housing data: {e}")

@@ -8,6 +8,7 @@ USE template_db;
 -- Create the table (if not exists)
 CREATE TABLE IF NOT EXISTS housing_data (
     id INT AUTO_INCREMENT PRIMARY KEY COMMENT 'Primary Key',
+    jsonid INT DEFAULT 0 COMMENT 'JSON ID',
     census_metropolitan_area VARCHAR(255) COMMENT 'Census Metropolitan Area',
     month INT DEFAULT NULL COMMENT 'Month',
     total_starts INT DEFAULT 0 COMMENT 'Total Starts',
