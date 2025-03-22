@@ -296,7 +296,7 @@ class DoubleRadarChart extends Component<RadarChartProps, RadarChartState> {
             >Data Summary</label>
             <textarea
               id="chart-description"
-              className={`w-full p-2 border-2 border-2 ${darkMode ? 'border-white' : 'border-blue-700'} rounded-lg resize-none ${darkMode ? 'text-white' : 'text-blue-700'}`}
+              className={`w-full p-2 border-2 border-2 ${darkMode ? 'border-white' : 'border-[#1ed1d6]'} rounded-lg resize-none ${darkMode ? 'text-white' : 'text-blue-700'}`}
               rows={5}
               value={description}
               readOnly

@@ -126,7 +126,7 @@ class App extends Component<{}, AppState> {
                     style={this.state.showCompletions ? { height: '300px' } : { height: '250px'}} />
                     </div>
                     <div className = "max-w-4xl mx-auto">
-                    <HousingChart 
+                    <HousingChart darkMode={this.state.darkMode}
                       showCompletions={this.state.showCompletions} // Pass the state for showCompletions
                       onToggleView={this.handleToggleView} />
                       </div>
@@ -197,7 +197,7 @@ class App extends Component<{}, AppState> {
                       />
                     </div>
                     <div className="max-w-4xl mx-auto">
-                      <LineChartEmployment />
+                      <LineChartEmployment darkMode={this.state.darkMode} />
                     </div>
                   </section>
                 } 
@@ -212,7 +212,7 @@ class App extends Component<{}, AppState> {
                       />
                     </div>
                     <div className="max-w-4xl mx-auto">
-                      <LabourForceStats />
+                      <LabourForceStats darkMode={this.state.darkMode}/>
                     </div>
                   </section>
                 } 
