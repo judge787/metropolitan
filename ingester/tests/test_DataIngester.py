@@ -13,6 +13,7 @@ def data_ingester():
 def mock_api_response():
     return [
         {
+            "jsonid": 1,
             "CMA": "TestCMA",
             "Month": 10,
             "Total_starts": 10,
@@ -163,7 +164,7 @@ def test_process_housing_data_key_error(data_ingester):
         assert records == 0  # No records should be processed due to KeyError
 
 def test_process_housing_data_exception(data_ingester):
-    with patch.object(data_ingester, 'fetch_data', return_value=[{"CMA": "TestCMA", "Month": 10, "Total_starts": 10,
+    with patch.object(data_ingester, 'fetch_data', return_value=[{"jsonid": 1, "CMA": "TestCMA", "Month": 10, "Total_starts": 10,
                      "Total_complete": 5, "Singles_starts": 3, "Semis_starts": 2, "Row_starts": 1,
                      "Apt_Other_starts": 4, "Singles_complete": 1, "Semis_complete": 1, "Row_complete": 1,
                      "Apt_other_complete": 2}]), \

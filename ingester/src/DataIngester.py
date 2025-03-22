@@ -102,12 +102,20 @@ class DataIngester:
                 )
                 self.db.insert_housing_data(housing_data)
                 records_processed += 1
-                print(f"Processed housing data: jsonid={housing_data.jsonid}, CMA={housing_data.census_metropolitan_area}, Month={housing_data.month}, " 
-                     f"Total Starts={housing_data.total_starts}, Total Complete={housing_data.total_complete}, "
-                     f"Singles Starts={housing_data.singles_starts}, Semis Starts={housing_data.semis_starts}, "
-                     f"Row Starts={housing_data.row_starts}, Apartment Starts={housing_data.apartment_starts}, "
-                     f"Singles Complete={housing_data.singles_complete}, Semis Complete={housing_data.semis_complete}, "
-                     f"Row Complete={housing_data.row_complete}, Apartment Complete={housing_data.apartment_complete}")
+                print(
+                    f"Processed housing data: jsonid={housing_data.jsonid}, "
+                    f"CMA={housing_data.census_metropolitan_area}, Month={housing_data.month}, "
+                    f"Total Starts={housing_data.total_starts}, "
+                    f"Total Complete={housing_data.total_complete}, "
+                    f"Singles Starts={housing_data.singles_starts}, "
+                    f"Semis Starts={housing_data.semis_starts}, "
+                    f"Row Starts={housing_data.row_starts}, "
+                    f"Apartment Starts={housing_data.apartment_starts}, "
+                    f"Singles Complete={housing_data.singles_complete}, "
+                    f"Semis Complete={housing_data.semis_complete}, "
+                    f"Row Complete={housing_data.row_complete}, "
+                    f"Apartment Complete={housing_data.apartment_complete}"
+                )
             except KeyError as key_error:
                 print(f"Skipping invalid housing data: Missing field {key_error}")
             # pylint: disable=broad-exception-caught

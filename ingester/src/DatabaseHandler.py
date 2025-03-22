@@ -115,7 +115,7 @@ class DatabaseHandler:
                     return 0
                 # Remove commas and convert to integer
                 return int(str(value).replace(',', ''))
-            
+
             # Convert empty strings to integers for numeric fields
             month = safe_convert(housing_data.month)
             total_starts = safe_convert(housing_data.total_starts)
@@ -128,7 +128,7 @@ class DatabaseHandler:
             semis_complete = safe_convert(housing_data.semis_complete)
             row_complete = safe_convert(housing_data.row_complete)
             apartment_complete = safe_convert(housing_data.apartment_complete)
-    
+
             # First execute the query to check if housing data exists with all fields
             cursor.execute(
                 """SELECT id FROM housing_data 
@@ -161,10 +161,10 @@ class DatabaseHandler:
                     apartment_complete
                 )
             )
-    
+
             # Now we can safely call fetchone() after executing a query
             result = cursor.fetchone()
-    
+
             if result is None:
                 # Insert new record if no exact match exists
                 cursor.execute(
@@ -190,8 +190,10 @@ class DatabaseHandler:
                     )
                 )
                 # Print detailed information including original values for debugging
-                print(f"Inserted jsonid: {housing_data.jsonid}, housing data: {housing_data.census_metropolitan_area}, "
-                    f"Month: {housing_data.month}, Total Starts: {total_starts}, Total Complete: {total_complete}")
+                print(f"Inserted jsonid: {housing_data.jsonid}, housing data: "
+                      f"{housing_data.census_metropolitan_area}, "
+                      f"Month: {housing_data.month}, Total Starts: {total_starts}, "
+                      f"Total Complete: {total_complete}")
                 self.conn.commit()
         except mariadb.Error as e:
             print(f"Error inserting housing data: {e}")
