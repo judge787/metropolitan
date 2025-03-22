@@ -138,13 +138,14 @@ class DataIngester:
             try:
                 # Using the exact field names from the API
                 labour_market_data = LabourMarketData(
+                    jsonid=d["id"],
                     province=d["PROV"],
                     education_level=d["EDUC"],
                     labour_force_status=d["LFSSTAT"]
                 )
                 self.db.insert_labour_market_data(labour_market_data)
                 records_processed += 1
-                print(f"Processed labour market data for province: {labour_market_data.province}")
+                print(f"Processed labour market data for jsonid: {labour_market_data.jsonid}")
             except KeyError as key_error:
                 print(f"Skipping invalid labour market data: Missing field {key_error}")
             except Exception as exception_error:

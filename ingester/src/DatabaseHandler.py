@@ -102,6 +102,13 @@ class DatabaseHandler:
             print(f"Error creating labour_market_data table: {e}")
         finally:
             cursor.close()
+    
+    # Helper function to safely convert values with potential commas
+    def safe_convert(self, value):
+        if value == "" or value is None:
+            return 0
+        # Remove commas and convert to integer
+        return int(str(value).replace(',', ''))
 
     def insert_housing_data(self, housing_data):
         """
@@ -109,25 +116,19 @@ class DatabaseHandler:
         """
         cursor = self.conn.cursor()
         try:
-            # Helper function to safely convert values with potential commas
-            def safe_convert(value):
-                if value == "" or value is None:
-                    return 0
-                # Remove commas and convert to integer
-                return int(str(value).replace(',', ''))
 
             # Convert empty strings to integers for numeric fields
-            month = safe_convert(housing_data.month)
-            total_starts = safe_convert(housing_data.total_starts)
-            total_complete = safe_convert(housing_data.total_complete)
-            singles_starts = safe_convert(housing_data.singles_starts)
-            semis_starts = safe_convert(housing_data.semis_starts)
-            row_starts = safe_convert(housing_data.row_starts)
-            apartment_starts = safe_convert(housing_data.apartment_starts)
-            singles_complete = safe_convert(housing_data.singles_complete)
-            semis_complete = safe_convert(housing_data.semis_complete)
-            row_complete = safe_convert(housing_data.row_complete)
-            apartment_complete = safe_convert(housing_data.apartment_complete)
+            month = self.safe_convert(housing_data.month)
+            total_starts = self.safe_convert(housing_data.total_starts)
+            total_complete = self.safe_convert(housing_data.total_complete)
+            singles_starts = self.safe_convert(housing_data.singles_starts)
+            semis_starts = self.safe_convert(housing_data.semis_starts)
+            row_starts = self.safe_convert(housing_data.row_starts)
+            apartment_starts = self.safe_convert(housing_data.apartment_starts)
+            singles_complete = self.safe_convert(housing_data.singles_complete)
+            semis_complete = self.safe_convert(housing_data.semis_complete)
+            row_complete = self.safe_convert(housing_data.row_complete)
+            apartment_complete = self.safe_convert(housing_data.apartment_complete)
 
             # First execute the query to check if housing data exists with all fields
             cursor.execute(
@@ -207,17 +208,20 @@ class DatabaseHandler:
         cursor = self.conn.cursor()
         try:
             # Convert empty strings to integers for numeric fields
-            province = 0 if labour_market_data.province == "" else labour_market_data.province
-            education_level = 0 if labour_market_data.education_level == "" else labour_market_data.education_level
-            labour_force_status = 0 if labour_market_data.labour_force_status == "" else labour_market_data.labour_force_status
+            jsonid = self.safe_convert(labour_market_data.jsonid)
+            province = self.safe_convert(labour_market_data.province)
+            education_level = self.safe_convert(labour_market_data.education_level)
+            labour_force_status = self.safe_convert(labour_market_data.labour_force_status)
     
             # First check if this exact record already exists
             cursor.execute(
                 """SELECT id FROM labour_market_data 
-                WHERE province = ? 
+                WHERE jsonid = ?
+                AND province = ? 
                 AND education_level = ? 
                 AND labour_force_status = ?""",
                 (
+                    jsonid,
                     province,
                     education_level,
                     labour_force_status
@@ -230,15 +234,16 @@ class DatabaseHandler:
                 # Insert new record if no exact match exists
                 cursor.execute(
                     """INSERT INTO labour_market_data 
-                    (province, education_level, labour_force_status)
-                    VALUES (?, ?, ?)""",
+                    (jsonid, province, education_level, labour_force_status)
+                    VALUES (?, ?, ?, ?)""",
                     (
+                        jsonid,
                         province,
                         education_level,
                         labour_force_status
                     )
                 )
-                print(f"Inserted labour market data for province: {province}")
+                print(f"Inserted labour market data for jsonid: {jsonid}")
                 self.conn.commit()
         except mariadb.Error as e:
             print(f"Error inserting labour market data: {e}")
