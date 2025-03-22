@@ -91,6 +91,7 @@ class DatabaseHandler:
                 """
                 CREATE TABLE IF NOT EXISTS labour_market_data (
                     id INT AUTO_INCREMENT PRIMARY KEY COMMENT 'Primary Key',
+                    jsonid INT DEFAULT 0 COMMENT 'JSON ID',
                     province INT DEFAULT 0 COMMENT 'Province',
                     education_level INT DEFAULT 0 COMMENT 'Education Level',
                     labour_force_status INT DEFAULT 0 COMMENT 'Labour Force Status'

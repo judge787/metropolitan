@@ -33,6 +33,7 @@ def mock_api_response():
 def mock_labour_api_response():
     return [
         {
+            "id" : "1",
             "PROV": "48",
             "EDUC": "2", 
             "LFSSTAT": "4"
