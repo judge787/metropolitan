@@ -6,28 +6,6 @@ import { MonthlyData, fetchProcessedHousingData } from '../services/HousingDataS
 // Register required Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-//Date/time update
-const DateTime: React.FC = () => {
-    const [currentTime, setCurrentTime] = React.useState(new Date());
-
-    React.useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentTime(new Date());
-        }, 1000);
-        return () => clearInterval(interval);
-    }, []);
-
-    return (
-        <div className="p-4 bg-gray-100 rounded-lg shadow-md text-center">
-            <p className="text-lg font-semibold text-gray-700">
-                Time: {currentTime.toLocaleTimeString()}
-            </p>
-            <p className="text-lg font-semibold text-gray-700">
-                Date: {currentTime.toLocaleDateString()}
-            </p>
-        </div>
-    );
-};
 
 interface HousingChartState {
     startsData: MonthlyData[];
@@ -41,9 +19,11 @@ interface HousingChartState {
     availableMonths: number[];
 }
 
+  
 interface HousingChartProps {
     showCompletions: boolean;
     onToggleView: () => void;
+    darkMode: boolean;
 }
 
 class HousingChart extends Component<HousingChartProps, HousingChartState> {
@@ -152,7 +132,7 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
 
     public render(): React.JSX.Element {
         const { loading, error, chartKey, description, showCompletions, availableMonths, selectedMonth } = this.state;
-    
+        const {darkMode} = this.props;
         if (loading) {
             return <div className="text-center text-gray-600">Loading...</div>;
         }
@@ -178,7 +158,7 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
         return (
             <div className="flex flex-col md:flex-row gap-6 items-start">
                 {/* Chart Container */}
-                <div className="flex-1 border-2 border-[#1ed1d6] rounded-lg shadow-md p-4">
+                <div className={`flex-1 border-2 ${darkMode ? 'border-white' : 'border-[#1ed1d6]'} rounded-lg shadow-md p-4`}>
                     {error && <div className="error-banner bg-red-100 text-red-700 p-2 rounded mb-4">{error}</div>}
     
                     <div className="mb-4 flex flex-wrap gap-4 items-center justify-between">
@@ -195,7 +175,7 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
                                 id="month-filter"
                                 value={selectedMonth === null ? "all" : selectedMonth.toString()}
                                 onChange={this.handleMonthChange}
-                                className="p-2 border border-gray-300 rounded-lg bg-white text-black"
+                                className={`p-2 border ${darkMode ? 'border-white' : 'border-blue-700'} rounded-lg bg-white text-black`}
                             >
                                 <option value="all">All Months</option>
                                 {availableMonths.map(month => (
@@ -261,12 +241,12 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
     
                     {/* Description Box */}
                     <div className="mt-4">
-                        <label htmlFor="chart-description" className="block text-blue-700 font-semibold mb-2 text-xl">
+                        <label htmlFor="chart-description" className={`block text-blue-700${darkMode ? 'border-white' : 'border-[#1ed1d6]'} font-semibold mb-2 text-xl`}>
                             Data Summary
                         </label>
                         <textarea
                             id="chart-description"
-                            className="w-full p-2 border-2 border-[#1ed1d6] rounded-lg resize-none text-blue-700"
+                            className={`w-full p-2 border-2 ${darkMode ? 'border-white' : 'border-[#1ed1d6]'} rounded-lg resize-none ${darkMode ? 'text-white' : 'text-blue-700'}`}
                             rows={5}
                             value={description}
                             readOnly
@@ -274,10 +254,7 @@ class HousingChart extends Component<HousingChartProps, HousingChartState> {
                     </div>
                 </div>
     
-                {/* DateTime Display (Correct Positioning) */}
-                <div className="w-full md:w-auto">
-                    <DateTime />
-                </div>
+               
             </div>
         );
     } 
