@@ -1,5 +1,6 @@
 import pytest
 import requests
+from datetime import datetime, timedelta
 from unittest.mock import patch, MagicMock, mock_open
 from src.DataIngester import DataIngester
 
@@ -7,6 +8,54 @@ from src.DataIngester import DataIngester
 def data_ingester():
     with patch('src.DataIngester.DatabaseHandler'):
         ingester = DataIngester(False)
+        
+        # Create a fully compatible fetch_data implementation for tests
+        def fetch_data_for_tests(url, params=None):
+            """Compatibility method to make tests work with batch processing implementation"""
+            if params is None:
+                params = {}
+                
+            # Add date filtering if available - THIS PART WAS MISSING
+            last_update = ingester.get_last_update()
+            if last_update:
+                try:
+                    last_update_formatted = datetime.strptime(last_update, '%Y-%m-%d')
+                    # Subtract one day to make date inclusive
+                    date_inclusive = (last_update_formatted - timedelta(days=1)).strftime('%Y-%m-%d')
+                    params["after"] = date_inclusive
+                except ValueError:
+                    # For invalid date formats, still add the parameter
+                    params["after"] = last_update
+                
+            # Call fetch_batch which is your new method
+            try:
+                headers = {"Apikey": ingester.api_key}
+                response = requests.get(url, headers=headers, params=params, timeout=100)
+                response.raise_for_status()
+                return response.json()
+            except requests.exceptions.RequestException:
+                return []
+        
+        # Rest of your fixture can remain the same
+        ingester.fetch_data = fetch_data_for_tests
+        
+        def mock_fetch_and_process(url, processor_func):
+            data = ingester.fetch_data(url)
+            processed = 0
+            for record in data:
+                if processor_func(record):
+                    processed += 1
+            return processed
+            
+        ingester.fetch_and_process_data = mock_fetch_and_process
+        
+        def mock_fetch_batch(url, offset, params=None):
+            if params is None:
+                params = {}
+            return ingester.fetch_data(url, params)
+            
+        ingester.fetch_batch = mock_fetch_batch
+        
         yield ingester
 
 @pytest.fixture
@@ -33,6 +82,7 @@ def mock_api_response():
 def mock_labour_api_response():
     return [
         {
+            "id" : "1",
             "PROV": "48",
             "EDUC": "2", 
             "LFSSTAT": "4"

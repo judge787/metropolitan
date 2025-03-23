@@ -1,18 +1,48 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom'; // Import jest-dom for additional matchers
+import '@testing-library/jest-dom';
 import ProductPitch from '../../components/ProductPitch';
 
 describe('ProductPitch Component', () => {
-  it('renders the "About Us" heading', () => {
-    render(<ProductPitch />);
-    const heading = screen.getByRole('heading', { name: /About Us/i });
-    expect(heading).toBeVisible(); // Use toBeVisible() from jest-dom
+  describe('Light Mode', () => {
+    beforeEach(() => {
+      render(<ProductPitch darkMode={false} />);
+    });
+
+    it('renders with light mode styles', () => {
+      const section = screen.getByTestId('product-pitch-section');
+      expect(section).toHaveClass('bg-[#d3f3f8]');
+    });
+
+    it('renders the "About Us" heading with light mode color', () => {
+      const heading = screen.getByRole('heading', { name: /About Us/i });
+      expect(heading).toHaveStyle({ color: 'rgb(211, 243, 248)' });
+    });
+
+    it('renders the description with light mode color', () => {
+      const description = screen.getByText(/What if you could easily track/i);
+      expect(description).toHaveClass('text-[#2b9bda]');
+    });
   });
 
-  it('renders the main description text', () => {
-    render(<ProductPitch />);
-    const description = screen.getByText(/What if you could easily track how housing and employment growth/i);
-    expect(description).toBeVisible(); // Use toBeVisible() from jest-dom
+  describe('Dark Mode', () => {
+    beforeEach(() => {
+      render(<ProductPitch darkMode={true} />);
+    });
+
+    it('renders with dark mode styles', () => {
+      const section = screen.getByTestId('product-pitch-section');
+      expect(section).not.toHaveClass('bg-[#d3f3f8]');
+    });
+
+    it('renders the "About Us" heading with dark mode color', () => {
+      const heading = screen.getByRole('heading', { name: /About Us/i });
+      expect(heading).toHaveStyle({ color: 'rgb(255, 255, 255)' });
+    });
+
+    it('renders the description with dark mode color', () => {
+      const description = screen.getByText(/What if you could easily track/i);
+      expect(description).toHaveClass('text-white');
+    });
   });
 });
