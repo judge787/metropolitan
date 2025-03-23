@@ -11,6 +11,8 @@ class ProductPitch extends Component<ProductPitchProps> {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <section
+          role="region"
+          data-testid="product-pitch-section"
           className={`p-8 w-[700px] rounded-lg px-30 h-[480px] ${darkMode ? "": 'bg-[#d3f3f8]'}`}
           style={{
             backgroundImage: darkMode ? "url('./boarder.png')" :"url('./boarderLight.png')",
