@@ -23,7 +23,7 @@ describe('Main entry point', () => {
   it('renders App component inside StrictMode', async () => {
     // Directly execute the code in main.tsx rather than importing
     // This is more straightforward than trying to import dynamically
-    const mainModule = await import('../main');
+    await import('../main');
     
     // Since main.tsx gets executed immediately when imported, 
     // our mocks should have been called by now

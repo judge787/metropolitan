@@ -1,3 +1,4 @@
+import React from 'react';
 import { describe, test, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import App from '../App';
