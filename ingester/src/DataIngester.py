@@ -47,111 +47,278 @@ class DataIngester:
         with open(self.last_update_file, "w", encoding='utf-8') as f:
             f.write(current_date)
 
-    def fetch_data(self, url):
+    # def fetch_data(self, url):
+    #     """
+    #     fetch_data: Attempts to get data from the endpoint specified by {url}.
+    #     If there is a valid last updated date, only fetch data from that date onwards.
+    #     """
+    #     headers = {"Apikey": self.api_key}
+    #     params = {}
+    #     last_update = self.get_last_update()
+    #     if last_update:
+    #         try:
+    #             last_update_formatted = datetime.strptime(last_update, '%Y-%m-%d')
+    #             # subtract one day to make the original date inclusive
+    #             date_inclusive = (last_update_formatted - timedelta(days=1)).strftime('%Y-%m-%d')
+    #             params["after"] = date_inclusive
+    #         except ValueError as parse_error:
+    #             print(f"Error parsing last ingestion date: {parse_error}")
+    #             params["after"] = last_update
+
+    #     try:
+    #         response = requests.get(url, headers=headers, params=params, timeout=100)
+    #         response.raise_for_status()
+    #         return response.json()
+    #     except requests.exceptions.RequestException as parse_error:
+    #         print(f"Error fetching data from {url}: {parse_error}")
+    #         return []
+
+    # def fetch_data(self, url):
+    #     """
+    #     fetch_data: Attempts to get data from the endpoint specified by {url}.
+    #     Uses offset-based pagination to retrieve all records in batches of 5000.
+    #     If there is a valid last updated date, only fetch data from that date onwards.
+    #     """
+    #     headers = {"Apikey": self.api_key}
+    #     params = {}
+    #     all_data = []
+    #     offset = 0
+        
+    #     # Add date filtering if available
+    #     last_update = self.get_last_update()
+    #     if last_update:
+    #         try:
+    #             last_update_formatted = datetime.strptime(last_update, '%Y-%m-%d')
+    #             # subtract one day to make the original date inclusive
+    #             date_inclusive = (last_update_formatted - timedelta(days=1)).strftime('%Y-%m-%d')
+    #             params["after"] = date_inclusive
+    #         except ValueError as parse_error:
+    #             print(f"Error parsing last ingestion date: {parse_error}")
+    #             params["after"] = last_update
+
+    #     start_time = time.time()
+        
+    #     try:
+    #         while True:
+    #             # Add offset parameter for pagination
+    #             params["offset"] = offset
+                
+    #             # Make the API request
+    #             response = requests.get(url, headers=headers, params=params, timeout=100)
+    #             response.raise_for_status()
+                
+    #             # Parse JSON response
+    #             data_chunk = response.json()
+                
+    #             # Break if no more data
+    #             if not data_chunk:
+    #                 break
+                    
+    #             # Add chunk to accumulated data
+    #             all_data.extend(data_chunk)
+                
+    #             # Log progress
+    #             print(f"Fetched {len(data_chunk)} records with offset={offset}")
+                
+    #             # Increment offset for next request
+    #             offset += 5000
+                
+    #         print(f"Total records fetched: {len(all_data)}, "
+    #             f"Total elapsed time: {time.time()-start_time:.2f}s")
+    #         return all_data
+            
+    #     except requests.exceptions.RequestException as parse_error:
+    #         print(f"Error fetching data from {url}: {parse_error}")
+    #         return all_data  # Return any data collected before the error
+
+    # def process_housing_data(self):
+    #     """
+    #     process_housing_data: Process housing data from the API.
+    #     """
+    #     data = self.fetch_data(self.api_housing)
+    #     if not data:
+    #         print("No housing data was retrieved from API")
+    #         return 0
+
+    #     records_processed = 0
+    #     for d in data:
+    #         try:
+    #             housing_data = HousingData(
+    #                 jsonid=d["id"],
+    #                 census_metropolitan_area=d["CMA"],
+    #                 month=d["Month"],
+    #                 total_starts=d["Total_starts"],
+    #                 total_complete=d["Total_complete"],
+    #                 singles_starts=d["Singles_starts"],
+    #                 semis_starts=d["Semis_starts"],
+    #                 row_starts=d["Row_starts"],
+    #                 apartment_starts=d["Apt_Other_starts"],
+    #                 singles_complete=d["Singles_complete"],
+    #                 semis_complete=d["Semis_complete"],
+    #                 row_complete=d["Row_complete"],
+    #                 apartment_complete=d["Apt_other_complete"]
+    #             )
+    #             self.db.insert_housing_data(housing_data)
+    #             records_processed += 1
+    #             # print(f"Processed housing data: jsonid={housing_data.jsonid}")
+                
+    #         except KeyError as key_error:
+    #             print(f"Skipping invalid housing data: Missing field {key_error}")
+    #         # pylint: disable=broad-exception-caught
+    #         except Exception as process_error:
+    #             print(f"Error processing housing data: {process_error}")
+
+    #     return records_processed
+
+    # def process_labour_market_data(self):
+    #     """
+    #     process_labour_market_data: Process labour market data from API.
+    #     """
+    #     data = self.fetch_data(self.api_labour_market)
+    #     if not data:
+    #         print("No labour market data was retrieved from API")
+    #         return 0
+
+    #     records_processed = 0
+    #     for d in data:
+    #         try:
+    #             # Using the exact field names from the API
+    #             labour_market_data = LabourMarketData(
+    #                 jsonid=d["id"],
+    #                 province=d["PROV"],
+    #                 education_level=d["EDUC"],
+    #                 labour_force_status=d["LFSSTAT"]
+    #             )
+    #             self.db.insert_labour_market_data(labour_market_data)
+    #             records_processed += 1
+    #             # print(f"Processed labour market data for jsonid: {labour_market_data.jsonid}")
+    #         except KeyError as key_error:
+    #             print(f"Skipping invalid labour market data: Missing field {key_error}")
+    #         except Exception as exception_error:
+    #             print(f"Error processing labour market data: {exception_error}")
+
+    #     return records_processed
+
+    def fetch_batch(self, url, offset, params=None):
         """
-        fetch_data: Attempts to get data from the endpoint specified by {url}.
-        If there is a valid last updated date, only fetch data from that date onwards.
+        fetch_batch: Fetches a single batch of data from the API.
+        Returns a single batch rather than accumulating all data.
         """
+        if params is None:
+            params = {}
+        
+        params["offset"] = offset
         headers = {"Apikey": self.api_key}
+        
+        try:
+            response = requests.get(url, headers=headers, params=params, timeout=100)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as parse_error:
+            print(f"Error fetching batch with offset {offset} from {url}: {parse_error}")
+            return []
+
+    def fetch_and_process_data(self, url, processor_func):
+        """
+        fetch_and_process_data: Orchestrates fetching and processing in batches.
+        Takes a processor function that handles a single record.
+        """
         params = {}
+        offset = 0
+        total_processed = 0
+        
+        # Add date filtering if available
         last_update = self.get_last_update()
         if last_update:
             try:
                 last_update_formatted = datetime.strptime(last_update, '%Y-%m-%d')
-                # subtract one day to make the original date inclusive
                 date_inclusive = (last_update_formatted - timedelta(days=1)).strftime('%Y-%m-%d')
                 params["after"] = date_inclusive
             except ValueError as parse_error:
                 print(f"Error parsing last ingestion date: {parse_error}")
                 params["after"] = last_update
 
-        try:
-            response = requests.get(url, headers=headers, params=params, timeout=100)
-            response.raise_for_status()
-            return response.json()
-        except requests.exceptions.RequestException as parse_error:
-            print(f"Error fetching data from {url}: {parse_error}")
-            return []
+        start_time = time.time()
+        
+        while True:
+            # Fetch a single batch
+            data_batch = self.fetch_batch(url, offset, params)
+            
+            # Break if no more data
+            if not data_batch:
+                break
+            
+            # Process each record in this batch
+            batch_processed = 0
+            for record in data_batch:
+                if processor_func(record):
+                    batch_processed += 1
+            
+            total_processed += batch_processed
+            
+            print(f"Batch: offset={offset}, fetched={len(data_batch)}, processed={batch_processed}, "
+                f"elapsed={time.time()-start_time:.2f}s")
+            
+            # Move to next batch
+            offset += 5000
+        
+        print(f"Total processed: {total_processed}, total time: {time.time()-start_time:.2f}s")
+        return total_processed
 
     def process_housing_data(self):
         """
         process_housing_data: Process housing data from the API.
         """
-        data = self.fetch_data(self.api_housing)
-        if not data:
-            print("No housing data was retrieved from API")
-            return 0
-
-        records_processed = 0
-        for d in data:
+        def process_housing_record(record):
             try:
                 housing_data = HousingData(
-                    jsonid=d["id"],
-                    census_metropolitan_area=d["CMA"],
-                    month=d["Month"],
-                    total_starts=d["Total_starts"],
-                    total_complete=d["Total_complete"],
-                    singles_starts=d["Singles_starts"],
-                    semis_starts=d["Semis_starts"],
-                    row_starts=d["Row_starts"],
-                    apartment_starts=d["Apt_Other_starts"],
-                    singles_complete=d["Singles_complete"],
-                    semis_complete=d["Semis_complete"],
-                    row_complete=d["Row_complete"],
-                    apartment_complete=d["Apt_other_complete"]
+                    jsonid=record["id"],
+                    census_metropolitan_area=record["CMA"],
+                    month=record["Month"],
+                    total_starts=record["Total_starts"],
+                    total_complete=record["Total_complete"],
+                    singles_starts=record["Singles_starts"],
+                    semis_starts=record["Semis_starts"],
+                    row_starts=record["Row_starts"],
+                    apartment_starts=record["Apt_Other_starts"],
+                    singles_complete=record["Singles_complete"],
+                    semis_complete=record["Semis_complete"],
+                    row_complete=record["Row_complete"],
+                    apartment_complete=record["Apt_other_complete"]
                 )
                 self.db.insert_housing_data(housing_data)
-                records_processed += 1
-                print(
-                    f"Processed housing data: jsonid={housing_data.jsonid}, "
-                    f"CMA={housing_data.census_metropolitan_area}, Month={housing_data.month}, "
-                    f"Total Starts={housing_data.total_starts}, "
-                    f"Total Complete={housing_data.total_complete}, "
-                    f"Singles Starts={housing_data.singles_starts}, "
-                    f"Semis Starts={housing_data.semis_starts}, "
-                    f"Row Starts={housing_data.row_starts}, "
-                    f"Apartment Starts={housing_data.apartment_starts}, "
-                    f"Singles Complete={housing_data.singles_complete}, "
-                    f"Semis Complete={housing_data.semis_complete}, "
-                    f"Row Complete={housing_data.row_complete}, "
-                    f"Apartment Complete={housing_data.apartment_complete}"
-                )
+                return True
             except KeyError as key_error:
                 print(f"Skipping invalid housing data: Missing field {key_error}")
-            # pylint: disable=broad-exception-caught
+                return False
             except Exception as process_error:
                 print(f"Error processing housing data: {process_error}")
-
-        return records_processed
+                return False
+        
+        return self.fetch_and_process_data(self.api_housing, process_housing_record)
 
     def process_labour_market_data(self):
         """
         process_labour_market_data: Process labour market data from API.
         """
-        data = self.fetch_data(self.api_labour_market)
-        if not data:
-            print("No labour market data was retrieved from API")
-            return 0
-
-        records_processed = 0
-        for d in data:
+        def process_labour_record(record):
             try:
-                # Using the exact field names from the API
                 labour_market_data = LabourMarketData(
-                    jsonid=d["id"],
-                    province=d["PROV"],
-                    education_level=d["EDUC"],
-                    labour_force_status=d["LFSSTAT"]
+                    jsonid=record["id"],
+                    province=record["PROV"],
+                    education_level=record["EDUC"],
+                    labour_force_status=record["LFSSTAT"]
                 )
                 self.db.insert_labour_market_data(labour_market_data)
-                records_processed += 1
-                print(f"Processed labour market data for jsonid: {labour_market_data.jsonid}")
+                return True
             except KeyError as key_error:
                 print(f"Skipping invalid labour market data: Missing field {key_error}")
+                return False
             except Exception as exception_error:
                 print(f"Error processing labour market data: {exception_error}")
-
-        return records_processed
+                return False
+        
+        return self.fetch_and_process_data(self.api_labour_market, process_labour_record)
 
     def process_and_store(self):
         """

@@ -192,10 +192,7 @@ class DatabaseHandler:
                     )
                 )
                 # Print detailed information including original values for debugging
-                print(f"Inserted jsonid: {housing_data.jsonid}, housing data: "
-                      f"{housing_data.census_metropolitan_area}, "
-                      f"Month: {housing_data.month}, Total Starts: {total_starts}, "
-                      f"Total Complete: {total_complete}")
+                print(f"Inserted jsonid: {housing_data.jsonid}, housing data: ")
                 self.conn.commit()
         except mariadb.Error as e:
             print(f"Error inserting housing data: {e}")
@@ -244,7 +241,7 @@ class DatabaseHandler:
                         labour_force_status
                     )
                 )
-                print(f"Inserted labour market data for jsonid: {jsonid}")
+                # print(f"Inserted labour market data for jsonid: {jsonid}")
                 self.conn.commit()
         except mariadb.Error as e:
             print(f"Error inserting labour market data: {e}")

@@ -28,21 +28,21 @@ class LabourMarketData:
         province: Gets the province.
         """
         return self.__province
-    
+
     @property
     def education_level(self):
         """
         education_level: Gets the education level.
         """
         return self.__education_level
-    
+
     @property
     def labour_force_status(self):
         """
         labour_force_status: Gets the labour force status.
         """
         return self.__labour_force_status
-    
+
     @jsonid.setter
     def jsonid(self, jsonid):
         """
@@ -63,7 +63,7 @@ class LabourMarketData:
         education_level: Sets the education level.
         """
         self.__education_level = education_level
-    
+
     @labour_force_status.setter
     def labour_force_status(self, labour_force_status):
         """
