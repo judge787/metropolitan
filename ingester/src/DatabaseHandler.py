@@ -59,6 +59,7 @@ class DatabaseHandler:
                 """
                 CREATE TABLE IF NOT EXISTS housing_data (
                     id INT AUTO_INCREMENT PRIMARY KEY COMMENT 'Primary Key',
+                    jsonid INT DEFAULT 0 COMMENT 'JSON ID',
                     census_metropolitan_area VARCHAR(255) COMMENT 'Census Metropolitan Area',
                     month INT DEFAULT NULL COMMENT 'Month',
                     total_starts INT DEFAULT 0 COMMENT 'Total Starts',
@@ -108,26 +109,31 @@ class DatabaseHandler:
         """
         cursor = self.conn.cursor()
         try:
+            # Helper function to safely convert values with potential commas
+            def safe_convert(value):
+                if value == "" or value is None:
+                    return 0
+                # Remove commas and convert to integer
+                return int(str(value).replace(',', ''))
+
             # Convert empty strings to integers for numeric fields
-            month = 0 if housing_data.month == "" else housing_data.month
-            total_starts = 0 if housing_data.total_starts == "" else housing_data.total_starts
-            total_complete = 0 if housing_data.total_complete == "" else housing_data.total_complete
-            singles_starts = 0 if housing_data.singles_starts == "" else housing_data.singles_starts
-            semis_starts = 0 if housing_data.semis_starts == "" else housing_data.semis_starts
-            row_starts = 0 if housing_data.row_starts == "" else housing_data.row_starts
-            apartment_starts = 0 if housing_data.apartment_starts == "" else housing_data.apartment_starts
-            singles_complete = 0 if housing_data.singles_complete == "" else housing_data.singles_complete
-            semis_complete = (0 if housing_data.semis_complete == ""
-                            else housing_data.semis_complete)
-            row_complete = (0 if housing_data.row_complete == ""
-                        else housing_data.row_complete)
-            apartment_complete = (0 if housing_data.apartment_complete == ""
-                                else housing_data.apartment_complete)
+            month = safe_convert(housing_data.month)
+            total_starts = safe_convert(housing_data.total_starts)
+            total_complete = safe_convert(housing_data.total_complete)
+            singles_starts = safe_convert(housing_data.singles_starts)
+            semis_starts = safe_convert(housing_data.semis_starts)
+            row_starts = safe_convert(housing_data.row_starts)
+            apartment_starts = safe_convert(housing_data.apartment_starts)
+            singles_complete = safe_convert(housing_data.singles_complete)
+            semis_complete = safe_convert(housing_data.semis_complete)
+            row_complete = safe_convert(housing_data.row_complete)
+            apartment_complete = safe_convert(housing_data.apartment_complete)
 
             # First execute the query to check if housing data exists with all fields
             cursor.execute(
                 """SELECT id FROM housing_data 
-                WHERE census_metropolitan_area = ? 
+                WHERE jsonid = ?
+                AND census_metropolitan_area = ? 
                 AND month = ? 
                 AND total_starts = ? 
                 AND total_complete = ? 
@@ -140,6 +146,7 @@ class DatabaseHandler:
                 AND row_complete = ? 
                 AND apartment_complete = ?""",
                 (
+                    housing_data.jsonid,
                     housing_data.census_metropolitan_area,
                     month,
                     total_starts,
@@ -157,18 +164,19 @@ class DatabaseHandler:
 
             # Now we can safely call fetchone() after executing a query
             result = cursor.fetchone()
-    
+
             if result is None:
                 # Insert new record if no exact match exists
                 cursor.execute(
                     """INSERT INTO housing_data 
-                    (census_metropolitan_area, month, total_starts, total_complete, 
+                    (jsonid, census_metropolitan_area, month, total_starts, total_complete, 
                     singles_starts, semis_starts, row_starts, apartment_starts,
                     singles_complete, semis_complete, row_complete, apartment_complete)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                     (
+                        housing_data.jsonid,
                         housing_data.census_metropolitan_area,
-                        housing_data.month,
+                        month,
                         total_starts,
                         total_complete,
                         singles_starts,
@@ -181,13 +189,16 @@ class DatabaseHandler:
                         apartment_complete
                     )
                 )
-                print(f"Inserted housing data: {housing_data.census_metropolitan_area}")
+                # Print detailed information including original values for debugging
+                print(f"Inserted jsonid: {housing_data.jsonid}, housing data: "
+                      f"{housing_data.census_metropolitan_area}, "
+                      f"Month: {housing_data.month}, Total Starts: {total_starts}, "
+                      f"Total Complete: {total_complete}")
                 self.conn.commit()
         except mariadb.Error as e:
             print(f"Error inserting housing data: {e}")
         finally:
             cursor.close()
-
 
     def insert_labour_market_data(self, labour_market_data):
         """
