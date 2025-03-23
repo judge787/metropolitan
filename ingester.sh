@@ -25,7 +25,7 @@ echo "Environment variables in test-ingester:"
 docker compose -f compose.ingester.yaml exec test-ingester env | grep DB_
 
 echo "Running ingester integration tests..."
-docker compose -f compose.ingester.yaml exec test-ingester python -m pytest tests/integration/test_DatabaseIngration.py -v
+docker compose -f compose.ingester.yaml exec test-ingester python -m pytest tests/integration/test_DatabaseIntegration.py -v
 
 # Capture exit code
 EXIT_CODE=$?
