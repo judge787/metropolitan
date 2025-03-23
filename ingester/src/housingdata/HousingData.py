@@ -10,10 +10,12 @@ class HousingData:
     # pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-positional-arguments
 
     def __init__(
-        self, census_metropolitan_area, month, total_starts, total_complete,
+        self, jsonid,
+        census_metropolitan_area, month, total_starts, total_complete,
         singles_starts, semis_starts, row_starts, apartment_starts,
         singles_complete, semis_complete, row_complete, apartment_complete
     ):
+        self.__jsonid = jsonid
         self.__census_metropolitan_area = census_metropolitan_area
         self.__total_starts = total_starts
         self.__total_complete = total_complete
@@ -26,6 +28,11 @@ class HousingData:
         self.__semis_complete = semis_complete
         self.__row_complete = row_complete
         self.__apartment_complete = apartment_complete
+
+    @property
+    def jsonid(self):
+        """str: Gets the jsonid."""
+        return self.__jsonid
 
     @property
     def census_metropolitan_area(self):
@@ -86,6 +93,11 @@ class HousingData:
     def apartment_complete(self):
         """int: Gets the number of apartment completes."""
         return self.__apartment_complete
+
+    @jsonid.setter
+    def jsonid(self, value):
+        """Set the jsonid."""
+        self.__jsonid = value
 
     @census_metropolitan_area.setter
     def census_metropolitan_area(self, value):
@@ -150,6 +162,7 @@ class HousingData:
     def __repr__(self):
         """Return an unambiguous string representation of the HousingData."""
         return (
+            f"jsonid={self.__jsonid!r}, "
             f"HousingData(census_metropolitan_area={self.__census_metropolitan_area!r}, "
             f"month={self.__month!r}, "
             f"total_starts={self.__total_starts!r}, "

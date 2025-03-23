@@ -28,7 +28,7 @@ public class HousingDataController {
 
 
     // retrieves housing data by ID
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<Data> getData(@PathVariable Integer id) {
         try {
             Data data = dataService.getData(id);
