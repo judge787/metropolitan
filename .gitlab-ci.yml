@@ -1,7 +1,16 @@
+variables:
+  SONAR_HOST_URL: "https://sonarqube.socs.uoguelph.ca"
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+  GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  SONAR_FRONTEND_TOKEN: "sqp_f3cffd9bc646b40c3484fd65c0548e788d9f26b1"
+  SONAR_BACKEND_TOKEN: "sqp_b12c4db68a932571b159fca5dc7738565b0536cc"
+  SONAR_INGESTER_TOKEN: "sqp_79060b29b5ce5b16efa82a779dca4c94ad040835"
+
 stages:
   - build
   - lint
   - test
+  - sonar_analysis
 
 # BUILD STAGE
 build-backend:
@@ -65,7 +74,7 @@ test-backend:
     - awk -F"," '{ instructions += $4 + $5; covered += $5 } END { print covered, "/", instructions, " instructions covered"; print "Total coverage:", 100*covered/instructions,  "%"}' build/reports/jacoco/test/jacocoTestReport.csv
   artifacts:
     paths:
-      - backend/build/reports/jacoco/test/jacocoTestReport.csv
+      - backend/build/reports/jacoco/test
   rules:
     - when: always
   allow_failure: false
@@ -78,6 +87,9 @@ test-frontend:
     - cd frontend
     - npm ci
     - npx vitest run --coverage
+  artifacts:
+    paths:
+      - frontend/coverage/lcov.info
   rules:
     - when: always
   allow_failure: false
@@ -103,3 +115,71 @@ test-ingester:
   rules:
       - when: always
   allow_failure: false
+
+# SONAR STAGE
+sonar-analysis-frontend:
+  stage: sonar_analysis
+  image: node:22
+  dependencies:
+    - test-frontend
+  before_script:
+    - cd frontend
+    - apt-get update && apt-get install -y wget unzip openjdk-17-jdk
+    - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+    - unzip sonar-scanner-cli-5.0.1.3006-linux.zip
+    - export PATH="$PATH:$(pwd)/sonar-scanner-5.0.1.3006-linux/bin"
+  script:
+    - ls -R coverage
+    - >-
+      sonar-scanner 
+      -Dsonar.projectKey=joblen_frontend 
+      -Dsonar.sources=src 
+      -Dsonar.tests=src/tests
+      -Dsonar.test.inclusions=src/tests/**/*
+      -Dsonar.exclusions=src/tests/**/*
+      -Dsonar.host.url=$SONAR_HOST_URL 
+      -Dsonar.login=$SONAR_FRONTEND_TOKEN 
+      -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info 
+      -Dsonar.qualitygate.wait=true
+  allow_failure: true
+  only:
+    - main
+
+sonar-analysis-backend:
+  stage: sonar_analysis
+  image: gradle:7.5-jdk17
+  needs: ["test-backend"]
+  script:
+    - cd backend
+    - ./gradlew bootJar
+    - ./gradlew build -x checkstyleMain -x checkstyleTest
+    - ./gradlew sonar
+        -Dsonar.login=$SONAR_BACKEND_TOKEN
+        -Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/test/jacocoTestReport.xml
+  allow_failure: true
+  only:
+    - main
+
+sonar-analysis-ingester:
+  stage: sonar_analysis
+  image: python:3.11-slim
+  before_script:
+    - cd ingester
+    - apt-get update && apt-get install -y wget unzip openjdk-17-jdk gcc python3-dev libmariadb-dev libmariadb-dev-compat && rm -rf /var/lib/apt/lists/*
+    - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+    - unzip sonar-scanner-cli-5.0.1.3006-linux.zip
+    - export PATH="$PATH:$(pwd)/sonar-scanner-5.0.1.3006-linux/bin"
+  script:
+    - pip install -r requirements.txt
+    - pytest --cov=. --cov-report=term-missing --cov-report=html --cov-report=xml --junitxml=report.xml
+    - >-
+      sonar-scanner 
+      -Dsonar.projectKey=joblen_ingester
+      -Dsonar.sources=. 
+      -Dsonar.host.url=$SONAR_HOST_URL 
+      -Dsonar.login=$SONAR_INGESTER_TOKEN 
+      -Dsonar.python.coverage.reportPaths=coverage.xml 
+      -Dsonar.qualitygate.wait=true
+  allow_failure: true
+  only:
+    - main

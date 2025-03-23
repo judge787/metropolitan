@@ -6,8 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 public interface DataDao extends CrudRepository<Data, Integer> {
-  @Query("SELECT COUNT(d) FROM Data d")
-  Integer getCount();
 
   @Query("SELECT d FROM Data d WHERE d.totalStarts = :totalStarts")
   Iterable<Data> getDataByTotalStarts(@Param("totalStarts") int totalStarts);
@@ -17,4 +15,7 @@ public interface DataDao extends CrudRepository<Data, Integer> {
 
   @Query("SELECT SUM(d.totalStarts) FROM Data d WHERE d.censusArea = :censusArea")
   Integer sumTotalStartsByCensusArea(@Param("censusArea") String censusArea);
+
+  @Query("SELECT SUM(d.totalComplete) FROM Data d WHERE d.censusArea = :censusArea")
+  Integer sumTotalCompleteByCensusArea(@Param("censusArea") String censusArea);
 }

@@ -1,16 +1,21 @@
 # Use the latest stable Python runtime as a parent image
 FROM python:3.11-slim
 
+# Set the timezone in the container
+ENV TZ=America/Toronto
+RUN ln -snf /usr/share/zoneinfo/"$TZ" /etc/localtime && echo "$TZ" > /etc/timezone
+
 # Set the working directory in the container
 WORKDIR /usr/app/
 
 # Install system dependencies first
 RUN apt-get update && \
 apt-get install -y \
+cron \
 gcc \
-python3-dev \
 libmariadb-dev \
 libmariadb-dev-compat \
+python3-dev \
 && rm -rf /var/lib/apt/lists/*
 
 # Copy the requirements file into the container
@@ -24,5 +29,16 @@ COPY . .
 
 ENV PYTHONPATH=/usr/app
 
-# command to run the script once and keep the container running
-CMD ["sh", "-c", "python src/DataIngester.py && tail -f /dev/null"]
+
+# These next lines set up a cron job
+# Copy the cron job file
+COPY ingester-cron /etc/cron.d/ingester-cron
+
+# Set up the cron job in a single RUN instruction
+RUN chmod 0644 /etc/cron.d/ingester-cron && \
+    crontab /etc/cron.d/ingester-cron && \
+    touch /var/log/cron.log
+
+
+# Start cron, run script once immediately, and keep container alive
+CMD ["sh", "-c", "cron && python src/DataIngester.py && tail -f /var/log/cron.log"]

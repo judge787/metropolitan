@@ -9,6 +9,7 @@ services:  # Defines the services that make up the application
     environment:  # Environment variables for the MySQL service
       - MYSQL_ROOT_PASSWORD=pwd  # The root password for MySQL
       - MYSQL_DATABASE=template_db  # The database to create when the container starts
+      - TZ=America/Toronto
     #Volumes: volumes: - mariadb_data:/var/lib/mysql mounts the named volume mariadb_data to /var/lib/mysql inside the container, providing persistent storage for the database.
     volumes:  # Persistent storage for the MySQL database
       - mariadb_data:/var/lib/mysql  # Maps 'mariadb_data' volume to the data directory of MySQL
@@ -54,8 +55,9 @@ services:  # Defines the services that make up the application
       - DB_DATABASE=template_db  # The name of the database to use
       - DB_USER=root  # The username for the database
       - DB_PASSWORD=pwd  # The password for the database
-      - API_KEY=3565h3H9yBN6GfQcZf6ZjcJ0Yi3-t5f680JhiZJLLM4sOn2pB9EZWQ
-      - API_URL=https://cis-data-service.socs.uoguelph.ca/data/housing_starts_completions
+      - API_KEY=d72Mk_r-2uMm2BI88temUsgSCWNnhZ-6rlNY8Nnn_YytRFRcIf69Rg
+      - API_URL_HOUSING=https://cis-data-service.socs.uoguelph.ca/data/housing_starts_completions
+      - API_URL_LABOUR_MARKET=https://cis-data-service.socs.uoguelph.ca/data/labour_market
     depends_on:
       - database  # Ensures MySQL service is started before the Python service
     networks:
