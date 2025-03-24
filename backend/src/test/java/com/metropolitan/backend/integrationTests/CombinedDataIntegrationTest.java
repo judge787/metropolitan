@@ -24,7 +24,7 @@ class CombinedDataIntegrationTest {
   @Sql(scripts = {"/schema.sql", "/data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
   void testCombinedDataEndpoint() throws Exception {
     String censusArea = "TestArea";
-    Integer id = 123;
+    Integer id = 1;
 
     mockMvc.perform(get("/api/combined/{censusArea}/{id}", censusArea, id.toString()))
             .andExpect(status().isOk())
