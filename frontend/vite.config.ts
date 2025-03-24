@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite'
+import { configDefaults } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
@@ -25,6 +26,10 @@ export default defineConfig({
       provider: "v8", // or "istanbul"
       reporter: ["text", "lcov"],
       reportsDirectory: "coverage"
-    }
+    },
+    exclude: [
+      ...configDefaults.exclude,
+      'src/tests/integration/*'
+    ]
   },
 })

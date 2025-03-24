@@ -9,8 +9,8 @@ VALUES
 
 -- Labour Data (explicit ID insertion with sequence reset)
 INSERT INTO labour_market_data
-    (id, province, education_level, labour_force_status)
+    (province, education_level, labour_force_status)
 VALUES
-    (123, 1, 2, 1);
+    (1, 2, 1);
 
 ALTER TABLE labour_market_data AUTO_INCREMENT = 124;
