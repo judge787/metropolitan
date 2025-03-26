@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  test-backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile.test
+    environment:
+      - SPRING_PROFILES_ACTIVE=test
+      - CORS_ALLOWED_ORIGINS=http://test-frontend:5173
+    ports:
+      - "8081:8080"
+    networks:
+      - test-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  test-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.test
+    environment:
+      # This configures the React app to use the backend service name in Docker network
+      - VITE_API_BASE_URL=http://test-backend:8080
+    volumes:
+      - ./frontend/src:/usr/src/app/src
+      - ./frontend/test-results:/usr/src/app/test-results
+    depends_on:
+      test-backend:
+        condition: service_healthy
+    networks:
+      - test-network
+
+networks:
+  test-network:

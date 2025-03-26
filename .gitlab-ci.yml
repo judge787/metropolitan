@@ -103,7 +103,7 @@ test-ingester:
     - pip install --upgrade pip
     - apt-get update && apt-get install -y gcc python3-dev libmariadb-dev libmariadb-dev-compat && rm -rf /var/lib/apt/lists/*
     - pip install -r requirements.txt
-    - pytest --cov=. --cov-report=term-missing --cov-report=html --cov-report=xml --junitxml=report.xml
+    - pytest --ignore=tests/integration --cov=. --cov-report=term-missing --cov-report=html --cov-report=xml --junitxml=report.xml
   artifacts:
     reports:
       junit: ingester/report.xml

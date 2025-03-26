@@ -2,11 +2,12 @@ import { HousingData } from "../types/HousingData";
 
 const API_URL = '/api/housingStats';
 console.log('API_URL:', API_URL);
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 export const getAllData = async (): Promise<HousingData[]> => {
   console.log('Fetching all data from:', `${API_URL}`);
+  const url = `${API_BASE_URL}${API_URL}`;
   try {
-    const response = await fetch(`${API_URL}`);
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -35,9 +36,10 @@ export const getData = async (id: number): Promise<HousingData> => {
 };
 
 export const getStartsByCensusArea = async (censusArea: string) :Promise<number> => {
+  const url = `${API_BASE_URL}${API_URL}/starts/${censusArea}`;
   console.log(`Fetching data for the city ${censusArea} from:`, `${API_URL}/starts/${censusArea}`);  // Log the full endpoint
   try {
-    const response = await fetch(`${API_URL}/starts/${censusArea}`);
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }

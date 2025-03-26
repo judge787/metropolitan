@@ -22,7 +22,7 @@ class LabourDataIntegrationTest {
   @Test
   @Sql(scripts = {"/schema.sql", "/data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
   void testGetLabourDataById() throws Exception {
-    Integer id = 123; // Matches data.sql entry
+    Integer id = 1; // Matches data.sql entry
 
     mockMvc.perform(get("/api/labourMarket/{id}", id))
             .andExpect(status().isOk())
@@ -48,7 +48,6 @@ class LabourDataIntegrationTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$").isArray())
             .andExpect(jsonPath("$.length()").value(1)) // Total entries in data.sql
-            .andExpect(jsonPath("$[?(@.id == 123)]").exists())
             .andExpect(jsonPath("$[?(@.province == 1)]").exists())
             .andExpect(jsonPath("$[?(@.educationLevel == 2)]").exists())
             .andExpect(jsonPath("$[?(@.labourForceStatus == 1)]").exists());

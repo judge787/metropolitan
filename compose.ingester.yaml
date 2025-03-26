@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  test-db:
+    image: mariadb:10.11
+    environment:
+      - MYSQL_ROOT_PASSWORD=pwd  # The root password for MySQL
+      - MYSQL_DATABASE=template_db  # The database to create when the container starts
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./test-data:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppwd"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - ingester-database
+
+  test-ingester:
+    build:
+      context: ./ingester
+      dockerfile: Dockerfile.test  # Use the test Dockerfile instead
+    environment:
+      - DB_HOST=test-db  # Match the service name exactly
+      - DB_DATABASE=template_db  # Match the database name from test-db
+      - DB_USER=root
+      - DB_PASSWORD=pwd
+      - TEST_MODE=true
+      - PYTHONPATH=/usr/app  # Match the WORKDIR in Dockerfile.test
+    volumes:
+      - ./ingester:/usr/app  # Match the WORKDIR in Dockerfile.test
+    depends_on:
+      test-db:
+        condition: service_healthy
+    networks:
+      - ingester-database
+    tty: true
+    stdin_open: true  # This also helps keep the container alive
+
+networks:
+  ingester-database:

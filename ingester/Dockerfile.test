@@ -1,0 +1,21 @@
+FROM python:3.11-slim
+
+WORKDIR /usr/app/
+
+RUN apt-get update && \
+    apt-get install -y \
+    gcc \
+    libmariadb-dev \
+    libmariadb-dev-compat \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install pytest pytest-cov
+
+COPY . .
+ENV PYTHONPATH=/usr/app
+
+# Keep container running instead of exiting after tests
+CMD ["tail", "-f", "/dev/null"]
